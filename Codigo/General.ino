@@ -71,58 +71,67 @@ const int sensorLineaD1 = 43;
 
 void setup() {
   
-  // Ultrasonico Frontal
-  pinMode(ultrasonicoFrontalEcho, INPUT);
-  pinMode(ultrasonicoFrontalTrig, OUTPUT);
-  
-  // Ultrasonico Derecha
-  pinMode(ultrasonicoDerechaEcho, INPUT);
-  pinMode(ultrasonicoDerechaTrig, OUTPUT);
-  
-  // Ultrasonico Izquierda
-  pinMode(ultrasonicoIzquierdaEcho, INPUT);
-  pinMode(ultrasonicoIzquierdaTrig, OUTPUT);
-  
-  // Motores Lado Izquierdo
-  pinMode(ENA_Izquierdo, OUTPUT);
-  pinMode(INA1_Izquierdo, OUTPUT);
-  pinMode(INA2_Izquierdo, OUTPUT);
-  pinMode(INB1_Izquierdo, OUTPUT);
-  pinMode(INB2_Izquierdo, OUTPUT);
-  pinMode(ENB_Izquierdo, OUTPUT);
+    // Ultrasonico Frontal
+    pinMode(ultrasonicoFrontalEcho, INPUT);
+    pinMode(ultrasonicoFrontalTrig, OUTPUT);
+    
+    // Ultrasonico Derecha
+    pinMode(ultrasonicoDerechaEcho, INPUT);
+    pinMode(ultrasonicoDerechaTrig, OUTPUT);
+    
+    // Ultrasonico Izquierda
+    pinMode(ultrasonicoIzquierdaEcho, INPUT);
+    pinMode(ultrasonicoIzquierdaTrig, OUTPUT);
+    
+    // Motores Lado Izquierdo
+    pinMode(ENA_Izquierdo, OUTPUT);
+    pinMode(INA1_Izquierdo, OUTPUT);
+    pinMode(INA2_Izquierdo, OUTPUT);
+    pinMode(INB1_Izquierdo, OUTPUT);
+    pinMode(INB2_Izquierdo, OUTPUT);
+    pinMode(ENB_Izquierdo, OUTPUT);
 
-  // Motores Lado Derecho
-  pinMode(ENA_Derecho, OUTPUT);
-  pinMode(INA1_Derecho, OUTPUT);
-  pinMode(INA2_Derecho, OUTPUT);
-  pinMode(INB1_Derecho, OUTPUT);
-  pinMode(INB2_Derecho, OUTPUT);
-  pinMode(ENB_Derecho, OUTPUT);
-  
-  // Actuadores
-  pinMode(R, OUTPUT);
-  pinMode(B, OUTPUT);
-  pinMode(G, OUTPUT);
-  pinMode(buzzer, OUTPUT);
-  
-  pinMode(encoderSuperiorIzquierdo_A, INPUT);
-  pinMode(encoderSuperiorIzquierdo_B, INPUT);
-  pinMode(encoderSuperiorDerecho_A, INPUT);
-  pinMode(encoderSuperiorDerecho_B, INPUT);
-  pinMode(encoderInferiorIzquierdo_A, INPUT);
-  pinMode(encoderInferiorIzquierdo_B, INPUT);
-  pinMode(encoderInferiorDerecho_A, INPUT);
-  pinMode(encoderInferiorDerecho_B, INPUT);
-  
-  pinMode(sensorLineaD8, INPUT);
-  pinMode(sensorLineaD7, INPUT);
-  pinMode(sensorLineaD6, INPUT);
-  pinMode(sensorLineaD5, INPUT);
-  pinMode(sensorLineaD4, INPUT);
-  pinMode(sensorLineaD3, INPUT);
-  pinMode(sensorLineaD2, INPUT);
-  pinMode(sensorLineaD1, INPUT);
-  
+    // Motores Lado Derecho
+    pinMode(ENA_Derecho, OUTPUT);
+    pinMode(INA1_Derecho, OUTPUT);
+    pinMode(INA2_Derecho, OUTPUT);
+    pinMode(INB1_Derecho, OUTPUT);
+    pinMode(INB2_Derecho, OUTPUT);
+    pinMode(ENB_Derecho, OUTPUT);
+    
+    // Actuadores
+    pinMode(R, OUTPUT);
+    pinMode(B, OUTPUT);
+    pinMode(G, OUTPUT);
+    pinMode(buzzer, OUTPUT);
+    
+    // Motores con encoders
+    // Encoder Superior Izquierdo
+    pinMode(encoderSuperiorIzquierdo_A, INPUT);
+    pinMode(encoderSuperiorIzquierdo_B, INPUT);
+    
+    // Encoder Superior Derecho
+    pinMode(encoderSuperiorDerecho_A, INPUT);
+    pinMode(encoderSuperiorDerecho_B, INPUT);
+    
+    // Encoder Inferior Izquierdo
+    pinMode(encoderInferiorIzquierdo_A, INPUT);
+    pinMode(encoderInferiorIzquierdo_B, INPUT);
+
+        // Encoder Inferior Derecho
+    pinMode(encoderInferiorDerecho_A, INPUT);
+    pinMode(encoderInferiorDerecho_B, INPUT);
+    
+    // Sensor de Linea
+    pinMode(sensorLineaD8, INPUT);
+    pinMode(sensorLineaD7, INPUT);
+    pinMode(sensorLineaD6, INPUT);
+    pinMode(sensorLineaD5, INPUT);
+    pinMode(sensorLineaD4, INPUT);
+    pinMode(sensorLineaD3, INPUT);
+    pinMode(sensorLineaD2, INPUT);
+    pinMode(sensorLineaD1, INPUT);
+    
 }
 
 void loop() {
