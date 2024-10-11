@@ -74,7 +74,7 @@ void setup() {
     // Ultrasonico Frontal
     pinMode(ultrasonicoFrontalEcho, INPUT);
     pinMode(ultrasonicoFrontalTrig, OUTPUT);
-    
+
     // Ultrasonico Derecha
     pinMode(ultrasonicoDerechaEcho, INPUT);
     pinMode(ultrasonicoDerechaTrig, OUTPUT);
@@ -136,4 +136,59 @@ void setup() {
 
 void loop() {
 
+    long distanceFrontal = distanciaUltrasonico(ultrasonicoFrontalTrig, ultrasonicoFrontalEcho);
+    long distanceDerecha = distanciaUltrasonico(ultrasonicoDerechaTrig, ultrasonicoDerechaEcho);
+    long distanceIzquierda = distanciaUltrasonico(ultrasonicoIzquierdaTrig, ultrasonicoIzquierdaEcho);
+
+    Serial.print("Frontal: ");
+    Serial.print(distanceFrontal);
+    Serial.print(" cm, Derecha: ");
+    Serial.print(distanceDerecha);
+    Serial.print(" cm, Izquierda: ");
+    Serial.print(distanceIzquierda);
+    Serial.println(" cm");
+
+    delay(500);
+
+
+}
+
+void adelante(){
+
+}
+
+void atras(){
+
+}
+
+void giroDerecha(){
+
+}
+
+void giroIzquierda(){
+
+}
+
+void detener(){
+
+}
+
+void encenderBuzzer(){
+
+}
+
+void apagarBuzzer(){
+
+}
+
+long distanciaUltrasonico(int trigPin, int echoPin) {
+        digitalWrite(trigPin, LOW);
+        delayMicroseconds(2);
+        digitalWrite(trigPin, HIGH);
+        delayMicroseconds(10);
+        digitalWrite(trigPin, LOW);
+
+        long duracion = pulseIn(echoPin, HIGH);
+        long distancia = duracion * 0.034 / 2;
+        return distancia;
 }
