@@ -8,7 +8,7 @@
 MPU6050 sensor;
 
 // Valores RAW (sin procesar) del acelerometro y giroscopio en los ejes x,y,z
-int ax, ay, az;
+// int ax, ay, az;
 int gx, gy, gz;
 
 void setup() {
@@ -22,17 +22,17 @@ void setup() {
 
 void loop() {
   // Leer las aceleraciones y velocidades angulares
-  sensor.getAcceleration(&ax, &ay, &az);
+  //sensor.getAcceleration(&ax, &ay, &az);
   sensor.getRotation(&gx, &gy, &gz);
 
   //Mostrar las lecturas separadas por un [tab]
-  Serial.print("a[x y z] g[x y z]:\t");
+  Serial.print("a[x y z]:\t"); /*g[x y z]*/
   Serial.print(ax); Serial.print("\t");
   Serial.print(ay); Serial.print("\t");
   Serial.print(az); Serial.print("\t");
-  Serial.print(gx); Serial.print("\t");
-  Serial.print(gy); Serial.print("\t");
-  Serial.println(gz);
+  //Serial.print(gx); Serial.print("\t");
+  //Serial.print(gy); Serial.print("\t");
+  //Serial.println(gz);
 
   delay(500);
 }

@@ -1,3 +1,4 @@
+// Este codigo nomas es de visualizacion, no tiene alguna utilidad extra
 
 const int ENC_A = 6;
 const int ENC_B = 5;

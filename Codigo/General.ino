@@ -106,6 +106,7 @@ void setup() {
     pinMode(buzzer, OUTPUT);
     
     // Motores con encoders
+    
     // Encoder Superior Izquierdo
     pinMode(encoderSuperiorIzquierdo_A, INPUT);
     pinMode(encoderSuperiorIzquierdo_B, INPUT);
@@ -135,7 +136,6 @@ void setup() {
 }
 
 void loop() {
-
     long distanceFrontal = distanciaUltrasonico(ultrasonicoFrontalTrig, ultrasonicoFrontalEcho);
     long distanceDerecha = distanciaUltrasonico(ultrasonicoDerechaTrig, ultrasonicoDerechaEcho);
     long distanceIzquierda = distanciaUltrasonico(ultrasonicoIzquierdaTrig, ultrasonicoIzquierdaEcho);
@@ -149,7 +149,6 @@ void loop() {
     Serial.println(" cm");
 
     delay(500);
-
 
 }
 
