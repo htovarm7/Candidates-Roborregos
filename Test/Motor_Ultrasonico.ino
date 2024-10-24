@@ -48,47 +48,31 @@ void loop() {
   Serial.print("Frontal: ");
   Serial.print(distanciaFrontal);
   Serial.print(" cm, Derecha: ");
+
+  if(distanciaFrontal < 10){
+    detener();
+  }else{
+    avanzar();
+  }
 }
 
 void countPulse() {
   pulseCount++;
 }
 
-// Funcion para el motor
-void motor() {
-  Serial.println("Motor detenido");
-  digitalWrite(IN1, LOW); // Detener motor
-  digitalWrite(IN2, LOW);
-  analogWrite(ENA, 0);    // Sin velocidad
-  delay(2000);
+// Funciones de los motores
+void detener(){
+   Serial.println("Motor detenido");
+   digitalWrite(IN1, LOW);  // Detener motor
+   digitalWrite(IN2, LOW);
+   analogWrite(ENA, 0);     // Sin velocidad
+}
 
-// velocidad mínimo sin peso: 30
+void avanzar(){
   Serial.println("Motor a velocidad media");
   digitalWrite(IN1, HIGH); // Sentido del motor
   digitalWrite(IN2, LOW);
-  analogWrite(ENA, 30);   // Velocidad media (50%)
-  delay(2000);
-
-  // Serial.println("Motor a velocidad máxima");
-  // digitalWrite(IN1, HIGH); // Sentido del motor
-  // digitalWrite(IN2, LOW);
-  // analogWrite(ENA, 154);   // Velocidad máxima (100%)
-  // delay(4000);
-
-  // Serial.println("Motor detenido");
-  // digitalWrite(IN1, LOW); // Detener motor
-  // digitalWrite(IN2, LOW);
-  // analogWrite(ENA, 0);    // Sin velocidad
-  // delay(2000);
-  
-  /*
-  Cambio de dirección
-  Serial.println("Motor cambiando de dirección");
-  digitalWrite(IN1, LOW);  // Cambiar sentido del motor
-  digitalWrite(IN2, HIGH);
-  analogWrite(ENA, 60);   // Mantener velocidad máxima
-  delay(2000);
-  */
+  analogWrite(ENA, 150);   // Velocidad media (50%)
 }
 
 long distanciaUltrasonico(int trigPin, int echoPin) {
