@@ -219,7 +219,6 @@ void detener(){
     analogWrite(ENB_Izquierdo,0);
     analogWrite(ENA_Derecho,0);
     analogWrite(ENB_Derecho,0);
-
 }
 
 void encenderBuzzer(){
