@@ -71,3 +71,34 @@ void motor() {
 //  analogWrite(ENA, 60);   // Mantener velocidad máxima
 //  delay(2000);
 }
+
+// Ultrasonicos
+const int ultrasonicoFrontalEcho = 8;
+const int ultrasonicoFrontalTrig = 9;
+
+void setup(){
+    // Ultrasonico Frontal
+    pinMode(ultrasonicoFrontalEcho, INPUT);
+    pinMode(ultrasonicoFrontalTrig, OUTPUT);
+}
+
+void loop(){
+    long distanciaFrontal = distanciaUltrasonico(ultrasonicoFrontalTrig, ultrasonicoFrontalEcho);
+
+    // Distancia de los ultrasonicos
+    Serial.print("Frontal: ");
+    Serial.print(distanciaFrontal);
+    Serial.print(" cm, Derecha: ");
+}
+
+long distanciaUltrasonico(int trigPin, int echoPin) {
+        digitalWrite(trigPin, LOW);
+        delayMicroseconds(2);
+        digitalWrite(trigPin, HIGH);
+        delayMicroseconds(10);
+        digitalWrite(trigPin, LOW);
+
+        long duracion = pulseIn(echoPin, HIGH);
+        long distancia = duracion * 0.034 / 2;
+        return distancia;
+}
