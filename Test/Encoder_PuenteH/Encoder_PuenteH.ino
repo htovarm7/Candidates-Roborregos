@@ -44,21 +44,29 @@ void motor() {
   analogWrite(ENA, 0);    // Sin velocidad
   delay(2000);
 
+// velocidad mínimo sin peso: 30
   Serial.println("Motor a velocidad media");
   digitalWrite(IN1, HIGH); // Sentido del motor
   digitalWrite(IN2, LOW);
-  analogWrite(ENA, 129);   // Velocidad media (50%)
+  analogWrite(ENA, 30);   // Velocidad media (50%)
   delay(2000);
 
-  Serial.println("Motor a velocidad máxima");
-  digitalWrite(IN1, HIGH); // Sentido del motor
-  digitalWrite(IN2, LOW);
-  analogWrite(ENA, 255);   // Velocidad máxima (100%)
-  delay(2000);
+  // Serial.println("Motor a velocidad máxima");
+  // digitalWrite(IN1, HIGH); // Sentido del motor
+  // digitalWrite(IN2, LOW);
+  // analogWrite(ENA, 154);   // Velocidad máxima (100%)
+  // delay(4000);
 
-  Serial.println("Motor cambiando de dirección");
-  digitalWrite(IN1, LOW);  // Cambiar sentido del motor
-  digitalWrite(IN2, HIGH);
-  analogWrite(ENA, 255);   // Mantener velocidad máxima
-  delay(2000);
+  // Serial.println("Motor detenido");
+  // digitalWrite(IN1, LOW); // Detener motor
+  // digitalWrite(IN2, LOW);
+  // analogWrite(ENA, 0);    // Sin velocidad
+  // delay(2000);
+
+// Cambio de dirección
+//  Serial.println("Motor cambiando de dirección");
+//  digitalWrite(IN1, LOW);  // Cambiar sentido del motor
+//  digitalWrite(IN2, HIGH);
+//  analogWrite(ENA, 60);   // Mantener velocidad máxima
+//  delay(2000);
 }
