@@ -14,6 +14,7 @@ QTRSensorsAnalog qtrrc((unsigned char[]) {A0}, 1); // Un solo sensor
 unsigned int sensorValue; // Variable para almacenar el valor del sensor
 // Definir el umbral para detectar la línea
 const int umbral = 500;  // Ajustar cuando se calibre
+int giroActual = 0; // Contador para alternar giros
 
 
 void setup() {
@@ -44,6 +45,18 @@ void loop() {
   delay(100);
 }
 
+void buscarLinea() {
+  // Alternar entre giros a la izquierda y derecha según giroActual
+  if (giroActual % 2 == 0) {
+    // Gira hacia la derecha
+    girarDerecha();
+  } else {
+    // Gira hacia la izquierda
+    girarIzquierda();
+  }
+
+  giroActual++; // Aumentar el contador para alternar el siguiente giro
+}
 
 void calibrarSensor() {
   Serial.println("Calibrando el sensor de línea...");
