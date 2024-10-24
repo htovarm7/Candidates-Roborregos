@@ -1,5 +1,3 @@
-// Este codigo nomas es de visualizacion, no tiene alguna utilidad extra
-
 const int ENC_A = 6;
 const int ENC_B = 5;
 char op = '0';
@@ -7,7 +5,6 @@ char vel[] = {' ', ' ', ' '};
 const int IN1 = 2;
 const int IN2 = 3;
 const int ENA = 4;
-int v = 500;
 
 
 void setup() {

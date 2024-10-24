@@ -148,7 +148,7 @@ void loop() {
     Serial.print(" cm, Izquierda: ");
     Serial.print(distanciaIzquierda);
     Serial.println(" cm");
-5
+    
     while (distanciaFrontal == 5){
         adelante();
     }else{
@@ -177,9 +177,9 @@ void adelante(){
     digitalWrite(INB2_Derecho,HIGH);
 
     // Energia/potencia
-    analogWrite(ENA_Izquierdo,,500);
+    analogWrite(ENA_Izquierdo,500);
     analogWrite(ENB_Izquierdo,500);
-    analogWrite(ENA_Derecho,,500);
+    analogWrite(ENA_Derecho,500);
     analogWrite(ENB_Derecho,500);
 
 }
