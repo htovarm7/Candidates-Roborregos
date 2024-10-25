@@ -41,7 +41,6 @@ void loop() {
     Serial.println(rpm);
     pulseCount = 0;
   }
-  motor();
   long distanciaFrontal = distanciaUltrasonico(ultrasonicoFrontalTrig, ultrasonicoFrontalEcho);
     
   // Distancia de los ultrasonicos
@@ -72,7 +71,7 @@ void avanzar(){
   Serial.println("Motor a velocidad media");
   digitalWrite(IN1, HIGH); // Sentido del motor
   digitalWrite(IN2, LOW);
-  analogWrite(ENA, 150);   // Velocidad media (50%)
+  analogWrite(ENA, 80);   // Velocidad media (50%)
 }
 
 long distanciaUltrasonico(int trigPin, int echoPin) {
