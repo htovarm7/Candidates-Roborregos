@@ -143,27 +143,27 @@ void loop() {
     long distanciaDerecha = distanciaUltrasonico(ultrasonicoDerechaTrig, ultrasonicoDerechaEcho);
     long distanciaIzquierda = distanciaUltrasonico(ultrasonicoIzquierdaTrig, ultrasonicoIzquierdaEcho);
 
-    // Distancia de los ultrasonicos
+
     Serial.print("Frontal: ");
     Serial.print(distanciaFrontal);
     Serial.print(" cm, Derecha: ");
     Serial.print(distanciaDerecha);
     Serial.print(" cm, Izquierda: ");
     Serial.print(distanciaIzquierda);
-    Serial.println(" cm");
+    Serial.println(" cm");  
     
-    while (distanciaFrontal == 5){
+    // codigo de laberinto
+    /*
+    while (distanciaFrontal >= 10){
         adelante();
     }else{
-        if(distanciaDerecha == 5){
+        if(distanciaDerecha == 10){
             giroIzquierda();
-        }else if(distanciaDerecha && distanciaIzquierda && distanciaFrontal ){
-
+        }else if(distanciaDerecha <= 10 && distanciaIzquierda <= 10 && distanciaFrontal <= 10 ){
+            atras();
         }
     }
-
-
-    delay(500);
+    */
 }
 
 // Funciones del motor
