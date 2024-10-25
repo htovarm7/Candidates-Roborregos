@@ -1,4 +1,4 @@
-// Motor
+// Motor, la velocidad maxima es de 255 bits
 const int ENC_A = 6;
 const int ENC_B = 5;
 const int IN1 = 2;

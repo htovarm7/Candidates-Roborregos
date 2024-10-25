@@ -69,6 +69,9 @@ const int sensorLineaD3 = 45;
 const int sensorLineaD2 = 44;
 const int sensorLineaD1 = 43;
 
+
+// Los include de nuestras funciones
+
 void setup() {
   
     // Ultrasonico Frontal
@@ -163,28 +166,8 @@ void loop() {
     delay(500);
 }
 
+// Funciones del motor
 void adelante(){
-    // Giro de los motores lado izquierdo
-    digitalWrite(INA1_Izquierdo,HIGH); 
-    digitalWrite(INA2_Izquierdo,HIGH);
-    digitalWrite(INB1_Izquierdo,HIGH);
-    digitalWrite(INB2_Izquierdo,HIGH);
-
-    //Giro de los motores lado derecho
-    digitalWrite(INA1_Derecho,HIGH); 
-    digitalWrite(INA2_Derecho,HIGH);
-    digitalWrite(INB1_Derecho,HIGH);
-    digitalWrite(INB2_Derecho,HIGH);
-
-    // Energia/potencia
-    analogWrite(ENA_Izquierdo,500);
-    analogWrite(ENB_Izquierdo,500);
-    analogWrite(ENA_Derecho,500);
-    analogWrite(ENB_Derecho,500);
-
-}
-
-void atras(){
     // Giro de los motores lado izquierdo
     digitalWrite(INA1_Izquierdo,HIGH); 
     digitalWrite(INA2_Izquierdo,LOW);
@@ -198,20 +181,71 @@ void atras(){
     digitalWrite(INB2_Derecho,LOW);
 
     // Energia/potencia
-    analogWrite(ENA_Izquierdo,500);
-    analogWrite(ENB_Izquierdo,500);
-    analogWrite(ENA_Derecho,500);
-    analogWrite(ENB_Derecho,500);
+    analogWrite(ENA_Izquierdo,255);
+    analogWrite(ENB_Izquierdo,255);
+    analogWrite(ENA_Derecho,255);
+    analogWrite(ENB_Derecho,255);
+
+}
+
+void atras(){
+    // Giro de los motores lado izquierdo
+    digitalWrite(INA1_Izquierdo,LOW); 
+    digitalWrite(INA2_Izquierdo,HIGH);
+    digitalWrite(INB1_Izquierdo,LOW);
+    digitalWrite(INB2_Izquierdo,HIGH);
+
+    //Giro de los motores lado derecho
+    digitalWrite(INA1_Derecho,LOW); 
+    digitalWrite(INA2_Derecho,HIGH);
+    digitalWrite(INB1_Derecho,LOW);
+    digitalWrite(INB2_Derecho,HIGH);
+
+    // Energia/potencia
+    analogWrite(ENA_Izquierdo,255);
+    analogWrite(ENB_Izquierdo,255);
+    analogWrite(ENA_Derecho,255);
+    analogWrite(ENB_Derecho,255);
 
 }
 
 void giroDerecha(){
+    // Giro de los motores lado izquierdo
+    digitalWrite(INA1_Izquierdo,HIGH); 
+    digitalWrite(INA2_Izquierdo,LOW);
+    digitalWrite(INB1_Izquierdo,HIGH);
+    digitalWrite(INB2_Izquierdo,LOW);
 
+    //Giro de los motores lado derecho
+    digitalWrite(INA1_Derecho,HIGH); 
+    digitalWrite(INA2_Derecho,LOW);
+    digitalWrite(INB1_Derecho,HIGH);
+    digitalWrite(INB2_Derecho,LOW);
+
+    // Energia/potencia
+    analogWrite(ENA_Izquierdo,0);
+    analogWrite(ENB_Izquierdo,255);
+    analogWrite(ENA_Derecho,255);
+    analogWrite(ENB_Derecho,0);
 }
 
 void giroIzquierda(){
-    
+    digitalWrite(INA1_Izquierdo,HIGH); 
+    digitalWrite(INA2_Izquierdo,LOW);
+    digitalWrite(INB1_Izquierdo,HIGH);
+    digitalWrite(INB2_Izquierdo,LOW);
 
+    //Giro de los motores lado derecho
+    digitalWrite(INA1_Derecho,HIGH); 
+    digitalWrite(INA2_Derecho,LOW);
+    digitalWrite(INB1_Derecho,HIGH);
+    digitalWrite(INB2_Derecho,LOW);
+
+    // Energia/potencia
+    analogWrite(ENA_Izquierdo,255);
+    analogWrite(ENB_Izquierdo,0);
+    analogWrite(ENA_Derecho,0);
+    analogWrite(ENB_Derecho,255);
 }
 
 void detener(){
@@ -221,6 +255,7 @@ void detener(){
     analogWrite(ENB_Derecho,0);
 }
 
+// Funciones de los actuadores
 void encenderBuzzer(){
     // Pin 51
     digitalWrite(buzzer,HIGH);
@@ -232,6 +267,24 @@ void apagarBuzzer(){
     digitalWrite(buzzer,LOW);
 }
 
+void encenderRGB(){
+    // Hay que ver que colores van haber y crear un if de que lo que dio 
+    // el sensor de color pues colocar un color, son
+    // 4 cuadros rosas
+    // 4 cuadros morados
+    // 1 cuadro azul que es el inicio
+    // 1 cuadro rojo que es el cheeckpoint
+    // 1 cuadro verde que es el final
+    // 1 cuadro negro que no se debe tocar
+    // 5 cuadros amarrillos
+    if()
+    analogWrite(R,125);
+    analogWrite(G,125);
+    analogWrite(B,125);
+}
+
+
+// Funcion para la distancia del ultrasonico
 long distanciaUltrasonico(int trigPin, int echoPin) {
         digitalWrite(trigPin, LOW);
         delayMicroseconds(2);
