@@ -24,7 +24,7 @@ set<pair<int, int>> visited;
 
 vector<pair<int, int>> d = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
 
-vector<vector<pair<int, int>>> AL(3, vector<pair<int, int>> (5));
+map<pair<int, int>, vector<pair<int, int>>> AL;
 
 void dfs(pair<int, int> node) {
     visited.insert(node);
@@ -40,7 +40,7 @@ void dfs(pair<int, int> node) {
             bfs({nx, ny});
         }
         else {
-            AL[node.first][node.second].push_back({nx, ny});
+            AL[node].push_back({nx, ny});
             dfs({nx, ny});
         }
     }
@@ -58,7 +58,10 @@ vector<pair<int, int>> bfs(pair<int, int> start) {
         q.pop();
 
         for (auto v : AL[u]) {
+            if (dist[v] != 0) continue;
 
+            dist[v] = dist[u] + 1;
+            q.push(v);
         }
     }
 
