@@ -46,25 +46,36 @@ void dfs(pair<int, int> node) {
     }
 }
 
-vector<pair<int, int>> bfs(pair<int, int> start) {
-    queue<pair<int, int>> q;
-    map<pair<int, int>, int> dist;
+map<pair<int, int>, pair<int, int>> bfs(pair<int, int> start) {
+    // Inicializar estructuras necesarias.
+    map<pair<int, int>, pair<int, int>> parents; // Guarda padres de cada nodo.
+    queue<pair<int, int>> q; // Cola de procesamiento de nodos.
+    map<pair<int, int>, int> dist; // Guarda las distancias a cada nodo.
     
+    // Inicializar las estructuras a partir del nodo inicial.
+    parents[start] = start; // Esto ayuda a reconocer el final, al ser el único que cumple parent[x] == x.
     q.push(start);
     dist[start] = 0;
 
+    // BFS
     while (!q.empty()) {
         pair<int, int> u = q.front();
         q.pop();
 
+        // Para cada uno de los nodos conectados a u.
         for (auto v : AL[u]) {
-            if (dist[v] != 0) continue;
+            // Revisión adicional de v == start porque no inicializamos en infinito, como de costumbre.
+            if (dist[v] != 0 || v == start) continue;
 
+            // Actualizar distancia más corta, añadir el nodo a la cola, y actualizar su padre.
             dist[v] = dist[u] + 1;
             q.push(v);
+            parents[v] = u;
         }
     }
 
+    // Retornar mapa de padres
+    return parents;
 }
 
 
