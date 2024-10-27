@@ -1,3 +1,5 @@
+// Aun no se como implementarlo
+
 #ifndef ULTRASONICO_H
 #define ULTRASONICO_H
 

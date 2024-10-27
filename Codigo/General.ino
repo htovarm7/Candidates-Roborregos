@@ -69,8 +69,13 @@ const int sensorLineaD3 = 45;
 const int sensorLineaD2 = 44;
 const int sensorLineaD1 = 43;
 
+// Servos
+const int servo1 = 35;
+const int servo2 = 34;
+
 
 // Los include de nuestras funciones
+#include "PID"
 
 void setup() {
   
