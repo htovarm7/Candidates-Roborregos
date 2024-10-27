@@ -71,6 +71,9 @@ const int sensorLineaD1 = 43;
 
 
 // Los include de nuestras funciones
+#include "ultrasonico.h"
+#include "PID.h"
+
 
 void setup() {
   
@@ -139,18 +142,10 @@ void setup() {
 }
 
 void loop() {
-    long distanciaFrontal = distanciaUltrasonico(ultrasonicoFrontalTrig, ultrasonicoFrontalEcho);
-    long distanciaDerecha = distanciaUltrasonico(ultrasonicoDerechaTrig, ultrasonicoDerechaEcho);
-    long distanciaIzquierda = distanciaUltrasonico(ultrasonicoIzquierdaTrig, ultrasonicoIzquierdaEcho);
+    Ultrasonico(ultrasonicoFrontalEcho, ultrasonicoFrontalTrig);
+    Ultrasonico(ultrasonicoDerechaEcho, ultrasonicoDerechaTrig);
+    Ultrasonico(ultrasonicoIzquierdaEcho, ultrasonicoIzquierdaTrig);
 
-
-    Serial.print("Frontal: ");
-    Serial.print(distanciaFrontal);
-    Serial.print(" cm, Derecha: ");
-    Serial.print(distanciaDerecha);
-    Serial.print(" cm, Izquierda: ");
-    Serial.print(distanciaIzquierda);
-    Serial.println(" cm");  
     
     // codigo de laberinto
     /*
@@ -165,6 +160,7 @@ void loop() {
     }
     */
 }
+
 
 // Funciones del motor
 void adelante(){
@@ -194,6 +190,47 @@ void atras(){
     digitalWrite(INA2_Izquierdo,HIGH);
     digitalWrite(INB1_Izquierdo,LOW);
     digitalWrite(INB2_Izquierdo,HIGH);
+
+    //Giro de los motores lado derecho
+    digitalWrite(INA1_Derecho,LOW); 
+    digitalWrite(INA2_Derecho,HIGH);
+    digitalWrite(INB1_Derecho,LOW);
+    digitalWrite(INB2_Derecho,HIGH);
+
+    // Energia/potencia
+    analogWrite(ENA_Izquierdo,255);
+    analogWrite(ENB_Izquierdo,255);
+    analogWrite(ENA_Derecho,255);
+    analogWrite(ENB_Derecho,255);
+
+}
+
+void giro180(){
+    // Giro de los motores lado izquierdo
+    digitalWrite(INA1_Izquierdo,HIGH); 
+    digitalWrite(INA2_Izquierdo,LOW);
+    digitalWrite(INB1_Izquierdo,HIGH);
+    digitalWrite(INB2_Izquierdo,LOW);
+
+    //Giro de los motores lado derecho
+    digitalWrite(INA1_Derecho,LOW); 
+    digitalWrite(INA2_Derecho,HIGH);
+    digitalWrite(INB1_Derecho,LOW);
+    digitalWrite(INB2_Derecho,HIGH);
+
+    // Energia/potencia
+    analogWrite(ENA_Izquierdo,255);
+    analogWrite(ENB_Izquierdo,255);
+    analogWrite(ENA_Derecho,255);
+    analogWrite(ENB_Derecho,255);
+}
+
+void irDercha(){
+    // Giro de los motores lado izquierdo
+    digitalWrite(INA1_Izquierdo,HIGH); 
+    digitalWrite(INA2_Izquierdo,LOW);
+    digitalWrite(INB1_Izquierdo,HIGH);
+    digitalWrite(INB2_Izquierdo,LOW);
 
     //Giro de los motores lado derecho
     digitalWrite(INA1_Derecho,LOW); 
@@ -255,6 +292,7 @@ void detener(){
     analogWrite(ENB_Derecho,0);
 }
 
+
 // Funciones de los actuadores
 void encenderBuzzer(){
     // Pin 51
@@ -284,15 +322,3 @@ void encenderRGB(){
 }
 
 
-// Funcion para la distancia del ultrasonico
-long distanciaUltrasonico(int trigPin, int echoPin) {
-        digitalWrite(trigPin, LOW);
-        delayMicroseconds(2);
-        digitalWrite(trigPin, HIGH);
-        delayMicroseconds(10);
-        digitalWrite(trigPin, LOW);
-
-        long duracion = pulseIn(echoPin, HIGH);
-        long distancia = duracion * 0.034 / 2;
-        return distancia;
-}
