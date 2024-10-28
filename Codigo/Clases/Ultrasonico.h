@@ -3,6 +3,8 @@
 #ifndef ULTRASONICO_H
 #define ULTRASONICO_H
 
+#include <Arduino.h>
+
 class Ultrasonico {
 public:
     Ultrasonico(int trigPin, int echoPin);
