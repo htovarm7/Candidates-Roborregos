@@ -107,6 +107,16 @@ int manhattanDistance(pair<int, int> cell1, pair<int, int> cell2) {
     return (abs(cell2.first - cell1.first) + abs(cell2.second - cell1.second));
 }
 
+// BONUS!
+string findMostSeenColor() {
+    // Iterate through the map of detected colors to find the most seen color in the maze.
+    for (auto i : detectedColors) {
+        if (i.second == 5) {
+            return i.first;
+        }
+    }
+}
+
 map<pair<int, int>, pair<int, int>> bfs(pair<int, int> start) {
     // Inicializar estructuras necesarias.
     map<pair<int, int>, pair<int, int>> parents; // Guarda padres de cada nodo.
@@ -139,38 +149,59 @@ map<pair<int, int>, pair<int, int>> bfs(pair<int, int> start) {
     return parents;
 }
 
+void moveToNewPosition(pair<int, int> newPosition, pair<int, int>& currentPosition) {
+    // Call bfs to get the path.
+    map<pair<int, int>, pair<int, int>> parents = bfs(newPosition);
+
+    while (parents[currentPosition] != currentPosition) {
+        // Physically move towards the parent.
+        // TODO: create function to do this.
+
+        // Virtual test:
+        currentPosition = parents[currentPosition];
+        cout << currentPosition.first << " " << currentPosition.second << endl;
+    }
+}
+
 void dfs(pair<int, int> node) {
     visited.insert(node);
     if (manhattanDistance(node, currentPosition) > 1) {
         cout << "Call BFS!" << endl;
-        map<pair<int, int>, pair<int, int>> parents = bfs(node);
+        moveToNewPosition(node, currentPosition);
 
-        while (parents[currentPosition] != currentPosition) {
-            // Physically move towards the parent.
-
-            // Virtual test:
-            currentPosition = parents[currentPosition];
-            cout << currentPosition.first << " " << currentPosition.second << endl;
-        }
         cout << "BFS done." << endl;
     }
     cout << node.first << " " << node.second << endl;
     currentPosition = node;
-    // Detect color in cell, show, and save.
-    // string detectedColor = ColorSensing::getColor(); // Maybe adjust to take multiple samples and keep most frequent
-    // LEDRGB::setColor(detectedColor);
 
-    // colorMap[node.first][node.second] = detectedColor;
-    // detectedColors[detectedColor]++;
+    // Detect color in cell, show, and save, only if it had not been set before.
+    // if (colorMap[node.first][node.second] == ""){
+        // string detectedColor = ColorSensing::getColor(); // Maybe adjust to take multiple samples and keep most frequent
+        // LEDRGB::setColor(detectedColor);
+
+        // colorMap[node.first][node.second] = detectedColor;
+        // detectedColors[detectedColor]++;
+    // }
 
     // Keep going only if it's not a black square.
-    // if (detectedColor == "black") {
+    // if (colorMap[node.first][node.second] == "black") {
     //     atras(15);
     //     return
     // }
     // else {
     //     adelante(15);
     // }
+
+    // If all cells are visited, move to checkpoint.
+    if (visited.size() == 15) {
+        moveToNewPosition({0, 0}, currentPosition);
+
+        // girar(90); // to face the checkpoint.
+        // avanzar(30);
+
+        string mostSeenColor = findMostSeenColor();
+        // LEDRBG::setColor(mostSeenColor);
+    }
 
     for (int i = 0; i < 4; i++) {
         int dx = directions[i].first;
@@ -211,9 +242,7 @@ int main() {
     setVerticalWalls();
     setHorizontalWalls();
 
-    // DFS to reach (0,0), then BFS to know the path to reach the ones that are missing...
-        // Counter cases? 
-    
+    // DFS to traverse the maze, using BFS to reach other cells.
     dfs(currentPosition);
 
     for (auto i : AL) {
@@ -223,14 +252,4 @@ int main() {
         }
         cout << "\n";
     }
-    // in it, call BFS to the missing ones to find the shortest distance.
-    // for (int i = 0; i < 3; i++) {
-    //     for (int j = 0; j < 4; j++) {
-    //         if (!visited.count({i, j})) {
-    //             vector<pair<int, int>> path = bfs({i, j});
-
-    //             // Follow path and update current position.
-    //         }
-    //     }
-    // }
 }
