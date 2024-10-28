@@ -7,7 +7,7 @@
 
 // Los include de nuestras funciones
 #include "PID.h"
-#include "ColorSensing.h"
+#include "Clases/ColorSensing.h"
 #include "Clases/Ultrasonico.h"
 
 // Ultrasonicos
@@ -142,10 +142,6 @@ bool checkWall(int direction, pair<int, int> currentNode) {
     
 }
 
-int manhattanDistance(pair<int, int> cell1, pair<int, int> cell2) {
-    return (abs(cell2.first - cell1.first) + abs(cell2.second - cell1.second));
-}
-
 // BONUS!
 string findMostSeenColor(map<string, int> detectedColors) {
     // Iterate through the map of detected colors to find the most seen color.
@@ -204,7 +200,7 @@ void moveToNewPosition(pair<int, int> newPosition, pair<int, int>& currentPositi
 
 void dfs(pair<int, int> node) {
     visited.insert(node);
-    if (manhattanDistance(node, currentPosition) > 1) {
+    if (AL[node].find(currentPosition) == AL[node].end()) {
         cout << "Call BFS!" << endl;
         moveToNewPosition(node, currentPosition);
 

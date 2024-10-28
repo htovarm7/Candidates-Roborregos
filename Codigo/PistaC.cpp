@@ -4,7 +4,7 @@
 #include <queue>
 #include <map>
 
-#include "Clases/Ultrasonico.h"
+// #include "Clases/Ultrasonico.h"
 //#include "ColorSensing.ino" // Is this even a thing...?
 
 using namespace std;
@@ -27,14 +27,14 @@ void setVerticalWalls(){
     verticalWalls[1][2] = 0;
     verticalWalls[1][3] = 0;
 
-    verticalWalls[2][0] = 1;
+    verticalWalls[2][0] = 0;
     verticalWalls[2][1] = 0;
-    verticalWalls[2][2] = 0;
+    verticalWalls[2][2] = 1;
     verticalWalls[2][3] = 0;
     // These values translate to the following situation:
     // ....
     // ....
-    // #...
+    // ..#.
 }
 
 vector<vector<bool>> horizontalWalls(2, vector<bool> (5, 0));
@@ -47,13 +47,13 @@ void setHorizontalWalls(){
     horizontalWalls[0][4] = 1;
 
     horizontalWalls[1][0] = 0;
-    horizontalWalls[1][1] = 1;
-    horizontalWalls[1][2] = 1;
-    horizontalWalls[1][3] = 0;
+    horizontalWalls[1][1] = 0;
+    horizontalWalls[1][2] = 0;
+    horizontalWalls[1][3] = 1;
     horizontalWalls[1][4] = 0;
     // These values translate to the following situation:
     // .####
-    // .##..
+    // ...#.
 }
 
 // Set that holds the currently visited cells.
@@ -103,10 +103,6 @@ bool checkWall(int direction, pair<int, int> currentNode) {
     
 }
 
-int manhattanDistance(pair<int, int> cell1, pair<int, int> cell2) {
-    return (abs(cell2.first - cell1.first) + abs(cell2.second - cell1.second));
-}
-
 // BONUS!
 string findMostSeenColor(map<string, int> detectedColors) {
     // Iterate through the map of detected colors to find the most seen color.
@@ -115,6 +111,8 @@ string findMostSeenColor(map<string, int> detectedColors) {
             return i.first;
         }
     }
+
+    return "Yellow";
 }
 
 map<pair<int, int>, pair<int, int>> bfs(pair<int, int> start) {
@@ -165,7 +163,7 @@ void moveToNewPosition(pair<int, int> newPosition, pair<int, int>& currentPositi
 
 void dfs(pair<int, int> node) {
     visited.insert(node);
-    if (manhattanDistance(node, currentPosition) > 1) {
+    if (AL[node].find(currentPosition) == AL[node].end()) {
         cout << "Call BFS!" << endl;
         moveToNewPosition(node, currentPosition);
 
