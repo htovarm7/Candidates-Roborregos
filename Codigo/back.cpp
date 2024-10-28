@@ -31,7 +31,7 @@ void setVerticalWalls(){
     verticalWalls[2][1] = 0;
     verticalWalls[2][2] = 0;
     verticalWalls[2][3] = 0;
-    // These values transfer to the following situation:
+    // These values translate to the following situation:
     // ....
     // ....
     // #...
@@ -51,7 +51,7 @@ void setHorizontalWalls(){
     horizontalWalls[1][2] = 1;
     horizontalWalls[1][3] = 0;
     horizontalWalls[1][4] = 0;
-    // These values transfer to the following situation:
+    // These values translate to the following situation:
     // .####
     // .##..
 }
@@ -67,6 +67,9 @@ map<pair<int, int>, set<pair<int, int>>> AL;
 
 // Map containing the ocurrences of each color.
 map<string, int> detectedColors;
+
+// Robot always starts at (1, 4).
+pair<int, int> currentPosition = {1, 4};
 
 bool checkWall(int direction, pair<int, int> currentNode) {
     // Values based on "directions" vector
@@ -100,8 +103,59 @@ bool checkWall(int direction, pair<int, int> currentNode) {
     
 }
 
+int manhattanDistance(pair<int, int> cell1, pair<int, int> cell2) {
+    return (abs(cell2.first - cell1.first) + abs(cell2.second - cell1.second));
+}
+
+map<pair<int, int>, pair<int, int>> bfs(pair<int, int> start) {
+    // Inicializar estructuras necesarias.
+    map<pair<int, int>, pair<int, int>> parents; // Guarda padres de cada nodo.
+    queue<pair<int, int>> q; // Cola de procesamiento de nodos.
+    map<pair<int, int>, int> dist; // Guarda las distancias a cada nodo.
+    
+    // Inicializar las estructuras a partir del nodo inicial.
+    parents[start] = start; // Esto ayuda a reconocer el final, al ser el único que cumple parent[x] == x.
+    q.push(start);
+    dist[start] = 0;
+
+    // BFS
+    while (!q.empty()) {
+        pair<int, int> u = q.front();
+        q.pop();
+
+        // Para cada uno de los nodos conectados a u.
+        for (auto v : AL[u]) {
+            // Revisión adicional de v == start porque no inicializamos en infinito, como de costumbre.
+            if (dist[v] != 0 || v == start) continue;
+
+            // Actualizar distancia más corta, añadir el nodo a la cola, y actualizar su padre.
+            dist[v] = dist[u] + 1;
+            q.push(v);
+            parents[v] = u;
+        }
+    }
+
+    // Retornar mapa de padres
+    return parents;
+}
+
 void dfs(pair<int, int> node) {
     visited.insert(node);
+    if (manhattanDistance(node, currentPosition) > 1) {
+        cout << "Call BFS!" << endl;
+        map<pair<int, int>, pair<int, int>> parents = bfs(node);
+
+        while (parents[currentPosition] != currentPosition) {
+            // Physically move towards the parent.
+
+            // Virtual test:
+            currentPosition = parents[currentPosition];
+            cout << currentPosition.first << " " << currentPosition.second << endl;
+        }
+        cout << "BFS done." << endl;
+    }
+    cout << node.first << " " << node.second << endl;
+    currentPosition = node;
     // Detect color in cell, show, and save.
     // string detectedColor = ColorSensing::getColor(); // Maybe adjust to take multiple samples and keep most frequent
     // LEDRGB::setColor(detectedColor);
@@ -152,39 +206,6 @@ void dfs(pair<int, int> node) {
     }
 }
 
-map<pair<int, int>, pair<int, int>> bfs(pair<int, int> start) {
-    // Inicializar estructuras necesarias.
-    map<pair<int, int>, pair<int, int>> parents; // Guarda padres de cada nodo.
-    queue<pair<int, int>> q; // Cola de procesamiento de nodos.
-    map<pair<int, int>, int> dist; // Guarda las distancias a cada nodo.
-    
-    // Inicializar las estructuras a partir del nodo inicial.
-    parents[start] = start; // Esto ayuda a reconocer el final, al ser el único que cumple parent[x] == x.
-    q.push(start);
-    dist[start] = 0;
-
-    // BFS
-    while (!q.empty()) {
-        pair<int, int> u = q.front();
-        q.pop();
-
-        // Para cada uno de los nodos conectados a u.
-        for (auto v : AL[u]) {
-            // Revisión adicional de v == start porque no inicializamos en infinito, como de costumbre.
-            if (dist[v] != 0 || v == start) continue;
-
-            // Actualizar distancia más corta, añadir el nodo a la cola, y actualizar su padre.
-            dist[v] = dist[u] + 1;
-            q.push(v);
-            parents[v] = u;
-        }
-    }
-
-    // Retornar mapa de padres
-    return parents;
-}
-
-
 int main() {
     // Testing:
     setVerticalWalls();
@@ -193,7 +214,7 @@ int main() {
     // DFS to reach (0,0), then BFS to know the path to reach the ones that are missing...
         // Counter cases? 
     
-    dfs({1, 4});
+    dfs(currentPosition);
 
     for (auto i : AL) {
         cout << "{" << i.first.first << ", " << i.first.second << "}: ";
