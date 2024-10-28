@@ -108,8 +108,8 @@ int manhattanDistance(pair<int, int> cell1, pair<int, int> cell2) {
 }
 
 // BONUS!
-string findMostSeenColor() {
-    // Iterate through the map of detected colors to find the most seen color in the maze.
+string findMostSeenColor(map<string, int> detectedColors) {
+    // Iterate through the map of detected colors to find the most seen color.
     for (auto i : detectedColors) {
         if (i.second == 5) {
             return i.first;
@@ -176,7 +176,14 @@ void dfs(pair<int, int> node) {
 
     // Detect color in cell, show, and save, only if it had not been set before.
     // if (colorMap[node.first][node.second] == ""){
-        // string detectedColor = ColorSensing::getColor(); // Maybe adjust to take multiple samples and keep most frequent
+        // Find color based on samples.
+        // map<string, int> detectedColorCount;
+        
+        // for (int i = 0; i < 10; i++) {
+        //     detectedColorCount[ColorSensing::getColor()]++;
+        //     delay(50);
+        // }
+        // string detectedColor = findMostSeenColor(detectedColorCount);
         // LEDRGB::setColor(detectedColor);
 
         // colorMap[node.first][node.second] = detectedColor;
@@ -199,7 +206,7 @@ void dfs(pair<int, int> node) {
         // girar(90); // to face the checkpoint.
         // avanzar(30);
 
-        string mostSeenColor = findMostSeenColor();
+        string mostSeenColor = findMostSeenColor(detectedColors);
         // LEDRBG::setColor(mostSeenColor);
     }
 
