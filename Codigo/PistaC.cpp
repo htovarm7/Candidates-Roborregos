@@ -118,34 +118,34 @@ string findMostSeenColor() {
 }
 
 map<pair<int, int>, pair<int, int>> bfs(pair<int, int> start) {
-    // Inicializar estructuras necesarias.
-    map<pair<int, int>, pair<int, int>> parents; // Guarda padres de cada nodo.
-    queue<pair<int, int>> q; // Cola de procesamiento de nodos.
-    map<pair<int, int>, int> dist; // Guarda las distancias a cada nodo.
+    // Declare needed data structures.
+    map<pair<int, int>, pair<int, int>> parents; // Stores parents for each node.
+    queue<pair<int, int>> q; // Node processing queue.
+    map<pair<int, int>, int> dist; // Stores distances to each node.
     
-    // Inicializar las estructuras a partir del nodo inicial.
-    parents[start] = start; // Esto ayuda a reconocer el final, al ser el único que cumple parent[x] == x.
+    // Initialize structures from start node.
+    parents[start] = start; // This helps to recognize the end of the path, by way of parent[x] == x.
     q.push(start);
     dist[start] = 0;
 
-    // BFS
+    // BFS logic <3
     while (!q.empty()) {
         pair<int, int> u = q.front();
         q.pop();
 
-        // Para cada uno de los nodos conectados a u.
+        // For every possible connection from node u.
         for (auto v : AL[u]) {
-            // Revisión adicional de v == start porque no inicializamos en infinito, como de costumbre.
+            // Additional check on v == start as we don't initialize all distances on infinity, as per usual in BFS.
             if (dist[v] != 0 || v == start) continue;
 
-            // Actualizar distancia más corta, añadir el nodo a la cola, y actualizar su padre.
-            dist[v] = dist[u] + 1;
-            q.push(v);
+            // Update shortest distance, add node to queue, and update its parent.
             parents[v] = u;
+            q.push(v);
+            dist[v] = dist[u] + 1;
         }
     }
 
-    // Retornar mapa de padres
+    // Return parent map.
     return parents;
 }
 
