@@ -3,45 +3,45 @@
 // Enconders de la parte superior
 
 // Encoder superior izquierdo
-const int ENC_A1 = 6;
-const int ENC_B1 = 5;
+const int ENC_SI_A = 6;
+const int ENC_SI_B = 5;
 
 // Enconder superior derecho
-const int ENC_A2 = 7;
-const int ENC_B2 = 8;
+const int ENC_SD_A = 7;
+const int ENC_SD_B = 8;
 
 // Encoders de la parte inferior
 // Enconder inferior izquierdo
-const int ENC_A3 = 9;
-const int ENC_B3 = 10;
+const int ENC_II_A = 9;
+const int ENC_II_B = 10;
 
 // Enconder inferior derecho
-const int ENC_A4 = 11;
-const int ENC_B4 = 12;
+const int ENC_ID_A = 11;
+const int ENC_ID_B = 12;
 
 // Motores superiores
 
 //Pines motor superior izquierdo
-const int IN1_M1 = 2;
-const int IN2_M1 = 4;
-const int ENA_M1 = 3;
+const int IN1_SI = 2;
+const int IN2_SI = 4;
+const int ENA_SI = 3;
 
 // Pines motor superior derecho
-const int IN1_M2 = 13;
-const int IN2_M2 = 14;
-const int ENA_M2 = 15;
+const int IN1_SD = 13;
+const int IN2_SD = 14;
+const int ENA_SD = 15;
 
 // Motores inferiores
 
 // Pines motor inferior izquierdo
-const int IN1_M3 = 16;
-const int IN2_M3 = 17;
-const int ENA_M3 = 18;
+const int IN1_II = 16;
+const int IN2_II = 17;
+const int ENA_II = 18;
 
 // Pines motor inferior derecho
-const int IN1_M4 = 19;
-const int IN2_M4 = 20;
-const int ENA_M4 = 21;
+const int IN1_ID = 19;
+const int IN2_ID = 20;
+const int ENA_ID = 21;
 
 // Para el encoder
 volatile int pulseCount1 = 0;
