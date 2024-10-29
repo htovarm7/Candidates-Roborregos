@@ -1,38 +1,55 @@
 // Pines para los encoders de cada motor
+
+// Enconders de la parte superior
+
+// Encoder superior izquierdo
 const int ENC_A1 = 6;
 const int ENC_B1 = 5;
+
+// Enconder superior derecho
 const int ENC_A2 = 7;
 const int ENC_B2 = 8;
+
+// Encoders de la parte inferior
+// Enconder inferior izquierdo
 const int ENC_A3 = 9;
 const int ENC_B3 = 10;
+
+// Enconder inferior derecho
 const int ENC_A4 = 11;
 const int ENC_B4 = 12;
 
-// Pines de control para el Motor 1
+// Motores superiores
+
+//Pines motor superior izquierdo
 const int IN1_M1 = 2;
 const int IN2_M1 = 4;
 const int ENA_M1 = 3;
 
-// Pines de control para el Motor 2
+// Pines motor superior derecho
 const int IN1_M2 = 13;
 const int IN2_M2 = 14;
 const int ENA_M2 = 15;
 
-// Pines de control para el Motor 3
+// Motores inferiores
+
+// Pines motor inferior izquierdo
 const int IN1_M3 = 16;
 const int IN2_M3 = 17;
 const int ENA_M3 = 18;
 
-// Pines de control para el Motor 4
+// Pines motor inferior derecho
 const int IN1_M4 = 19;
 const int IN2_M4 = 20;
 const int ENA_M4 = 21;
 
+// Para el encoder
 volatile int pulseCount1 = 0;
 volatile int pulseCount2 = 0;
 volatile int pulseCount3 = 0;
 volatile int pulseCount4 = 0;
 
+// Variables para el control de tiempo
 unsigned long lastTime = 0;
 const unsigned long interval = 1000; // Intervalo de tiempo en milisegundos
 
