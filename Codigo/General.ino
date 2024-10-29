@@ -9,6 +9,7 @@
 #include "PID.h"
 #include "Clases/ColorSensing.h"
 #include "Clases/Ultrasonico.h"
+#include "Clases/Motor.h"
 
 // Ultrasonicos
 const int ultrasonicoFrontalEcho = 37;
@@ -24,7 +25,7 @@ const int ultrasonicoIzquierdaTrig = 24;
 
 // Puente H (motores a la izquierda)
 // Motor superior izquierdo
-const int ENA_Izquierdo = 5;
+const int ENA_Izquierdo = 5; 
 const int INA1_Izquierdo = 28;
 const int INA2_Izquierdo = 27;
 
@@ -71,7 +72,6 @@ const int colorSDA = A4;
 const int colorSCL = A5; 
 ColorSensing colorSensor;
 
-
 // Sensores de línea
 const int sensorLineaD8 = 50;
 const int sensorLineaD7 = 49;
@@ -85,6 +85,13 @@ const int sensorLineaD1 = 43;
 // Servos
 const int servo1 = 35;
 const int servo2 = 34;
+
+// Orientación del robot; empieza al este.
+// 0: Norte
+// 1: Este
+// 2: Sur
+// 3: Oeste
+int orientacion = 1;
 
 // Setup pista C
 
@@ -110,32 +117,32 @@ map<string, int> detectedColors;
 // Robot always starts at (1, 4).
 pair<int, int> currentPosition = {1, 4};
 
-bool checkWall(int direction, pair<int, int> currentNode) {
-    // Values based on "directions" vector
+// Values based on "directions" vector
     enum Direction {
-        UP = 0,
-        LEFT = 1,
-        DOWN = 2,
-        RIGHT = 3
+        NORTH = 0,
+        EAST = 1,
+        SOUTH = 2,
+        WEST = 3
     };
 
+bool checkWall(int direction, pair<int, int> currentNode) {
     // Cartesian notation for readbility's sake.
     int x = currentNode.first;
     int y = currentNode.second;
 
-    if (direction == UP) {
+    if (direction == NORTH) {
         // Check horizontal wall at (x - 1, y).
         return horizontalWalls[x - 1][y];
     }
-    else if (direction == LEFT) {
+    else if (direction == EAST) {
         // Check vertical wall at (x, y - 1).
         return verticalWalls[x][y - 1];
     }
-    else if (direction == DOWN) {
+    else if (direction == SOUTH) {
         // Check horizontal wall at (x, y).
         return horizontalWalls[x][y];
     }
-    else { // if (direction == RIGHT)
+    else { // if (direction == WEST)
         // Check vertical wall at (x, y).
         return verticalWalls[x][y];
     }
@@ -184,6 +191,58 @@ map<pair<int, int>, pair<int, int>> bfs(pair<int, int> start) {
     return parents;
 }
 
+// Movements to perform.
+// 0: Forward
+// 1: Right
+// 2: Left
+vector<vector<int>> steps = {{0}, {1, 0}, {1, 1, 0}, {2, 0}};
+
+void handleMove(int movement) {
+    if (i == FORWARD) {
+        Motor::avanzar(100);
+    }
+    else if (i == RIGHT) {
+        MovimientosLocos::GiroDerecha();
+    }
+    else if (i == LEFT) {
+        MovimientosLocos::GiroIzquierda();
+    }
+}
+
+void doMove(pair<int, int> currentPosition, pair<int, int> nextPosition) {
+    int cx = currentPosition.first;
+    int cy = currentPosition.second;
+    int nx = nextPosition.first;
+    int ny = nextPosition.second;
+
+    enum Steps {
+        FORWARD = 0,
+        RIGHT = 1,
+        LEFT = 2
+    };
+
+    if (nx == cx - 1) {
+        for (auto i : steps[orientacion]) {
+            handleMove(i);
+        }
+    }
+    else if (ny == cy - 1) {
+        for (auto i : steps[(orientacion + 1) % 4]) {
+            handleMove(i);
+        }
+    }
+    else if (nx == cx + 1) {
+        for (auto i : steps[(orientacion + 2) % 4]) {
+            handleMove(i);
+        }
+    }
+    else if (ny == cy + 1) {
+        for (auto i : steps[(orientacion + 3) % 4]) {
+            handleMove(i);
+        }
+    }
+}
+
 void moveToNewPosition(pair<int, int> newPosition, pair<int, int>& currentPosition) {
     // Call bfs to get the path.
     map<pair<int, int>, pair<int, int>> parents = bfs(newPosition);
@@ -191,6 +250,7 @@ void moveToNewPosition(pair<int, int> newPosition, pair<int, int>& currentPositi
     while (parents[currentPosition] != currentPosition) {
         // Physically move towards the parent.
         // TODO: create function to do this.
+        doMove(currentPostion, parents[currentPosition]);
 
         // Virtual test:
         currentPosition = parents[currentPosition];
@@ -226,20 +286,28 @@ void dfs(pair<int, int> node) {
     // }
 
     // Keep going only if it's not a black square.
-    // if (colorMap[node.first][node.second] == "black") {
-    //     atras(15);
-    //     return
-    // }
-    // else {
-    //     adelante(15);
-    // }
+    if (colorMap[node.first][node.second] == "Black") {
+        MovimientosLocos::GiroIzquierda();
+        MovimientosLocos::GiroIzquierda();
+        delay(1000);
+        Motor::avanzar(100);
+        delay(1000);
+        Motor::detener();
+        return;
+    }
+    else {
+        Motor::avanzar(100);
+        delay(1000);
+        Motor::detener();
+    }
 
     // If all cells are visited, move to checkpoint.
     if (visited.size() == 15) {
         moveToNewPosition({0, 0}, currentPosition);
 
         // girar(90); // to face the checkpoint.
-        // avanzar(30);
+        Motor::avanzar(100);
+        delay(1000);
 
         string mostSeenColor = findMostSeenColor(detectedColors);
         // LEDRBG::setColor(mostSeenColor);
@@ -260,11 +328,10 @@ void dfs(pair<int, int> node) {
 
         // If there's a wall, skip.
         // Physical:
-        // if (Ultrasonico::medirDistancia() < 10) continue;
+        if (Ultrasonico::distancia() < 10) continue;
         // Virutal (test):
-        bool wall = checkWall(i, node);
-
-        if (wall) continue;
+        // bool wall = checkWall(i, node);
+        // if (wall) continue;
 
         // If there's no wall, update adjacency list. 
         AL[node].insert({nx, ny});
@@ -395,49 +462,6 @@ void loop() {
     if (pista == "C") {
         dfs(currentPosition);
     }
-
-}
-
-// Funciones del motor
-void adelante(){
-    // Giro de los motores lado izquierdo
-    digitalWrite(INA1_Izquierdo,HIGH); 
-    digitalWrite(INA2_Izquierdo,LOW);
-    digitalWrite(INB1_Izquierdo,HIGH);
-    digitalWrite(INB2_Izquierdo,LOW);
-
-    //Giro de los motores lado derecho
-    digitalWrite(INA1_Derecho,HIGH); 
-    digitalWrite(INA2_Derecho,LOW);
-    digitalWrite(INB1_Derecho,HIGH);
-    digitalWrite(INB2_Derecho,LOW);
-
-    // Energia/potencia
-    analogWrite(ENA_Izquierdo,255);
-    analogWrite(ENB_Izquierdo,255);
-    analogWrite(ENA_Derecho,255);
-    analogWrite(ENB_Derecho,255);
-
-}
-
-void atras(){
-    // Giro de los motores lado izquierdo
-    digitalWrite(INA1_Izquierdo,LOW); 
-    digitalWrite(INA2_Izquierdo,HIGH);
-    digitalWrite(INB1_Izquierdo,LOW);
-    digitalWrite(INB2_Izquierdo,HIGH);
-
-    //Giro de los motores lado derecho
-    digitalWrite(INA1_Derecho,LOW); 
-    digitalWrite(INA2_Derecho,HIGH);
-    digitalWrite(INB1_Derecho,LOW);
-    digitalWrite(INB2_Derecho,HIGH);
-
-    // Energia/potencia
-    analogWrite(ENA_Izquierdo,255);
-    analogWrite(ENB_Izquierdo,255);
-    analogWrite(ENA_Derecho,255);
-    analogWrite(ENB_Derecho,255);
 
 }
 
