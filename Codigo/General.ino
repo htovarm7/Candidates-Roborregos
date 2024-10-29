@@ -12,16 +12,16 @@
 #include "Motors.h"
 
 // Ultrasonicos
-const int ultrasonicoFrontalEcho = 37;
-const int ultrasonicoFrontalTrig = 38;
+const int frontEcho = 37;
+const int frontTrig = 38;
 
 // Ultrasonico Derecha
-const int ultrasonicoDerechaEcho = 52;
-const int ultrasonicoDerechaTrig = 53;
+const int rightEcho = 52;
+const int rightTrig = 53;
 
 // Ultrasonico Izquierda
-const int ultrasonicoIzquierdaEcho = 22;
-const int ultrasonicoIzquierdaTrig = 24;
+const int leftEcho = 22;
+const int leftTrig = 24;
 
 // Puente H (motores a la izquierda)
 // Motor superior izquierdo
@@ -343,28 +343,24 @@ void dfs(pair<int, int> node) {
     }
 }
 
-// Motor initialization.
+// Motor object instantiation.
 Motors myMotors(
     INA1L, INA2L, ENAL, 
     INB1L, INB2L, ENBL,
     INA1R, INA2R, ENAR, 
     INB1R, INB2R, ENBR);
 
+// Ultrasonic sensor object instantiation.
+Ultrasonic frontUltrasonic(frontEcho, frontTrig);
+Ultrasonic rightUltrasonic(rightEcho, rightTrig);
+Ultrasonic leftUltrasonic(leftEcho, leftTrig);
+
 void setup() {
-    // Motors.
-    Motors.init();
-
-    // Ultrasonico Frontal
-    pinMode(ultrasonicoFrontalEcho, INPUT);
-    pinMode(ultrasonicoFrontalTrig, OUTPUT);
-
-    // Ultrasonico Derecha
-    pinMode(ultrasonicoDerechaEcho, INPUT);
-    pinMode(ultrasonicoDerechaTrig, OUTPUT);
-    
-    // Ultrasonico Izquierda
-    pinMode(ultrasonicoIzquierdaEcho, INPUT);
-    pinMode(ultrasonicoIzquierdaTrig, OUTPUT);
+    // Motors and ultrasonics.
+    myMotors.init();
+    frontUltrasonic.init();
+    rightUltrasonic.init();
+    leftUltrasonic.init();
     
     // Actuadores
     pinMode(R, OUTPUT);
@@ -406,9 +402,9 @@ string pista = "";
 
 void loop() {
     
-    long distanciaFrontal = distanciaUltrasonico(ultrasonicoFrontalTrig, ultrasonicoFrontalEcho);
-    long distanciaDerecha = distanciaUltrasonico(ultrasonicoDerechaTrig, ultrasonicoDerechaEcho);
-    long distanciaIzquierda = distanciaUltrasonico(ultrasonicoIzquierdaTrig, ultrasonicoIzquierdaEcho);
+    long distanciaFrontal = distanciaUltrasonico(frontTrig, frontEcho);
+    long distanciaDerecha = distanciaUltrasonico(rightTrig, rightEcho);
+    long distanciaIzquierda = distanciaUltrasonico(leftTrig, leftEcho);
 
 
     Serial.print("Frontal: ");
