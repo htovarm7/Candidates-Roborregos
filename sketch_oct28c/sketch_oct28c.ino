@@ -93,15 +93,37 @@ void giroIzquierda(){
 }
 
 void detener(){
-    analogWrite(ENA_Izquierdo,0);
-    analogWrite(ENB_Izquierdo,0);
-    analogWrite(ENA_Derecho,0);
-    analogWrite(ENB_Derecho,0);
+    digitalWrite(INA1_Izquierdo, LOW); // Sentido del motor
+    digitalWrite(INA2_Izquierdo, LOW);
+    analogWrite(ENA_Izquierdo, 0);
+
+    digitalWrite(INB1_Izquierdo, LOW); // Sentido del motor
+    digitalWrite(INB2_Izquierdo, LOW);
+    analogWrite(ENA_Derecho, 0);
+
+    digitalWrite(INA1_Derecho, LOW); // Sentido del motor
+    digitalWrite(INA2_Derecho, LOW);
+    analogWrite(ENB_Izquierdo, 0);
+
+    digitalWrite(INB1_Derecho, LOW); // Sentido del motor
+    digitalWrite(INB2_Derecho, LOW);
+    analogWrite(ENB_Derecho, 0);
 }
 
 void avanzar(){
-    analogWrite(ENA_Izquierdo,100);
-    analogWrite(ENB_Izquierdo,100);
-    analogWrite(ENA_Derecho,100);
-    analogWrite(ENB_Derecho,100);
+    digitalWrite(INA1_Izquierdo, HIGH); // Sentido del motor
+    digitalWrite(INA2_Izquierdo, LOW);
+    analogWrite(ENA_Izquierdo, 140);
+    
+    digitalWrite(INB1_Izquierdo, HIGH); // Sentido del motor
+    digitalWrite(INB2_Izquierdo, LOW);
+    analogWrite(ENA_Derecho, 140);
+
+    digitalWrite(INA1_Derecho, HIGH); // Sentido del motor
+    digitalWrite(INA2_Derecho, LOW);
+    analogWrite(ENB_Izquierdo, 140);
+
+    digitalWrite(INB1_Derecho, HIGH); // Sentido del motor
+    digitalWrite(INB2_Derecho, LOW);
+    analogWrite(ENB_Derecho, 140);
 }

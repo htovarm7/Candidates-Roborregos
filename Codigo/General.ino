@@ -50,10 +50,7 @@ const int R = 9;
 const int B = 10;
 const int G = 11;
 
-// Buzzer
-const int buzzer = 51;
-
-// Motores con encoders
+// Enconders
 const int encoderSuperiorIzquierdo_A = 2;
 const int encoderSuperiorIzquierdo_B = 3;
 const int encoderSuperiorDerecho_A = 40;
@@ -380,10 +377,8 @@ void setup() {
     pinMode(R, OUTPUT);
     pinMode(B, OUTPUT);
     pinMode(G, OUTPUT);
-    pinMode(buzzer, OUTPUT);
     
-    // Motores con encoders
-
+    // Encoders
     // Encoder Superior Izquierdo
     pinMode(encoderSuperiorIzquierdo_A, INPUT);
     pinMode(encoderSuperiorIzquierdo_B, INPUT);
@@ -396,7 +391,7 @@ void setup() {
     pinMode(encoderInferiorIzquierdo_A, INPUT);
     pinMode(encoderInferiorIzquierdo_B, INPUT);
 
-        // Encoder Inferior Derecho
+    // Encoder Inferior Derecho
     pinMode(encoderInferiorDerecho_A, INPUT);
     pinMode(encoderInferiorDerecho_B, INPUT);
     
@@ -412,7 +407,6 @@ void setup() {
 
     // Sensor de Color
     colorSensor.begin();
-    
 }
 
 string pista = "";
