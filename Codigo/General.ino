@@ -1,17 +1,21 @@
-// Includes para Arduino
+/* INCLUDES */
+
+// Arduino includes
 #include <ArduinoSTL.h>
 #include <vector>
 #include <set>
 #include <queue>
 #include <map>
 
-// Los include de nuestras funciones
+// Own function includes
 #include "PID.h"
 #include <Wire.h>
 #include <Adafruit_TCS34725.h>
 #include <ColorConverterLib.h>
 #include "Ultrasonico.h"
 #include "Motors.h"
+
+/* CONSTANTS */
 
 // Ultrasonic sensors.
 const int frontEcho = 37;
@@ -82,14 +86,43 @@ const int sensorLineaD1 = 43;
 const int servo1 = 35;
 const int servo2 = 34;
 
-// Orientación del robot; empieza al este.
-// 0: Norte
-// 1: Este
-// 2: Sur
-// 3: Oeste
-int orientacion = 1;
+/* OBJECTS (SENSORS) */
 
-// Setup pista C
+// Motor object instantiation.
+Motors myMotors(
+    INA1L, INA2L, ENAL, 
+    INB1L, INB2L, ENBL,
+    INA1R, INA2R, ENAR, 
+    INB1R, INB2R, ENBR);
+
+// Ultrasonic sensor object instantiation.
+Ultrasonic frontUltrasonic(frontEcho, frontTrig);
+Ultrasonic rightUltrasonic(rightEcho, rightTrig);
+Ultrasonic leftUltrasonic(leftEcho, leftTrig);
+
+// Color sensor.
+Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_1X);
+
+/* LOGIC VARIABLES */
+
+// Keeps track of current track, based on starting color conditions.
+string track = "";
+
+// Vector that maps the four directions —up, left, down, right— respectively.
+vector<pair<int, int>> directions = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
+
+// Values based on "directions" vector.
+enum Direction {
+    NORTH = 0,
+    EAST = 1,
+    SOUTH = 2,
+    WEST = 3
+};
+
+// Robot's current orientation; starts east.
+int orientation = EAST;
+
+/// Track C setup.
 
 // Color mapping.
 vector<vector<string>> colorMap(3, vector<string> (5, ""));
@@ -101,9 +134,6 @@ vector<vector<bool>> horizontalWalls(2, vector<bool> (5, 0));
 // Set that holds the currently visited cells.
 set<pair<int, int>> visited;
 
-// Vector that maps the four directions —up, left, down, right— respectively.
-vector<pair<int, int>> directions = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
-
 // Adjacency list of the area.
 map<pair<int, int>, set<pair<int, int>>> AL;
 
@@ -113,46 +143,170 @@ map<string, int> detectedColors;
 // Robot always starts at (1, 4).
 pair<int, int> currentPosition = {1, 4};
 
-// Values based on "directions" vector
-    enum Direction {
-        NORTH = 0,
-        EAST = 1,
-        SOUTH = 2,
-        WEST = 3
-    };
+// Movements to perform for "steps" vector.
+enum Steps {
+    FORWARD = 0,
+    RIGHT = 1,
+    LEFT = 2
+};
 
-bool checkWall(int direction, pair<int, int> currentNode) {
-    // Cartesian notation for readbility's sake.
-    int x = currentNode.first;
-    int y = currentNode.second;
+vector<vector<int>> steps = {{FORWARD}, {RIGHT, FORWARD}, {RIGHT, RIGHT, FORWARD}, {LEFT, FORWARD}};
 
-    if (direction == NORTH) {
-        // Check horizontal wall at (x - 1, y).
-        return horizontalWalls[x - 1][y];
-    }
-    else if (direction == EAST) {
-        // Check vertical wall at (x, y - 1).
-        return verticalWalls[x][y - 1];
-    }
-    else if (direction == SOUTH) {
-        // Check horizontal wall at (x, y).
-        return horizontalWalls[x][y];
-    }
-    else { // if (direction == WEST)
-        // Check vertical wall at (x, y).
-        return verticalWalls[x][y];
-    }
-    
+/* CONTROL FUNCTIONS */
+
+void giroDerecha(){
+    // Giro de los motores lado izquierdo
+    digitalWrite(INA1_Izquierdo,HIGH); 
+    digitalWrite(INA2_Izquierdo,LOW);
+    digitalWrite(INB1_Izquierdo,HIGH);
+    digitalWrite(INB2_Izquierdo,LOW);
+
+    //Giro de los motores lado derecho
+    digitalWrite(INA1_Derecho,HIGH); 
+    digitalWrite(INA2_Derecho,LOW);
+    digitalWrite(INB1_Derecho,HIGH);
+    digitalWrite(INB2_Derecho,LOW);
+
+    // Energia/potencia
+    analogWrite(ENA_Izquierdo,0);
+    analogWrite(ENB_Izquierdo,255);
+    analogWrite(ENA_Derecho,255);
+    analogWrite(ENB_Derecho,0);
 }
 
-// BONUS!
-string findMostSeenColor(map<string, int> detectedColors) {
-    // Iterate through the map of detected colors to find the most seen color.
-    for (auto i : detectedColors) {
-        if (i.second == 5) {
-            return i.first;
+void giroIzquierda(){
+    digitalWrite(INA1_Izquierdo,HIGH); 
+    digitalWrite(INA2_Izquierdo,LOW);
+    digitalWrite(INB1_Izquierdo,HIGH);
+    digitalWrite(INB2_Izquierdo,LOW);
+
+    //Giro de los motores lado derecho
+    digitalWrite(INA1_Derecho,HIGH); 
+    digitalWrite(INA2_Derecho,LOW);
+    digitalWrite(INB1_Derecho,HIGH);
+    digitalWrite(INB2_Derecho,LOW);
+
+    // Energia/potencia
+    analogWrite(ENA_Izquierdo,255);
+    analogWrite(ENB_Izquierdo,0);
+    analogWrite(ENA_Derecho,0);
+    analogWrite(ENB_Derecho,255);
+}
+
+void stop(){
+    analogWrite(ENA_Izquierdo,0);
+    analogWrite(ENB_Izquierdo,0);
+    analogWrite(ENA_Derecho,0);
+    analogWrite(ENB_Derecho,0);
+}
+
+// Funciones de los actuadores
+void encenderBuzzer(){
+    // Pin 51
+    digitalWrite(buzzer,HIGH);
+
+}
+
+void apagarBuzzer(){
+    // Pin 51
+    digitalWrite(buzzer,LOW);
+}
+
+void encenderRGB(){
+    // Hay que ver que colores van haber y crear un if de que lo que dio 
+    // el sensor de color pues colocar un color, son
+    // 4 cuadros rosas
+    // 4 cuadros morados
+    // 1 cuadro azul que es el inicio
+    // 1 cuadro rojo que es el cheeckpoint
+    // 1 cuadro verde que es el final
+    // 1 cuadro negro que no se debe tocar
+    // 5 cuadros amarrillos
+    if()
+    analogWrite(R,125);
+    analogWrite(G,125);
+    analogWrite(B,125);
+}
+
+void handleMove(int movement) {
+    if (i == FORWARD) {
+        myMotors.forward(100);
+    }
+    else if (i == RIGHT) {
+        MovimientosLocos::GiroDerecha();
+    }
+    else if (i == LEFT) {
+        MovimientosLocos::GiroIzquierda();
+    }
+}
+
+void doMove(pair<int, int> currentPosition, pair<int, int> nextPosition) {
+    int cx = currentPosition.first;
+    int cy = currentPosition.second;
+    int nx = nextPosition.first;
+    int ny = nextPosition.second;
+
+    if (nx == cx - 1) {
+        for (auto i : steps[orientation]) {
+            handleMove(i);
         }
     }
+    else if (ny == cy - 1) {
+        for (auto i : steps[(orientation + 1) % 4]) {
+            handleMove(i);
+        }
+    }
+    else if (nx == cx + 1) {
+        for (auto i : steps[(orientation + 2) % 4]) {
+            handleMove(i);
+        }
+    }
+    else if (ny == cy + 1) {
+        for (auto i : steps[(orientation + 3) % 4]) {
+            handleMove(i);
+        }
+    }
+}
+
+/* LOGIC FUNCTIONS */
+
+/// Track C
+
+// bool checkWall(int direction, pair<int, int> currentNode) {
+//     // Cartesian notation for readbility's sake.
+//     int x = currentNode.first;
+//     int y = currentNode.second;
+
+//     if (direction == NORTH) {
+//         // Check horizontal wall at (x - 1, y).
+//         return horizontalWalls[x - 1][y];
+//     }
+//     else if (direction == EAST) {
+//         // Check vertical wall at (x, y - 1).
+//         return verticalWalls[x][y - 1];
+//     }
+//     else if (direction == SOUTH) {
+//         // Check horizontal wall at (x, y).
+//         return horizontalWalls[x][y];
+//     }
+//     else { // if (direction == WEST)
+//         // Check vertical wall at (x, y).
+//         return verticalWalls[x][y];
+//     }
+    
+// }
+
+// Finds the most frequent color in a map of colors.
+string findMostFrequentColor(map<string, int> colorsMap) {
+    // Iterate through the map of detected colors to find the most seen color.
+    pair<string, int> mostFrequent = {"Red", 0};
+    for (auto i : colorsMap) {
+        if (i.second > mostFrequent.second) {
+            mostFrequent = i;
+        }
+    }
+
+    return mostFrequent.first;
 }
 
 map<pair<int, int>, pair<int, int>> bfs(pair<int, int> start) {
@@ -166,7 +320,7 @@ map<pair<int, int>, pair<int, int>> bfs(pair<int, int> start) {
     q.push(start);
     dist[start] = 0;
 
-    // BFS logic <3
+    // BFS logic.
     while (!q.empty()) {
         pair<int, int> u = q.front();
         q.pop();
@@ -187,70 +341,14 @@ map<pair<int, int>, pair<int, int>> bfs(pair<int, int> start) {
     return parents;
 }
 
-// Movements to perform.
-// 0: Forward
-// 1: Right
-// 2: Left
-vector<vector<int>> steps = {{0}, {1, 0}, {1, 1, 0}, {2, 0}};
-
-void handleMove(int movement) {
-    if (i == FORWARD) {
-        Motor::avanzar(100);
-    }
-    else if (i == RIGHT) {
-        MovimientosLocos::GiroDerecha();
-    }
-    else if (i == LEFT) {
-        MovimientosLocos::GiroIzquierda();
-    }
-}
-
-void doMove(pair<int, int> currentPosition, pair<int, int> nextPosition) {
-    int cx = currentPosition.first;
-    int cy = currentPosition.second;
-    int nx = nextPosition.first;
-    int ny = nextPosition.second;
-
-    enum Steps {
-        FORWARD = 0,
-        RIGHT = 1,
-        LEFT = 2
-    };
-
-    if (nx == cx - 1) {
-        for (auto i : steps[orientacion]) {
-            handleMove(i);
-        }
-    }
-    else if (ny == cy - 1) {
-        for (auto i : steps[(orientacion + 1) % 4]) {
-            handleMove(i);
-        }
-    }
-    else if (nx == cx + 1) {
-        for (auto i : steps[(orientacion + 2) % 4]) {
-            handleMove(i);
-        }
-    }
-    else if (ny == cy + 1) {
-        for (auto i : steps[(orientacion + 3) % 4]) {
-            handleMove(i);
-        }
-    }
-}
-
 void moveToNewPosition(pair<int, int> newPosition, pair<int, int>& currentPosition) {
     // Call bfs to get the path.
     map<pair<int, int>, pair<int, int>> parents = bfs(newPosition);
 
     while (parents[currentPosition] != currentPosition) {
         // Physically move towards the parent.
-        // TODO: create function to do this.
         doMove(currentPostion, parents[currentPosition]);
-
-        // Virtual test:
         currentPosition = parents[currentPosition];
-        cout << currentPosition.first << " " << currentPosition.second << endl;
     }
 }
 
@@ -266,35 +364,36 @@ void dfs(pair<int, int> node) {
     currentPosition = node;
 
     // Detect color in cell, show, and save, only if it had not been set before.
-    // if (colorMap[node.first][node.second] == ""){
-        // Find color based on samples.
-        // map<string, int> detectedColorCount;
+    if (colorMap[node.first][node.second] == ""){
+        Find color based on samples.
+        map<string, int> detectedColorCount;
         
-        // for (int i = 0; i < 10; i++) {
-        //     detectedColorCount[ColorSensing::getColor()]++;
-        //     delay(50);
-        // }
-        // string detectedColor = findMostSeenColor(detectedColorCount);
-        // LEDRGB::setColor(detectedColor);
+        for (int i = 0; i < 10; i++) {
+            detectedColorCount[getColor(tcs)]++;
+            delay(50);
+        }
+        string detectedColor = findMostFrequentColor(detectedColorCount);
+        // LEDRBG: setColor(detectedColor);
 
-        // colorMap[node.first][node.second] = detectedColor;
-        // detectedColors[detectedColor]++;
-    // }
+        colorMap[node.first][node.second] = detectedColor;
+        detectedColors[detectedColor]++;
+    }
 
     // Keep going only if it's not a black square.
     if (colorMap[node.first][node.second] == "Black") {
-        MovimientosLocos::GiroIzquierda();
-        MovimientosLocos::GiroIzquierda();
+        // TODO: girar!
+        // MovimientosLocos::GiroIzquierda();
+        // MovimientosLocos::GiroIzquierda();
         delay(1000);
-        Motor::avanzar(100);
+        myMotors.forward(100);
         delay(1000);
-        Motor::detener();
+        myMotors.stop();
         return;
     }
     else {
-        Motor::avanzar(100);
+        myMotors.forward(100);
         delay(1000);
-        Motor::detener();
+        myMotors.stop();
     }
 
     // If all cells are visited, move to checkpoint.
@@ -302,10 +401,10 @@ void dfs(pair<int, int> node) {
         moveToNewPosition({0, 0}, currentPosition);
 
         // girar(90); // to face the checkpoint.
-        Motor::avanzar(100);
+        myMotors.forward(100);
         delay(1000);
 
-        string mostSeenColor = findMostSeenColor(detectedColors);
+        string mostSeenColor = findMostFrequentColor(detectedColors);
         // LEDRBG::setColor(mostSeenColor);
     }
 
@@ -324,10 +423,7 @@ void dfs(pair<int, int> node) {
 
         // If there's a wall, skip.
         // Physical:
-        if (Ultrasonico::distancia() < 10) continue;
-        // Virutal (test):
-        // bool wall = checkWall(i, node);
-        // if (wall) continue;
+        if (frontUltrasonic.getDistance() < 10) continue;
 
         // If there's no wall, update adjacency list. 
         AL[node].insert({nx, ny});
@@ -336,7 +432,10 @@ void dfs(pair<int, int> node) {
         // Call dfs with new node only if it's not been visited yet.
         if (!visited.count({nx, ny})) {
             // Move in that direction, then call dfs.
-            // adelante(15) o algo así
+            myMotors.forward(100);
+            delay(1000);
+            myMotors.stop();
+            
             dfs({nx, ny});
         }
     }
@@ -387,20 +486,7 @@ string getColor(Adafruit_TCS34725 tcs) {
     }
 }
 
-// Motor object instantiation.
-Motors myMotors(
-    INA1L, INA2L, ENAL, 
-    INB1L, INB2L, ENBL,
-    INA1R, INA2R, ENAR, 
-    INB1R, INB2R, ENBR);
-
-// Ultrasonic sensor object instantiation.
-Ultrasonic frontUltrasonic(frontEcho, frontTrig);
-Ultrasonic rightUltrasonic(rightEcho, rightTrig);
-Ultrasonic leftUltrasonic(leftEcho, leftTrig);
-
-// Color sensor.
-Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_1X);
+/* ARDUINO SETUP */
 
 void setup() {
     Serial.begin(9600);
@@ -447,7 +533,7 @@ void setup() {
     colorSensor.begin();
 }
 
-string pista = "";
+/* ARDUINO LOOP */
 
 void loop() {
     
@@ -477,109 +563,22 @@ void loop() {
     }
     */
     
-    if (pista == "") {
-        string color = ColorSensing.getColor();
+    if (track == "") {
+        string color = getColor(tcs);
 
         if (color == "Green") {
-            pista = "A";
+            track = "A";
         }
         else if (color == "Blue") {
-            pista = "C";
+            track = "C";
         }
         else {
-            pista = "B";
+            track = "B";
         }
     }
 
-    if (pista == "C") {
+    if (track == "C") {
         dfs(currentPosition);
     }
 
-}
-
-void giroDerecha(){
-    // Giro de los motores lado izquierdo
-    digitalWrite(INA1_Izquierdo,HIGH); 
-    digitalWrite(INA2_Izquierdo,LOW);
-    digitalWrite(INB1_Izquierdo,HIGH);
-    digitalWrite(INB2_Izquierdo,LOW);
-
-    //Giro de los motores lado derecho
-    digitalWrite(INA1_Derecho,HIGH); 
-    digitalWrite(INA2_Derecho,LOW);
-    digitalWrite(INB1_Derecho,HIGH);
-    digitalWrite(INB2_Derecho,LOW);
-
-    // Energia/potencia
-    analogWrite(ENA_Izquierdo,0);
-    analogWrite(ENB_Izquierdo,255);
-    analogWrite(ENA_Derecho,255);
-    analogWrite(ENB_Derecho,0);
-}
-
-void giroIzquierda(){
-    digitalWrite(INA1_Izquierdo,HIGH); 
-    digitalWrite(INA2_Izquierdo,LOW);
-    digitalWrite(INB1_Izquierdo,HIGH);
-    digitalWrite(INB2_Izquierdo,LOW);
-
-    //Giro de los motores lado derecho
-    digitalWrite(INA1_Derecho,HIGH); 
-    digitalWrite(INA2_Derecho,LOW);
-    digitalWrite(INB1_Derecho,HIGH);
-    digitalWrite(INB2_Derecho,LOW);
-
-    // Energia/potencia
-    analogWrite(ENA_Izquierdo,255);
-    analogWrite(ENB_Izquierdo,0);
-    analogWrite(ENA_Derecho,0);
-    analogWrite(ENB_Derecho,255);
-}
-
-void detener(){
-    analogWrite(ENA_Izquierdo,0);
-    analogWrite(ENB_Izquierdo,0);
-    analogWrite(ENA_Derecho,0);
-    analogWrite(ENB_Derecho,0);
-}
-
-// Funciones de los actuadores
-void encenderBuzzer(){
-    // Pin 51
-    digitalWrite(buzzer,HIGH);
-
-}
-
-void apagarBuzzer(){
-    // Pin 51
-    digitalWrite(buzzer,LOW);
-}
-
-void encenderRGB(){
-    // Hay que ver que colores van haber y crear un if de que lo que dio 
-    // el sensor de color pues colocar un color, son
-    // 4 cuadros rosas
-    // 4 cuadros morados
-    // 1 cuadro azul que es el inicio
-    // 1 cuadro rojo que es el cheeckpoint
-    // 1 cuadro verde que es el final
-    // 1 cuadro negro que no se debe tocar
-    // 5 cuadros amarrillos
-    if()
-    analogWrite(R,125);
-    analogWrite(G,125);
-    analogWrite(B,125);
-}
-
-// Funcion para la distancia del ultrasonico
-long distanciaUltrasonico(int trigPin, int echoPin) {
-        digitalWrite(trigPin, LOW);
-        delayMicroseconds(2);
-        digitalWrite(trigPin, HIGH);
-        delayMicroseconds(10);
-        digitalWrite(trigPin, LOW);
-
-        long duracion = pulseIn(echoPin, HIGH);
-        long distancia = duracion * 0.034 / 2;
-        return distancia;
 }
