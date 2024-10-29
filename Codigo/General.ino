@@ -9,7 +9,7 @@
 #include "PID.h"
 #include "Clases/ColorSensing.h"
 #include "Clases/Ultrasonico.h"
-#include "Clases/Motor.h"
+#include "Motors.h"
 
 // Ultrasonicos
 const int ultrasonicoFrontalEcho = 37;
@@ -25,25 +25,25 @@ const int ultrasonicoIzquierdaTrig = 24;
 
 // Puente H (motores a la izquierda)
 // Motor superior izquierdo
-const int ENA_Izquierdo = 5; 
-const int INA1_Izquierdo = 28;
-const int INA2_Izquierdo = 27;
+const int ENAL = 5; 
+const int INA1L = 28;
+const int INA2L = 27;
 
 // Motor inferior izquierdo
-const int ENB_Izquierdo = 6;
-const int INB1_Izquierdo = 26;
-const int INB2_Izquierdo = 25;
+const int ENBL = 6;
+const int INB1L = 26;
+const int INB2L = 25;
 
 // Puente H (motores a la derecha)
 // Motor superior derecho
-const int ENA_Derecho = 7;
-const int INA1_Derecho = 32;
-const int INA2_Derecho = 31;
+const int ENAR = 7;
+const int INA1R = 32;
+const int INA2R = 31;
 
 // Motor inferior derecho
-const int ENB_Derecho = 8;
-const int INB1_Derecho = 30;
-const int INB2_Derecho = 29;
+const int ENBR = 8;
+const int INB1R = 30;
+const int INB2R = 29;
 
 // LED RGB
 const int R = 9;
@@ -343,8 +343,17 @@ void dfs(pair<int, int> node) {
     }
 }
 
+// Motor initialization.
+Motors myMotors(
+    INA1L, INA2L, ENAL, 
+    INB1L, INB2L, ENBL,
+    INA1R, INA2R, ENAR, 
+    INB1R, INB2R, ENBR);
+
 void setup() {
-  
+    // Motors.
+    Motors.init();
+
     // Ultrasonico Frontal
     pinMode(ultrasonicoFrontalEcho, INPUT);
     pinMode(ultrasonicoFrontalTrig, OUTPUT);
@@ -356,22 +365,6 @@ void setup() {
     // Ultrasonico Izquierda
     pinMode(ultrasonicoIzquierdaEcho, INPUT);
     pinMode(ultrasonicoIzquierdaTrig, OUTPUT);
-    
-    // Motores Lado Izquierdo
-    pinMode(ENA_Izquierdo, OUTPUT);
-    pinMode(INA1_Izquierdo, OUTPUT);
-    pinMode(INA2_Izquierdo, OUTPUT);
-    pinMode(INB1_Izquierdo, OUTPUT);
-    pinMode(INB2_Izquierdo, OUTPUT);
-    pinMode(ENB_Izquierdo, OUTPUT);
-
-    // Motores Lado Derecho
-    pinMode(ENA_Derecho, OUTPUT);
-    pinMode(INA1_Derecho, OUTPUT);
-    pinMode(INA2_Derecho, OUTPUT);
-    pinMode(INB1_Derecho, OUTPUT);
-    pinMode(INB2_Derecho, OUTPUT);
-    pinMode(ENB_Derecho, OUTPUT);
     
     // Actuadores
     pinMode(R, OUTPUT);
@@ -440,7 +433,7 @@ void loop() {
     */
     
     if (pista == "") {
-        string color = ColorSensing::getColor();
+        string color = ColorSensing.getColor();
 
         if (color == "Green") {
             pista = "A";
