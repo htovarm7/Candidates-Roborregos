@@ -7,19 +7,19 @@
 
 // Los include de nuestras funciones
 #include "PID.h"
-#include "Clases/ColorSensing.h"
-#include "Clases/Ultrasonico.h"
+#include <Wire.h>
+#include <Adafruit_TCS34725.h>
+#include <ColorConverterLib.h>
+#include "Ultrasonico.h"
 #include "Motors.h"
 
-// Ultrasonicos
+// Ultrasonic sensors.
 const int frontEcho = 37;
 const int frontTrig = 38;
 
-// Ultrasonico Derecha
 const int rightEcho = 52;
 const int rightTrig = 53;
 
-// Ultrasonico Izquierda
 const int leftEcho = 22;
 const int leftTrig = 24;
 
@@ -47,8 +47,8 @@ const int INB2R = 29;
 
 // LED RGB
 const int R = 9;
-const int B = 10;
 const int G = 11;
+const int B = 10;
 
 // Enconders
 const int encoderSuperiorIzquierdo_A = 2;
@@ -66,8 +66,7 @@ const int giroSDA = A4;
 
 // Sensor de color
 const int colorSDA = A4; 
-const int colorSCL = A5; 
-ColorSensing colorSensor;
+const int colorSCL = A5;
 
 // Sensores de línea
 const int sensorLineaD8 = 50;
@@ -343,6 +342,51 @@ void dfs(pair<int, int> node) {
     }
 }
 
+// Function to get color.
+string getColor(Adafruit_TCS34725 tcs) {
+    uint16_t clear, red, green, blue;
+    tcs.setInterrupt(false);
+    delay(60); 
+    
+    // Capture color.
+    tcs.getRawData(&red, &green, &blue, &clear);
+    tcs.setInterrupt(true);
+
+    // Normalize RGB values.
+    uint32_t sum = clear;
+    float r = red / (float)sum;
+    float g = green / (float)sum;
+    float b = blue / (float)sum;
+    r *= 256; g *= 256; b *= 256;
+
+    // Convert to HSV.
+    double hue, saturation, value;
+    ColorConverter::RGBtoHSV(r, g, b, hue, saturation, value);
+
+    // Return color based on tested values.
+    if (hue > 30 && hue < 105) {
+        return "Yellow";
+    }
+    else if (hue > 222 && hue < 265) {
+        return "Purple";
+    }
+    else if (hue > 195 && hue < 222) {
+        return "Blue";
+    }
+    else if (hue > 300 && hue < 350) {
+        return "Pink";
+    }
+    else if (hue > 0 && hue < 25) {
+        return "Red";
+    }
+    else if (hue > 120 && hue < 160) {
+        return "Green";
+    }
+    else {
+        return "None of the above";
+    }
+}
+
 // Motor object instantiation.
 Motors myMotors(
     INA1L, INA2L, ENAL, 
@@ -355,13 +399,18 @@ Ultrasonic frontUltrasonic(frontEcho, frontTrig);
 Ultrasonic rightUltrasonic(rightEcho, rightTrig);
 Ultrasonic leftUltrasonic(leftEcho, leftTrig);
 
+// Color sensor.
+Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_1X);
+
 void setup() {
-    // Motors and ultrasonics.
+    Serial.begin(9600);
+
+    // Motors and ultrasonic sensors.
     myMotors.init();
     frontUltrasonic.init();
     rightUltrasonic.init();
     leftUltrasonic.init();
-    
+ 
     // Actuadores
     pinMode(R, OUTPUT);
     pinMode(B, OUTPUT);
