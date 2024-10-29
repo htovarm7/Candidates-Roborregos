@@ -1,7 +1,6 @@
 // Pines para los encoders de cada motor
 
 // Enconders de la parte superior
-
 // Encoder superior izquierdo
 const int ENC_SI_A = 6;
 const int ENC_SI_B = 5;
@@ -20,7 +19,6 @@ const int ENC_ID_A = 11;
 const int ENC_ID_B = 12;
 
 // Motores superiores
-
 //Pines motor superior izquierdo
 const int IN1_SI = 2;
 const int IN2_SI = 4;
@@ -32,7 +30,6 @@ const int IN2_SD = 14;
 const int ENA_SD = 15;
 
 // Motores inferiores
-
 // Pines motor inferior izquierdo
 const int IN1_II = 16;
 const int IN2_II = 17;
