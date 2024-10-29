@@ -1,3 +1,9 @@
+/* Notas
+Proporcional = presente
+Integral = pasado
+Derivativa = futuro
+*/
+
 #ifndef PID_H
 #define PID_H
 
