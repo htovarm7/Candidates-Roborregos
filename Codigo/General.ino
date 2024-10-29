@@ -435,7 +435,7 @@ void dfs(pair<int, int> node) {
             myMotors.forward(100);
             delay(1000);
             myMotors.stop();
-            
+
             dfs({nx, ny});
         }
     }
@@ -496,6 +496,9 @@ void setup() {
     frontUltrasonic.init();
     rightUltrasonic.init();
     leftUltrasonic.init();
+
+    // Ensure color sensor is on.
+    while (!tcs.begin()) delay(1000);
  
     // Actuadores
     pinMode(R, OUTPUT);
@@ -528,9 +531,6 @@ void setup() {
     pinMode(sensorLineaD3, INPUT);
     pinMode(sensorLineaD2, INPUT);
     pinMode(sensorLineaD1, INPUT);
-
-    // Sensor de Color
-    colorSensor.begin();
 }
 
 /* ARDUINO LOOP */
@@ -563,6 +563,7 @@ void loop() {
     }
     */
     
+    // Probar esto que no sé si jalaría, especialmente con lo del PID.
     if (track == "") {
         string color = getColor(tcs);
 
@@ -577,8 +578,8 @@ void loop() {
         }
     }
 
+    // Start track C logic.
     if (track == "C") {
         dfs(currentPosition);
     }
-
 }
