@@ -11,7 +11,8 @@ public:
            int INB1R, int INB2R, int ENBR);   // Bottom-right motor
 
     void forward(int speed);
-    void stop();  
+    void stop();
+    void init();
 
 private:
     // Pin variables.
