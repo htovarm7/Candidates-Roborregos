@@ -17,83 +17,89 @@
 
 /* CONSTANTS */
 
-// Ultrasonic sensors.
-const int frontEcho = 37;
-const int frontTrig = 38;
+// Pines ultrasonico Izquierdo
+const int leftEcho = 42;
+const int leftTrig = 43;
 
-const int rightEcho = 52;
-const int rightTrig = 53;
+// Pines ultrasonico Frontal
+const int frontEcho = 40;
+const int frontTrig = 41;
 
-const int leftEcho = 22;
-const int leftTrig = 24;
+// Pines ultrasonico Derecha
+const int rightEcho = 38;
+const int rightTrig = 39;
 
-// Puente H (motores a la izquierda)
-// Motor superior izquierdo
-const int ENAL = 5; 
-const int INA1L = 28;
-const int INA2L = 27;
+// Motores
+//  Pines motor superior izquierdo
+const int IN1_SI = 47;
+const int IN2_SI = 46;
+const int ENA_SI = 7;
+const int ENC_A_SI = 9;
+const int ENC_B_SI = 8;
 
-// Motor inferior izquierdo
-const int ENBL = 6;
-const int INB1L = 26;
-const int INB2L = 25;
+// Pines motor superior derecho
+const int IN1_SD = 48;
+const int IN2_SD = 49;
+const int ENB_SD = 6;
+const int ENC_A_SD = 3;
+const int ENC_B_SD = 2;
 
-// Puente H (motores a la derecha)
-// Motor superior derecho
-const int ENAR = 7;
-const int INA1R = 32;
-const int INA2R = 31;
+// Pines motor inferior izquierdo
+const int IN1_II = 52;
+const int IN2_II = 53;
+const int ENA_II = 5;
+const int ENC_A_II = 13;
+const int ENC_B_II = 12;
 
-// Motor inferior derecho
-const int ENBR = 8;
-const int INB1R = 30;
-const int INB2R = 29;
+// Pines motor inferior derecho
+const int IN1_ID = 50;
+const int IN2_ID = 49;
+const int ENB_ID = 4;
+const int ENC_A_ID = 11;
+const int ENC_B_ID = 10;
+
+const int pwmIzq = 255;
+const int pmwDer = 255;
+
+// Actuadores
+
+// Servomotores
+const int Servo_SI = 22;
+const int Servo_SD = 23;
+
+// Sensor de color
+const char SCL_COLOR = A0;
+const char SDA_COLOR = A1; 
+
+// Giroscopio
+const char SCL_GIRO = A2;
+const char SDA_GIRO = A3;
+
+// Sensor de linea
+const int sensorLineaD1 = ;
+const int sensorLineaD2 = ;
+const int sensorLineaD3 = ;
+const int sensorLineaD4 = ;
+const int sensorLineaD5 = ;
+const int sensorLineaD6 = ;
+const int sensorLineaD7 = ;
+const int sensorLineaD8 = ;
 
 // LED RGB
 const int R = 9;
 const int G = 11;
 const int B = 10;
 
-// Enconders
-const int encoderSuperiorIzquierdo_A = 2;
-const int encoderSuperiorIzquierdo_B = 3;
-const int encoderSuperiorDerecho_A = 40;
-const int encoderSuperiorDerecho_B = 41;
-const int encoderInferiorIzquierdo_A = 19;
-const int encoderInferiorIzquierdo_B = 18;
-const int encoderInferiorDerecho_A = 43;
-const int encoderInferiorDerecho_B = 42;
-
-// Giroscopio
-const int giroSCL = A5; 
-const int giroSDA = A4; 
-
-// Sensor de color
-const int colorSDA = A4; 
-const int colorSCL = A5;
-
-// Sensores de línea
-const int sensorLineaD8 = 50;
-const int sensorLineaD7 = 49;
-const int sensorLineaD6 = 48;
-const int sensorLineaD5 = 47;
-const int sensorLineaD4 = 46;
-const int sensorLineaD3 = 45;
-const int sensorLineaD2 = 44;
-const int sensorLineaD1 = 43;
-
-// Servos
-const int servo1 = 35;
-const int servo2 = 34;
-
+// Valores de constante
+const int zero = 0;
 /* OBJECTS (SENSORS) */
 
 // Motor object instantiation.
 Motors myMotors(
-    INA1L, INA2L, ENAL, 
-    INB1L, INB2L, ENBL,
-    INA1R, INA2R, ENAR, 
-    INB1R, INB2R, ENBR);
+    IN1_SI, IN2_SI, ENA_SI, 
+    IN1_II, IN2_II, ENA_II,
+    IN1_SD, IN2_SI, ENB_SD, 
+    IN1_ID, IN2_ID, ENB_ID);
 
 // Ultrasonic sensor object instantiation.
 Ultrasonic frontUltrasonic(frontEcho, frontTrig);
@@ -151,66 +157,6 @@ enum Steps {
 };
 
 vector<vector<int>> steps = {{FORWARD}, {RIGHT, FORWARD}, {RIGHT, RIGHT, FORWARD}, {LEFT, FORWARD}};
-
-/* CONTROL FUNCTIONS */
-
-void giroDerecha(){
-    // Giro de los motores lado izquierdo
-    digitalWrite(INA1_Izquierdo,HIGH); 
-    digitalWrite(INA2_Izquierdo,LOW);
-    digitalWrite(INB1_Izquierdo,HIGH);
-    digitalWrite(INB2_Izquierdo,LOW);
-
-    //Giro de los motores lado derecho
-    digitalWrite(INA1_Derecho,HIGH); 
-    digitalWrite(INA2_Derecho,LOW);
-    digitalWrite(INB1_Derecho,HIGH);
-    digitalWrite(INB2_Derecho,LOW);
-
-    // Energia/potencia
-    analogWrite(ENA_Izquierdo,0);
-    analogWrite(ENB_Izquierdo,255);
-    analogWrite(ENA_Derecho,255);
-    analogWrite(ENB_Derecho,0);
-}
-
-void giroIzquierda(){
-    digitalWrite(INA1_Izquierdo,HIGH); 
-    digitalWrite(INA2_Izquierdo,LOW);
-    digitalWrite(INB1_Izquierdo,HIGH);
-    digitalWrite(INB2_Izquierdo,LOW);
-
-    //Giro de los motores lado derecho
-    digitalWrite(INA1_Derecho,HIGH); 
-    digitalWrite(INA2_Derecho,LOW);
-    digitalWrite(INB1_Derecho,HIGH);
-    digitalWrite(INB2_Derecho,LOW);
-
-    // Energia/potencia
-    analogWrite(ENA_Izquierdo,255);
-    analogWrite(ENB_Izquierdo,0);
-    analogWrite(ENA_Derecho,0);
-    analogWrite(ENB_Derecho,255);
-}
-
-void stop(){
-    analogWrite(ENA_Izquierdo,0);
-    analogWrite(ENB_Izquierdo,0);
-    analogWrite(ENA_Derecho,0);
-    analogWrite(ENB_Derecho,0);
-}
-
-// Funciones de los actuadores
-void encenderBuzzer(){
-    // Pin 51
-    digitalWrite(buzzer,HIGH);
-
-}
-
-void apagarBuzzer(){
-    // Pin 51
-    digitalWrite(buzzer,LOW);
-}
 
 void encenderRGB(){
     // Hay que ver que colores van haber y crear un if de que lo que dio 
@@ -486,6 +432,155 @@ string getColor(Adafruit_TCS34725 tcs) {
     }
 }
 
+// Control de motores
+void adelante(){
+    
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrie(ENA_SI,pwmIzq);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,HIGH);
+    digitalWrite(IN2_II,LOW);
+    analogWrie(ENA_II,pwmIzq);
+    
+    // Motor superior derecho
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrie(ENB_SD,pmwDer);
+
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,HIGH);
+    digitalWrite(IN2_ID,LOW);
+    analogWrie(ENB_ID,pmwDer);
+    delay(2000);
+}
+
+void detener(){
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,LOW);
+    analogWrie(ENA_SI,zero);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,LOW);
+    analogWrie(ENA_II,zero);
+    
+    // Motor superior derecho
+    digitalWrite(IN1_SD,LOW);
+    digitalWrite(IN2_SD,LOW);
+    analogWrie(ENB_SD,zero);
+
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,LOW);
+    analogWrie(ENB_ID,zero);
+    delay(2000);
+}
+
+void giroDerecha(){
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrie(ENA_SI,pwmIzq);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,HIGH);
+    digitalWrite(IN2_II,HIGH);
+    analogWrie(ENA_II,pwmIzq);
+    
+    // Motor superior derecho
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrie(ENB_SD,zero);
+
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,HIGH);
+    digitalWrite(IN2_ID,LOW);
+    analogWrie(ENB_ID,zero);
+    
+    delay(2000);
+}
+
+void giroIzquierda(){
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrie(ENA_SI,zero);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,HIGH);
+    digitalWrite(IN2_II,HIGH);
+    analogWrie(ENA_II,zero);
+    
+    // Motor superior derecho
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrie(ENB_SD,pmwDer);
+
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,HIGH);
+    digitalWrite(IN2_ID,LOW);
+    analogWrie(ENB_ID,pmwDer);
+
+    delay(2000);
+}
+
+void reversa(){
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,HIGH);
+    analogWrie(ENA_SI,pwmIzq);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrie(ENA_II,pwmIzq);
+    
+    // Motor superior derecho
+    digitalWrite(IN1_SD,LOW);
+    digitalWrite(IN2_SD,HIGH);
+    analogWrie(ENB_SD,pmwDer);
+
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrie(ENB_ID,pmwDer);
+
+    delay(2000);
+}
+
+void movLateral(){
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,HIGH);
+    analogWrie(ENA_SI,pwmIzq);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,HIGH);
+    digitalWrite(IN2_II,LOW);
+    analogWrie(ENA_II,pwmIzq);
+    
+    // Motor superior derecho
+    digitalWrite(IN1_SD,LOW);
+    digitalWrite(IN2_SD,HIGH);
+    analogWrie(ENB_SD,pmwDer);
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,HIGH);
+    digitalWrite(IN2_ID,LOW);
+    analogWrie(ENB_ID,pmwDer);\
+    
+    delay(2000);
+}
+
 /* ARDUINO SETUP */
 
 void setup() {
@@ -507,20 +602,20 @@ void setup() {
     
     // Encoders
     // Encoder Superior Izquierdo
-    pinMode(encoderSuperiorIzquierdo_A, INPUT);
-    pinMode(encoderSuperiorIzquierdo_B, INPUT);
+    pinMode(ENC_A_SI, INPUT);
+    pinMode(ENC_B_SI, INPUT);
     
     // Encoder Superior Derecho
-    pinMode(encoderSuperiorDerecho_A, INPUT);
-    pinMode(encoderSuperiorDerecho_B, INPUT);
+    pinMode(ENC_A_SD, INPUT);
+    pinMode(ENC_B_SD, INPUT);
     
     // Encoder Inferior Izquierdo
-    pinMode(encoderInferiorIzquierdo_A, INPUT);
-    pinMode(encoderInferiorIzquierdo_B, INPUT);
+    pinMode(ENC_A_II, INPUT);
+    pinMode(ENC_B_II, INPUT);
 
     // Encoder Inferior Derecho
-    pinMode(encoderInferiorDerecho_A, INPUT);
-    pinMode(encoderInferiorDerecho_B, INPUT);
+    pinMode(ENC_A_ID, INPUT);
+    pinMode(ENC_B_ID, INPUT);
     
     // Sensor de Linea
     pinMode(sensorLineaD8, INPUT);
@@ -550,19 +645,6 @@ void loop() {
     Serial.print(distanciaIzquierda);
     Serial.println(" cm");  
     
-    // codigo de laberinto
-    /*
-    while (distanciaFrontal >= 10){
-        adelante();
-    }else{
-        if(distanciaDerecha == 10){
-            giroIzquierda();
-        }else if(distanciaDerecha <= 10 && distanciaIzquierda <= 10 && distanciaFrontal <= 10 ){
-            atras();
-        }
-    }
-    */
-    
     // Probar esto que no sé si jalaría, especialmente con lo del PID.
     if (track == "") {
         string color = getColor(tcs);
@@ -582,4 +664,12 @@ void loop() {
     if (track == "C") {
         dfs(currentPosition);
     }
+
+    adelante();
+    detener();
+    giroDerecha();
+    giroIzquierda();
+    reversa();
+    movLateral();
+
 }

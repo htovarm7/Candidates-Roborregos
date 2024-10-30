@@ -1,15 +1,15 @@
-// Pines ultrasonico Izquierdo
-const int ultrasonicoIzquierdoEcho = 42;
-const int ultrasonicoIzquierdoTrig = 43;
-// Pines ultrasonico Frontal
-const int ultrasonicoFrontalEcho = 40;
-const int ultrasonicoFrontalTrig = 41;
-// Pines ultrasonico Derecha
-const int ultrasonicoDerechaEcho = 38;
-const int ultrasonicoDerechaTrig = 39;
+  // Pines ultrasonico Izquierdo
+  const int ultrasonicoIzquierdoEcho = 42;
+  const int ultrasonicoIzquierdoTrig = 43;
+  // Pines ultrasonico Frontal
+  const int ultrasonicoFrontalEcho = 40;
+  const int ultrasonicoFrontalTrig = 41;
+  // Pines ultrasonico Derecha
+  const int ultrasonicoDerechaEcho = 38;
+  const int ultrasonicoDerechaTrig = 39;
 
-// Motores
-//  Pines motor superior izquierdo
+  //Motores
+  // Pines motor superior izquierdo
 const int IN1_SI = 47;
 const int IN2_SI = 46;
 const int ENA_SI = 7;
@@ -37,28 +37,11 @@ const int ENB_ID = 4;
 const int ENC_A_ID = 11;
 const int ENC_B_ID = 10;
 
-
 const int pwmIzq = 255;
 const int pmwDer = 255;
 
-// Actuadores
 
-// Servomotores
-Servo_SI = 22;
-Servo_SD = 23;
-
-// Sensor de color
-SCL_COLOR = A0;
-SDA_COLOR = A1; 
-
-// Giroscopio
-SCL_GIRO = A2;
-SDA_GIRO = A3;
-
-// Sensor de linea
-
-void setup()
-{
+  void setup() {
   // Ultrasonico Izquierdo
   pinMode(ultrasonicoIzquierdoEcho, INPUT);
   pinMode(ultrasonicoIzquierdoTrig, OUTPUT);
@@ -69,42 +52,41 @@ void setup()
   pinMode(ultrasonicoDerechaEcho, INPUT);
   pinMode(ultrasonicoDerechaTrig, OUTPUT);
   Serial.begin(9600);
-}
 
-void loop()
-{
+  }
+
+  void loop() {
   long distanciaIzquierdo = distanciaUltrasonico(ultrasonicoIzquierdoTrig, ultrasonicoIzquierdoEcho);
 
   long distanciaFrontal = distanciaUltrasonico(ultrasonicoFrontalTrig, ultrasonicoFrontalEcho);
-
+  
   long distanciaDerecha = distanciaUltrasonico(ultrasonicoDerechaTrig, ultrasonicoDerechaEcho);
 
   // Distancia de los ultrasonicos
-  // Izquierdo
+  //Izquierdo
   Serial.print("Izquierdo: ");
   Serial.print(distanciaIzquierdo);
   Serial.println(" cm");
-  // Frontal
+  //Frontal
   Serial.print("Frontal: ");
   Serial.print(distanciaFrontal);
   Serial.println(" cm");
-  // Derecha
+  //Derecha
   Serial.print("Derecha: ");
   Serial.print(distanciaDerecha);
   Serial.println(" cm");
 
-  delay(50);
-}
+  delay(1000);
+  }
 
-long distanciaUltrasonico(int trigPin, int echoPin)
-{
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
+  long distanciaUltrasonico(int trigPin, int echoPin) {
+        digitalWrite(trigPin, LOW);
+        delayMicroseconds(2);
+        digitalWrite(trigPin, HIGH);
+        delayMicroseconds(10);
+        digitalWrite(trigPin, LOW);
 
-  long duracion = pulseIn(echoPin, HIGH);
-  long distancia = duracion * 0.034 / 2;
-  return distancia;
+        long duracion = pulseIn(echoPin, HIGH);
+        long distancia = duracion * 0.034 / 2;
+        return distancia;
 }
