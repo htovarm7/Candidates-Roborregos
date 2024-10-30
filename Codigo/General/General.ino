@@ -10,9 +10,9 @@
 // Own function includes
 #include "PID.h"
 #include <Wire.h>
-#include <Adafruit_TCS34725.h>
-#include <ColorConverterLib.h>
-#include "Ultrasonico.h"
+#include "Adafruit_TCS34725.h"
+#include "ColorConverterLib.h"
+#include "Ultrasonic.h"
 #include "Motors.h"
 
 /* CONSTANTS */
@@ -64,13 +64,13 @@ const int encoderInferiorIzquierdo_B = 18;
 const int encoderInferiorDerecho_A = 43;
 const int encoderInferiorDerecho_B = 42;
 
-// Giroscopio
-const int giroSCL = A5; 
-const int giroSDA = A4; 
+// Giroscopio PLACEHOLDER
+const int giroSCL = 1; 
+const int giroSDA = 2; 
 
-// Sensor de color
-const int colorSDA = A4; 
-const int colorSCL = A5;
+// Sensor de color PLACEHOLDER
+const int colorSDA = 4; 
+const int colorSCL = 5;
 
 // Sensores de línea
 const int sensorLineaD8 = 50;
@@ -106,12 +106,12 @@ Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS3472
 /* LOGIC VARIABLES */
 
 // Keeps track of current track, based on starting color conditions.
-string track = "";
+std::string track = "";
 
-// Vector that maps the four directions —up, left, down, right— respectively.
-vector<pair<int, int>> directions = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
+// std::Vector that std::maps the four directions —up, left, down, right— respectively.
+std::vector<std::pair<int, int>> directions = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
 
-// Values based on "directions" vector.
+// Values based on "directions" std::vector.
 enum Direction {
     NORTH = 0,
     EAST = 1,
@@ -125,91 +125,79 @@ int orientation = EAST;
 /// Track C setup.
 
 // Color mapping.
-vector<vector<string>> colorMap(3, vector<string> (5, ""));
+std::vector<std::vector<std::string>> colorMap(3, std::vector<std::string> (5, ""));
 
 // Walls
-vector<vector<bool>> verticalWalls(3, vector<bool> (4, 0));
-vector<vector<bool>> horizontalWalls(2, vector<bool> (5, 0));
+std::vector<std::vector<bool>> verticalWalls(3, std::vector<bool> (4, 0));
+std::vector<std::vector<bool>> horizontalWalls(2, std::vector<bool> (5, 0));
 
-// Set that holds the currently visited cells.
-set<pair<int, int>> visited;
+// std::Set that holds the currently visited cells.
+std::set<std::pair<int, int>> visited;
 
 // Adjacency list of the area.
-map<pair<int, int>, set<pair<int, int>>> AL;
+std::map<std::pair<int, int>, std::set<std::pair<int, int>>> AL;
 
-// Map containing the ocurrences of each color.
-map<string, int> detectedColors;
+// std::Map containing the ocurrences of each color.
+std::map<std::string, int> detectedColors;
 
 // Robot always starts at (1, 4).
-pair<int, int> currentPosition = {1, 4};
+std::pair<int, int> currentPosition = {1, 4};
 
-// Movements to perform for "steps" vector.
+// Movements to perform for "steps" std::vector.
 enum Steps {
     FORWARD = 0,
     RIGHT = 1,
     LEFT = 2
 };
 
-vector<vector<int>> steps = {{FORWARD}, {RIGHT, FORWARD}, {RIGHT, RIGHT, FORWARD}, {LEFT, FORWARD}};
+std::vector<std::vector<int>> steps = {{FORWARD}, {RIGHT, FORWARD}, {RIGHT, RIGHT, FORWARD}, {LEFT, FORWARD}};
 
 /* CONTROL FUNCTIONS */
 
 void giroDerecha(){
     // Giro de los motores lado izquierdo
-    digitalWrite(INA1_Izquierdo,HIGH); 
-    digitalWrite(INA2_Izquierdo,LOW);
-    digitalWrite(INB1_Izquierdo,HIGH);
-    digitalWrite(INB2_Izquierdo,LOW);
+    digitalWrite(INA1L,HIGH); 
+    digitalWrite(INA2L,LOW);
+    digitalWrite(INB1L,HIGH);
+    digitalWrite(INB2L,LOW);
 
     //Giro de los motores lado derecho
-    digitalWrite(INA1_Derecho,HIGH); 
-    digitalWrite(INA2_Derecho,LOW);
-    digitalWrite(INB1_Derecho,HIGH);
-    digitalWrite(INB2_Derecho,LOW);
+    digitalWrite(INA1R,HIGH); 
+    digitalWrite(INA2R,LOW);
+    digitalWrite(INB1R,HIGH);
+    digitalWrite(INB2R,LOW);
 
     // Energia/potencia
-    analogWrite(ENA_Izquierdo,0);
-    analogWrite(ENB_Izquierdo,255);
-    analogWrite(ENA_Derecho,255);
-    analogWrite(ENB_Derecho,0);
+    analogWrite(ENAL,0);
+    analogWrite(ENBL,255);
+    analogWrite(ENAR,255);
+    analogWrite(ENBR,0);
 }
 
 void giroIzquierda(){
-    digitalWrite(INA1_Izquierdo,HIGH); 
-    digitalWrite(INA2_Izquierdo,LOW);
-    digitalWrite(INB1_Izquierdo,HIGH);
-    digitalWrite(INB2_Izquierdo,LOW);
+    digitalWrite(INA1L,HIGH); 
+    digitalWrite(INA2L,LOW);
+    digitalWrite(INB1L,HIGH);
+    digitalWrite(INB2L,LOW);
 
     //Giro de los motores lado derecho
-    digitalWrite(INA1_Derecho,HIGH); 
-    digitalWrite(INA2_Derecho,LOW);
-    digitalWrite(INB1_Derecho,HIGH);
-    digitalWrite(INB2_Derecho,LOW);
+    digitalWrite(INA1R,HIGH); 
+    digitalWrite(INA2R,LOW);
+    digitalWrite(INB1R,HIGH);
+    digitalWrite(INB2R,LOW);
 
     // Energia/potencia
-    analogWrite(ENA_Izquierdo,255);
-    analogWrite(ENB_Izquierdo,0);
-    analogWrite(ENA_Derecho,0);
-    analogWrite(ENB_Derecho,255);
+    analogWrite(ENAL,255);
+    analogWrite(ENBL,0);
+    analogWrite(ENAR,0);
+    analogWrite(ENBR,255);
 }
 
 void stop(){
-    analogWrite(ENA_Izquierdo,0);
-    analogWrite(ENB_Izquierdo,0);
-    analogWrite(ENA_Derecho,0);
-    analogWrite(ENB_Derecho,0);
-}
-
-// Funciones de los actuadores
-void encenderBuzzer(){
-    // Pin 51
-    digitalWrite(buzzer,HIGH);
-
-}
-
-void apagarBuzzer(){
-    // Pin 51
-    digitalWrite(buzzer,LOW);
+    analogWrite(ENAL,0);
+    analogWrite(ENBL,0);
+    analogWrite(ENAR,0);
+    analogWrite(ENBR,0);
 }
 
 void encenderRGB(){
@@ -222,25 +210,24 @@ void encenderRGB(){
     // 1 cuadro verde que es el final
     // 1 cuadro negro que no se debe tocar
     // 5 cuadros amarrillos
-    if()
     analogWrite(R,125);
     analogWrite(G,125);
     analogWrite(B,125);
 }
 
 void handleMove(int movement) {
-    if (i == FORWARD) {
+    if (movement == FORWARD) {
         myMotors.forward(100);
     }
-    else if (i == RIGHT) {
-        MovimientosLocos::GiroDerecha();
+    else if (movement == RIGHT) {
+        //MovimientosLocos::GiroDerecha();
     }
-    else if (i == LEFT) {
-        MovimientosLocos::GiroIzquierda();
+    else if (movement == LEFT) {
+        //MovimientosLocos::GiroIzquierda();
     }
 }
 
-void doMove(pair<int, int> currentPosition, pair<int, int> nextPosition) {
+void doMove(std::pair<int, int> currentPosition, std::pair<int, int> nextPosition) {
     int cx = currentPosition.first;
     int cy = currentPosition.second;
     int nx = nextPosition.first;
@@ -272,7 +259,7 @@ void doMove(pair<int, int> currentPosition, pair<int, int> nextPosition) {
 
 /// Track C
 
-// bool checkWall(int direction, pair<int, int> currentNode) {
+// bool checkWall(int direction, std::pair<int, int> currentNode) {
 //     // Cartesian notation for readbility's sake.
 //     int x = currentNode.first;
 //     int y = currentNode.second;
@@ -296,11 +283,11 @@ void doMove(pair<int, int> currentPosition, pair<int, int> nextPosition) {
     
 // }
 
-// Finds the most frequent color in a map of colors.
-string findMostFrequentColor(map<string, int> colorsMap) {
-    // Iterate through the map of detected colors to find the most seen color.
-    pair<string, int> mostFrequent = {"Red", 0};
-    for (auto i : colorsMap) {
+// Finds the most frequent color in a std::map of colors.
+std::string findMostFrequentColor(std::map<std::string, int> colorMap) {
+    // Iterate through the std::map of detected colors to find the most seen color.
+    std::pair<std::string, int> mostFrequent = {"Red", 0};
+    for (auto i : colorMap) {
         if (i.second > mostFrequent.second) {
             mostFrequent = i;
         }
@@ -309,11 +296,11 @@ string findMostFrequentColor(map<string, int> colorsMap) {
     return mostFrequent.first;
 }
 
-map<pair<int, int>, pair<int, int>> bfs(pair<int, int> start) {
+std::map<std::pair<int, int>, std::pair<int, int>> bfs(std::pair<int, int> start) {
     // Declare needed data structures.
-    map<pair<int, int>, pair<int, int>> parents; // Stores parents for each node.
-    queue<pair<int, int>> q; // Node processing queue.
-    map<pair<int, int>, int> dist; // Stores distances to each node.
+    std::map<std::pair<int, int>, std::pair<int, int>> parents; // Stores parents for each node.
+    std::queue<std::pair<int, int>> q; // Node processing std::queue.
+    std::map<std::pair<int, int>, int> dist; // Stores distances to each node.
     
     // Initialize structures from start node.
     parents[start] = start; // This helps to recognize the end of the path, by way of parent[x] == x.
@@ -322,7 +309,7 @@ map<pair<int, int>, pair<int, int>> bfs(pair<int, int> start) {
 
     // BFS logic.
     while (!q.empty()) {
-        pair<int, int> u = q.front();
+        std::pair<int, int> u = q.front();
         q.pop();
 
         // For every possible connection from node u.
@@ -330,50 +317,52 @@ map<pair<int, int>, pair<int, int>> bfs(pair<int, int> start) {
             // Additional check on v == start as we don't initialize all distances on infinity, as per usual in BFS.
             if (dist[v] != 0 || v == start) continue;
 
-            // Update shortest distance, add node to queue, and update its parent.
+            // Update shortest distance, add node to std::queue, and update its parent.
             parents[v] = u;
             q.push(v);
             dist[v] = dist[u] + 1;
         }
     }
 
-    // Return parent map.
+    // Return parent std::map.
     return parents;
 }
 
-void moveToNewPosition(pair<int, int> newPosition, pair<int, int>& currentPosition) {
+void moveToNewPosition(std::pair<int, int> newPosition, std::pair<int, int>& currentPosition) {
     // Call bfs to get the path.
-    map<pair<int, int>, pair<int, int>> parents = bfs(newPosition);
+    std::map<std::pair<int, int>, std::pair<int, int>> parents = bfs(newPosition);
 
     while (parents[currentPosition] != currentPosition) {
         // Physically move towards the parent.
-        doMove(currentPostion, parents[currentPosition]);
+        doMove(currentPosition, parents[currentPosition]);
         currentPosition = parents[currentPosition];
     }
 }
 
-void dfs(pair<int, int> node) {
+void dfs(std::pair<int, int> node) {
     visited.insert(node);
     if (AL[node].find(currentPosition) == AL[node].end()) {
-        cout << "Call BFS!" << endl;
+        Serial.println("Call BFS!");
         moveToNewPosition(node, currentPosition);
 
-        cout << "BFS done." << endl;
+        Serial.println("BFS Done.");
     }
-    cout << node.first << " " << node.second << endl;
+    Serial.print(node.first);
+    Serial.print(" ");
+    Serial.println(node.second);
     currentPosition = node;
 
-    // Detect color in cell, show, and save, only if it had not been set before.
+    // Detect color in cell, show, and save, only if it had not been std::set before.
     if (colorMap[node.first][node.second] == ""){
-        Find color based on samples.
-        map<string, int> detectedColorCount;
+        //Find color based on samples.
+        std::map<std::string, int> detectedColorCount;
         
         for (int i = 0; i < 10; i++) {
             detectedColorCount[getColor(tcs)]++;
             delay(50);
         }
-        string detectedColor = findMostFrequentColor(detectedColorCount);
-        // LEDRBG: setColor(detectedColor);
+        std::string detectedColor = findMostFrequentColor(detectedColorCount);
+        // LEDRBG: std::setColor(detectedColor);
 
         colorMap[node.first][node.second] = detectedColor;
         detectedColors[detectedColor]++;
@@ -404,8 +393,8 @@ void dfs(pair<int, int> node) {
         myMotors.forward(100);
         delay(1000);
 
-        string mostSeenColor = findMostFrequentColor(detectedColors);
-        // LEDRBG::setColor(mostSeenColor);
+        std::string mostSeenColor = findMostFrequentColor(detectedColors);
+        // LEDRBG::std::setColor(mostSeenColor);
     }
 
     for (int i = 0; i < 4; i++) {
@@ -442,7 +431,7 @@ void dfs(pair<int, int> node) {
 }
 
 // Function to get color.
-string getColor(Adafruit_TCS34725 tcs) {
+std::string getColor(Adafruit_TCS34725 tcs) {
     uint16_t clear, red, green, blue;
     tcs.setInterrupt(false);
     delay(60); 
@@ -460,7 +449,7 @@ string getColor(Adafruit_TCS34725 tcs) {
 
     // Convert to HSV.
     double hue, saturation, value;
-    ColorConverter::RGBtoHSV(r, g, b, hue, saturation, value);
+    ColorConverter::RgbToHsv(r, g, b, hue, saturation, value);
 
     // Return color based on tested values.
     if (hue > 30 && hue < 105) {
@@ -537,9 +526,9 @@ void setup() {
 
 void loop() {
     
-    long distanciaFrontal = distanciaUltrasonico(frontTrig, frontEcho);
-    long distanciaDerecha = distanciaUltrasonico(rightTrig, rightEcho);
-    long distanciaIzquierda = distanciaUltrasonico(leftTrig, leftEcho);
+    float distanciaFrontal = frontUltrasonic.getDistance();
+    float distanciaDerecha = rightUltrasonic.getDistance();
+    float distanciaIzquierda = leftUltrasonic.getDistance();
 
 
     Serial.print("Frontal: ");
@@ -565,7 +554,7 @@ void loop() {
     
     // Probar esto que no sé si jalaría, especialmente con lo del PID.
     if (track == "") {
-        string color = getColor(tcs);
+        std::string color = getColor(tcs);
 
         if (color == "Green") {
             track = "A";

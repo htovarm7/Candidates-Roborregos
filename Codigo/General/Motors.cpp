@@ -22,7 +22,7 @@ Motors::Motors(int INA1L, int INA2L, int ENAL,    // Top-left motor
     ENBR_ = ENBR;
 }
 
-void Motors:init() {
+void Motors::init() {
     // Initialization of pins.
     pinMode(INA1L_, OUTPUT);
     pinMode(INA2L_, OUTPUT);
@@ -64,6 +64,28 @@ void Motors::forward(int speed) {
 }
 
 void Motors::backward(){
+    
+    digitalWrite(INA1L_, LOW);
+    digitalWrite(INA2L_, LOW);
+    analogWrite(ENAL_, 0);
+
+
+    digitalWrite(INA1R_, LOW);
+    digitalWrite(INA2R_, LOW);
+    analogWrite(ENAR_, 0);
+
+
+    digitalWrite(INB1L_, LOW);
+    digitalWrite(INB2L_, LOW);
+    analogWrite(ENBL_, 0);
+
+
+    digitalWrite(INB1R_, LOW);
+    digitalWrite(INB2R_, LOW);
+    analogWrite(ENBR_, 0);
+}
+
+void Motors::stop(){
     
     digitalWrite(INA1L_, LOW);
     digitalWrite(INA2L_, LOW);
