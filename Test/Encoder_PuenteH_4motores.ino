@@ -1,26 +1,24 @@
 // Pines para los encoders de cada motor
 
 // Enconders de la parte superior
-
 // Encoder superior izquierdo
-const int ENC_SI_A = 6;
-const int ENC_SI_B = 5;
+const int ENC_SI_A = 2;
+const int ENC_SI_B = 3;
 
 // Enconder superior derecho
-const int ENC_SD_A = 7;
-const int ENC_SD_B = 8;
+const int ENC_SD_A = 39;
+const int ENC_SD_B = 40;
 
 // Encoders de la parte inferior
 // Enconder inferior izquierdo
-const int ENC_II_A = 6;
-const int ENC_II_B = 7;
+const int ENC_II_A = 19;
+const int ENC_II_B = 18;
 
 // Enconder inferior derecho
-const int ENC_ID_A = 12;
-const int ENC_ID_B = 13;
+const int ENC_ID_A = 42;
+const int ENC_ID_B = 41;
 
 // Motores superiores
-
 //Pines motor superior izquierdo
 const int IN1_SI = 2;
 const int IN2_SI = 4;
@@ -32,7 +30,6 @@ const int IN2_SD = 14;
 const int ENA_SD = 2;
 
 // Motores inferiores
-
 // Pines motor inferior izquierdo
 const int IN1_II = 52;
 const int IN2_II = 53;

@@ -17,7 +17,7 @@ void ColorSensing::begin() {
 }
 
 // Function to get color.
-String ColorSensing::getColor() {
+string ColorSensing::getColor(Adafruit_TCS34725 tcs) {
     uint16_t clear, red, green, blue;
     tcs.setInterrupt(false);
     delay(60); 
