@@ -1,3 +1,5 @@
+/*
+
 // Motor, la velocidad maxima es de 255 bits
 const int ENC_A = 6;
 const int ENC_B = 5;
@@ -85,3 +87,4 @@ long distanciaUltrasonico(int trigPin, int echoPin) {
         long distancia = duracion * 0.034 / 2;
         return distancia;
 }
+*/

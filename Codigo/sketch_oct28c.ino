@@ -110,20 +110,20 @@ void detener(){
     analogWrite(ENB_Derecho, 0);
 }
 
-void avanzar(int velocidad){
+void avanzar(){
     digitalWrite(INA1_Izquierdo, HIGH); // Sentido del motor
     digitalWrite(INA2_Izquierdo, LOW);
-    analogWrite(ENA_Izquierdo, velocidad);
+    analogWrite(ENA_Izquierdo, 140);
     
     digitalWrite(INB1_Izquierdo, HIGH); // Sentido del motor
     digitalWrite(INB2_Izquierdo, LOW);
-    analogWrite(ENA_Derecho, velocidad);
+    analogWrite(ENA_Derecho, 140);
 
     digitalWrite(INA1_Derecho, HIGH); // Sentido del motor
     digitalWrite(INA2_Derecho, LOW);
-    analogWrite(ENB_Izquierdo, velocidad);
+    analogWrite(ENB_Izquierdo, 140);
 
     digitalWrite(INB1_Derecho, HIGH); // Sentido del motor
     digitalWrite(INB2_Derecho, LOW);
-    analogWrite(ENB_Derecho, velocidad);
+    analogWrite(ENB_Derecho, 140);
 }
