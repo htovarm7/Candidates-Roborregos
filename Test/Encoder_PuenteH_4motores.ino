@@ -126,7 +126,6 @@ void countPulse4() { pulseCount4++; }
 // Función de control para los motores
 void motorControl(int motor, int velocidad) {
   int in1, in2, ena;
-  
   // Seleccionar los pines del motor correspondiente
   switch (motor) {
     case 1:

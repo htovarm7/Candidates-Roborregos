@@ -1,47 +1,85 @@
-// Ultrasonicos
-// Ultrasonico frontal
-// const int ultrasonicoFrontalEcho = 37;
-// const int ultrasonicoFrontalTrig = 38;
+  // Pines ultrasonico Izquierdo
+  const int ultrasonicoIzquierdoEcho = 42;
+  const int ultrasonicoIzquierdoTrig = 43;
+  // Pines ultrasonico Frontal
+  const int ultrasonicoFrontalEcho = 40;
+  const int ultrasonicoFrontalTrig = 41;
+  // Pines ultrasonico Derecha
+  const int ultrasonicoDerechaEcho = 38;
+  const int ultrasonicoDerechaTrig = 39;
 
-// Ultrasonico Derecha
-const int ultrasonicoDerechaEcho = 52;
-const int ultrasonicoDerechaTrig = 53;
+  //Motores
+  // Pines motor superior izquierdo
+const int IN1_SI = 47;
+const int IN2_SI = 46;
+const int ENA_SI = 7;
+const int ENC_A_SI = 9;
+const int ENC_B_SI = 8;
 
-// Ultrasonico Izquierda
-// const int ultrasonicoIzquierdaEcho = 22;
-// const int ultrasonicoIzquierdaTrig = 24;
+// Pines motor superior derecho
+const int IN1_SD = 48;
+const int IN2_SD = 49;
+const int ENB_SD = 6;
+const int ENC_A_SD = 3;
+const int ENC_B_SD = 2;
+
+// Pines motor inferior izquierdo
+const int IN1_II = 52;
+const int IN2_II = 53;
+const int ENA_II = 5;
+const int ENC_A_II = 13;
+const int ENC_B_II = 12;
+
+// Pines motor inferior derecho
+const int IN1_ID = 50;
+const int IN2_ID = 49;
+const int ENB_ID = 4;
+const int ENC_A_ID = 11;
+const int ENC_B_ID = 10;
+
+const int pwmIzq = 255;
+const int pmwDer = 255;
 
 
-void setup(){
-    // Ultrasonico Frontal
-    // pinMode(ultrasonicoFrontalEcho, INPUT);
-    // pinMode(ultrasonicoFrontalTrig, OUTPUT);
-
-    // Ultrasonico Derecha
+  void setup() {
+  // Ultrasonico Izquierdo
+  pinMode(ultrasonicoIzquierdoEcho, INPUT);
+  pinMode(ultrasonicoIzquierdoTrig, OUTPUT);
+  // Ultrasonico Frontal
+  pinMode(ultrasonicoFrontalEcho, INPUT);
+  pinMode(ultrasonicoFrontalTrig, OUTPUT);
+  // Ultrasonico Derecha
   pinMode(ultrasonicoDerechaEcho, INPUT);
   pinMode(ultrasonicoDerechaTrig, OUTPUT);
-    
-    // Ultrasonico Izquierda
-    // pinMode(ultrasonicoIzquierdaEcho, INPUT);
-    // pinMode(ultrasonicoIzquierdaTrig, OUTPUT);
-}
+  Serial.begin(9600);
 
-void loop(){
-    // long distanciaFrontal = distanciaUltrasonico(ultrasonicoFrontalTrig, ultrasonicoFrontalEcho);
-     long distanciaDerecha = distanciaUltrasonico(ultrasonicoDerechaTrig, ultrasonicoDerechaEcho);
-    //long distanciaIzquierda = distanciaUltrasonico(ultrasonicoIzquierdaTrig, ultrasonicoIzquierdaEcho);
+  }
 
-    // Distancia de los ultrasonicos
-    // Serial.print("Frontal: ");
-    // Serial.print(distanciaFrontal);
-    // Serial.print(" cm, Derecha: ");
-     Serial.print(distanciaDerecha);
-     Serial.print(" cm, Izquierda: ");
-    //Serial.print(distanciaIzquierda);
-    //Serial.println(" cm");
-}
+  void loop() {
+  long distanciaIzquierdo = distanciaUltrasonico(ultrasonicoIzquierdoTrig, ultrasonicoIzquierdoEcho);
 
-long distanciaUltrasonico(int trigPin, int echoPin) {
+  long distanciaFrontal = distanciaUltrasonico(ultrasonicoFrontalTrig, ultrasonicoFrontalEcho);
+  
+  long distanciaDerecha = distanciaUltrasonico(ultrasonicoDerechaTrig, ultrasonicoDerechaEcho);
+
+  // Distancia de los ultrasonicos
+  //Izquierdo
+  Serial.print("Izquierdo: ");
+  Serial.print(distanciaIzquierdo);
+  Serial.println(" cm");
+  //Frontal
+  Serial.print("Frontal: ");
+  Serial.print(distanciaFrontal);
+  Serial.println(" cm");
+  //Derecha
+  Serial.print("Derecha: ");
+  Serial.print(distanciaDerecha);
+  Serial.println(" cm");
+
+  delay(1000);
+  }
+
+  long distanciaUltrasonico(int trigPin, int echoPin) {
         digitalWrite(trigPin, LOW);
         delayMicroseconds(2);
         digitalWrite(trigPin, HIGH);
