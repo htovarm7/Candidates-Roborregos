@@ -1,3 +1,4 @@
+#include "Motors.h"
 /* CONSTANTS */
 
 // Motores
@@ -29,143 +30,113 @@ const int ENB_ID = 4;
 const int ENC_A_ID = 11;
 const int ENC_B_ID = 10;
 
-const int pwmIzq = 255;
-const int pmwDer = 255;
+const int pwmIzq = 250;
+const int pmwDer = 250;
 
+const int pwmAdelante = 255;
 // Valores de constante
 const int zero = 0;
-
+  
 /* OBJECTS (SENSORS) */
 
 // Motor object instantiation.
-Motors myMotors(
-    IN1_SI, IN2_SI, ENA_SI, 
-    IN1_II, IN2_II, ENA_II,
-    IN1_SD, IN2_SI, ENB_SD, 
-    IN1_ID, IN2_ID, ENB_ID);
 
-/* LOGIC VARIABLES */
-
-// Movements to perform for "steps" vector.
-enum Steps {
-    FORWARD = 0,
-    RIGHT = 1,
-    LEFT = 2
-};
-
-vector<vector<int>> steps = {{FORWARD}, {RIGHT, FORWARD}, {RIGHT, RIGHT, FORWARD}, {LEFT, FORWARD}};
-
-void handleMove(int movement) {
-    if (i == FORWARD) {
-        myMotors.forward(100);
-    }
-    else if (i == RIGHT) {
-        MovimientosLocos::GiroDerecha();
-    }
-    else if (i == LEFT) {
-        MovimientosLocos::GiroIzquierda();
-    }
-}
-
-void doMove(pair<int, int> currentPosition, pair<int, int> nextPosition) {
-    int cx = currentPosition.first;
-    int cy = currentPosition.second;
-    int nx = nextPosition.first;
-    int ny = nextPosition.second;
-
-    if (nx == cx - 1) {
-        for (auto i : steps[orientation]) {
-            handleMove(i);
-        }
-    }
-    else if (ny == cy - 1) {
-        for (auto i : steps[(orientation + 1) % 4]) {
-            handleMove(i);
-        }
-    }
-    else if (nx == cx + 1) {
-        for (auto i : steps[(orientation + 2) % 4]) {
-            handleMove(i);
-        }
-    }
-    else if (ny == cy + 1) {
-        for (auto i : steps[(orientation + 3) % 4]) {
-            handleMove(i);
-        }
-    }
-}
 
 // Control de motores
+
+// Supongo que si
 void adelante(){
-    
     // Motor superior izquierdo
     digitalWrite(IN1_SI,HIGH);
     digitalWrite(IN2_SI,LOW);
-    analogWrie(ENA_SI,pwmIzq);
+    analogWrite(ENA_SI,pwmAdelante);
 
     // Motor inferior izquierdo
-    digitalWrite(IN1_II,HIGH);
-    digitalWrite(IN2_II,LOW);
-    analogWrie(ENA_II,pwmIzq);
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrite(ENA_II,pwmAdelante);
     
     // Motor superior derecho
     digitalWrite(IN1_SD,HIGH);
     digitalWrite(IN2_SD,LOW);
-    analogWrie(ENB_SD,pmwDer);
+    analogWrite(ENB_SD,pwmAdelante);
 
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENB_ID,pwmAdelante);
+    delay(3000);
+}
+
+
+// Esta si jala CONFIRMADO
+void reversa(){
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,HIGH);
+    analogWrite(ENA_SI,pwmIzq);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,HIGH);
+    digitalWrite(IN2_II,LOW);
+    analogWrite(ENA_II,pwmIzq);
+    
+    // Motor superior derecho
+    digitalWrite(IN1_SD,LOW);
+    digitalWrite(IN2_SD,HIGH);
+    analogWrite(ENB_SD,pmwDer);
 
     // Motor inferior derecho
     digitalWrite(IN1_ID,HIGH);
     digitalWrite(IN2_ID,LOW);
-    analogWrie(ENB_ID,pmwDer);
-    delay(2000);
+    analogWrite(ENB_ID,pmwDer);
+    delay(1500);
 }
 
 void detener(){
-    // Motor superior izquierdo
+  // Motor superior izquierdo
     digitalWrite(IN1_SI,LOW);
     digitalWrite(IN2_SI,LOW);
-    analogWrie(ENA_SI,zero);
+    analogWrite(ENA_SI,0);
 
     // Motor inferior izquierdo
     digitalWrite(IN1_II,LOW);
     digitalWrite(IN2_II,LOW);
-    analogWrie(ENA_II,zero);
+    analogWrite(ENA_II,0);
     
     // Motor superior derecho
     digitalWrite(IN1_SD,LOW);
     digitalWrite(IN2_SD,LOW);
-    analogWrie(ENB_SD,zero);
-
+    analogWrite(ENB_SD,0);
 
     // Motor inferior derecho
     digitalWrite(IN1_ID,LOW);
     digitalWrite(IN2_ID,LOW);
-    analogWrie(ENB_ID,zero);
-    delay(2000);
+    analogWrite(ENB_ID,0);
+    delay(3000);
 }
 
 void giroDerecha(){
     // Motor superior izquierdo
     digitalWrite(IN1_SI,HIGH);
     digitalWrite(IN2_SI,LOW);
-    analogWrie(ENA_SI,pwmIzq);
+    analogWrite(ENA_SI,pwmIzq);
 
     // Motor inferior izquierdo
     digitalWrite(IN1_II,HIGH);
-    digitalWrite(IN2_II,HIGH);
-    analogWrie(ENA_II,pwmIzq);
+    digitalWrite(IN2_II,LOW);
+    analogWrite(ENA_II,pwmIzq);
     
     // Motor superior derecho
     digitalWrite(IN1_SD,HIGH);
     digitalWrite(IN2_SD,LOW);
-    analogWrie(ENB_SD,zero);
+    analogWrite(ENB_SD,zero);
 
 
     // Motor inferior derecho
     digitalWrite(IN1_ID,HIGH);
     digitalWrite(IN2_ID,LOW);
-    analogWrie(ENB_ID,zero);
+    analogWrite(ENB_ID,zero);
     
     delay(2000);
 }
@@ -174,48 +145,23 @@ void giroIzquierda(){
     // Motor superior izquierdo
     digitalWrite(IN1_SI,HIGH);
     digitalWrite(IN2_SI,LOW);
-    analogWrie(ENA_SI,zero);
+    analogWrite(ENA_SI,zero);
 
     // Motor inferior izquierdo
     digitalWrite(IN1_II,HIGH);
     digitalWrite(IN2_II,HIGH);
-    analogWrie(ENA_II,zero);
+    analogWrite(ENA_II,zero);
     
     // Motor superior derecho
     digitalWrite(IN1_SD,HIGH);
     digitalWrite(IN2_SD,LOW);
-    analogWrie(ENB_SD,pmwDer);
+    analogWrite(ENB_SD,pmwDer);
 
 
     // Motor inferior derecho
     digitalWrite(IN1_ID,HIGH);
     digitalWrite(IN2_ID,LOW);
-    analogWrie(ENB_ID,pmwDer);
-
-    delay(2000);
-}
-
-void reversa(){
-    // Motor superior izquierdo
-    digitalWrite(IN1_SI,LOW);
-    digitalWrite(IN2_SI,HIGH);
-    analogWrie(ENA_SI,pwmIzq);
-
-    // Motor inferior izquierdo
-    digitalWrite(IN1_II,LOW);
-    digitalWrite(IN2_II,HIGH);
-    analogWrie(ENA_II,pwmIzq);
-    
-    // Motor superior derecho
-    digitalWrite(IN1_SD,LOW);
-    digitalWrite(IN2_SD,HIGH);
-    analogWrie(ENB_SD,pmwDer);
-
-
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,LOW);
-    digitalWrite(IN2_ID,HIGH);
-    analogWrie(ENB_ID,pmwDer);
+    analogWrite(ENB_ID,pmwDer);
 
     delay(2000);
 }
@@ -224,22 +170,22 @@ void movLateral(){
     // Motor superior izquierdo
     digitalWrite(IN1_SI,LOW);
     digitalWrite(IN2_SI,HIGH);
-    analogWrie(ENA_SI,pwmIzq);
+    analogWrite(ENA_SI,pwmIzq);
 
     // Motor inferior izquierdo
     digitalWrite(IN1_II,HIGH);
     digitalWrite(IN2_II,LOW);
-    analogWrie(ENA_II,pwmIzq);
+    analogWrite(ENA_II,pwmIzq);
     
     // Motor superior derecho
     digitalWrite(IN1_SD,LOW);
     digitalWrite(IN2_SD,HIGH);
-    analogWrie(ENB_SD,pmwDer);
+    analogWrite(ENB_SD,pmwDer);
 
     // Motor inferior derecho
     digitalWrite(IN1_ID,HIGH);
     digitalWrite(IN2_ID,LOW);
-    analogWrie(ENB_ID,pmwDer);
+    analogWrite(ENB_ID,pmwDer);
     
     delay(2000);
 }
@@ -249,9 +195,22 @@ void movLateral(){
 void setup() {
     Serial.begin(9600);
 
-    // Motors
-    myMotors.init();
- 
+    pinMode(IN1_SI,OUTPUT);
+    pinMode(IN2_SI,OUTPUT);
+    pinMode(ENA_SI,OUTPUT);
+
+    pinMode(IN1_SD,OUTPUT);
+    pinMode(IN2_SD,OUTPUT);
+    pinMode(ENB_SD,OUTPUT);
+
+    pinMode(IN1_II,OUTPUT);
+    pinMode(IN2_II,OUTPUT);
+    pinMode(ENA_II,OUTPUT);
+
+    pinMode(IN1_ID,OUTPUT);
+    pinMode(IN2_ID,OUTPUT);
+    pinMode(ENB_ID,OUTPUT);
+
     // Encoders
     // Encoder Superior Izquierdo
     pinMode(ENC_A_SI, INPUT);
@@ -275,8 +234,10 @@ void setup() {
 void loop() {
     adelante();
     detener();
+    reversa();
+    /*
     giroDerecha();
     giroIzquierda();
-    reversa();
     movLateral();
+    */
 }
