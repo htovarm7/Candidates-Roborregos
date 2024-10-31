@@ -54,37 +54,37 @@ void setup() {
   Serial.begin(9600);
   
   // Configurar pines de encoder como entrada
-  pinMode(ENC_A1, INPUT);
-  pinMode(ENC_B1, INPUT);
-  pinMode(ENC_A2, INPUT);
-  pinMode(ENC_B2, INPUT);
-  pinMode(ENC_A3, INPUT);
-  pinMode(ENC_B3, INPUT);
-  pinMode(ENC_A4, INPUT);
-  pinMode(ENC_B4, INPUT);
+  pinMode(ENC_SI_A, INPUT);
+  pinMode(ENC_SI_B, INPUT);
+  pinMode(ENC_SD_A, INPUT);
+  pinMode(ENC_SD_B, INPUT);
+  pinMode(ENC_II_A, INPUT);
+  pinMode(ENC_II_B, INPUT);
+  pinMode(ENC_ID_A, INPUT);
+  pinMode(ENC_ID_B, INPUT);
 
   // Configurar pines de los motores como salida
-  pinMode(IN1_M1, OUTPUT);
-  pinMode(IN2_M1, OUTPUT);
-  pinMode(ENA_M1, OUTPUT);
+  pinMode(IN1_SI, OUTPUT);
+  pinMode(IN2_SI, OUTPUT);
+  pinMode(ENA_SI, OUTPUT);
 
-  pinMode(IN1_M2, OUTPUT);
-  pinMode(IN2_M2, OUTPUT);
-  pinMode(ENA_M2, OUTPUT);
+  pinMode(IN1_SD, OUTPUT);
+  pinMode(IN2_SD, OUTPUT);
+  pinMode(ENA_SD, OUTPUT);
 
-  pinMode(IN1_M3, OUTPUT);
-  pinMode(IN2_M3, OUTPUT);
-  pinMode(ENA_M3, OUTPUT);
+  pinMode(IN1_II, OUTPUT);
+  pinMode(IN2_II, OUTPUT);
+  pinMode(ENA_II, OUTPUT);
 
-  pinMode(IN1_M4, OUTPUT);
-  pinMode(IN2_M4, OUTPUT);
-  pinMode(ENA_M4, OUTPUT);
+  pinMode(IN1_ID, OUTPUT);
+  pinMode(IN2_ID, OUTPUT);
+  pinMode(ENA_ID, OUTPUT);
 
   // Interrupciones para contar pulsos de encoders
-  attachInterrupt(digitalPinToInterrupt(ENC_A1), countPulse1, RISING);
-  attachInterrupt(digitalPinToInterrupt(ENC_A2), countPulse2, RISING);
-  attachInterrupt(digitalPinToInterrupt(ENC_A3), countPulse3, RISING);
-  attachInterrupt(digitalPinToInterrupt(ENC_A4), countPulse4, RISING);
+  attachInterrupt(digitalPinToInterrupt(ENC_SI_A), countPulse1, RISING);
+  attachInterrupt(digitalPinToInterrupt(ENC_SD_A), countPulse2, RISING);
+  attachInterrupt(digitalPinToInterrupt(ENC_II_A), countPulse3, RISING);
+  attachInterrupt(digitalPinToInterrupt(ENC_ID_A), countPulse4, RISING);
 }
 
 void loop() {
@@ -111,10 +111,10 @@ void loop() {
   }
   
   // Controlar los motores
-  motorControl(1, 30); // Motor 1 a velocidad 30
-  motorControl(2, 30); // Motor 2 a velocidad 30
-  motorControl(3, 30); // Motor 3 a velocidad 30
-  motorControl(4, 30); // Motor 4 a velocidad 30
+  motorControl(1, 180); // Motor 1 a velocidad 180
+  motorControl(2, 180); // Motor 2 a velocidad 180
+  motorControl(3, 180); // Motor 3 a velocidad 180
+  motorControl(4, 180); // Motor 4 a velocidad 180
 }
 
 // Función para contar pulsos de cada encoder
@@ -129,16 +129,16 @@ void motorControl(int motor, int velocidad) {
   // Seleccionar los pines del motor correspondiente
   switch (motor) {
     case 1:
-      in1 = IN1_M1; in2 = IN2_M1; ena = ENA_M1;
+      in1 = IN1_SI; in2 = IN2_SI; ena = ENA_SI;
       break;
     case 2:
-      in1 = IN1_M2; in2 = IN2_M2; ena = ENA_M2;
+      in1 = IN1_SD; in2 = IN2_SD; ena = ENA_SD;
       break;
     case 3:
-      in1 = IN1_M3; in2 = IN2_M3; ena = ENA_M3;
+      in1 = IN1_II; in2 = IN2_II; ena = ENA_II;
       break;
     case 4:
-      in1 = IN1_M4; in2 = IN2_M4; ena = ENA_M4;
+      in1 = IN1_ID; in2 = IN2_ID; ena = ENA_ID;
       break;
     default:
       return;
