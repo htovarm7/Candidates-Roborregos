@@ -68,45 +68,31 @@ const int Servo_SI = 22;
 const int Servo_SD = 23;
 
 // Sensor de color
-const char SCL_COLOR = A0;
-const char SDA_COLOR = A1; 
+const char SCL_COLOR = A5;
+const char SDA_COLOR = A4; 
 
 // Giroscopio
-const char SCL_GIRO = A2;
-const char SDA_GIRO = A3;
+// const char SCL_GIRO = A2;
+// const char SDA_GIRO = A3;
 
 // LED RGB
-const int R = 9;
-const int G = 11;
-const int B = 10;
-
-// Enconders
-const int encoderSuperiorIzquierdo_A = 2;
-const int encoderSuperiorIzquierdo_B = 3;
-const int encoderSuperiorDerecho_A = 40;
-const int encoderSuperiorDerecho_B = 41;
-const int encoderInferiorIzquierdo_A = 19;
-const int encoderInferiorIzquierdo_B = 18;
-const int encoderInferiorDerecho_A = 43;
-const int encoderInferiorDerecho_B = 42;
+const int R = A0;
+const int G = A1;
+const int B = A2;
 
 // Giroscopio PLACEHOLDER
 const int giroSCL = 1; 
 const int giroSDA = 2; 
 
-// Sensor de color PLACEHOLDER
-const int colorSDA = 4; 
-const int colorSCL = 5;
-
 // Sensores de línea
-const int sensorLineaD8 = 50;
-const int sensorLineaD7 = 49;
-const int sensorLineaD6 = 48;
-const int sensorLineaD5 = 47;
-const int sensorLineaD4 = 46;
-const int sensorLineaD3 = 45;
-const int sensorLineaD2 = 44;
-const int sensorLineaD1 = 43;
+const int sensorLineaD8 = 37;
+const int sensorLineaD7 = 36;
+const int sensorLineaD6 = 35;
+const int sensorLineaD5 = 34;
+const int sensorLineaD4 = 33;
+const int sensorLineaD3 = 32;
+const int sensorLineaD2 = 31;
+const int sensorLineaD1 = 30;
 
 // Servos
 const int servo1 = 35;
@@ -579,10 +565,14 @@ std::string getColor(Adafruit_TCS34725 tcs) {
     // Convert to HSV.
     double hue, saturation, value;
     ColorConverter::RgbToHsv(r, g, b, hue, saturation, value);
+    Serial.println(hue);
 
     // Return color based on tested values.
-    if (hue > 30 && hue < 105) {
+    if (hue > 30 && hue < 50) {
         return "Yellow";
+    }
+    else if (hue > 55 && hue < 65) {
+        return "Black";
     }
     else if (hue > 222 && hue < 265) {
         return "Purple";
@@ -590,13 +580,13 @@ std::string getColor(Adafruit_TCS34725 tcs) {
     else if (hue > 195 && hue < 222) {
         return "Blue";
     }
-    else if (hue > 300 && hue < 350) {
+    else if (hue > 300 && hue < 360) {
         return "Pink";
     }
     else if (hue > 0 && hue < 25) {
         return "Red";
     }
-    else if (hue > 120 && hue < 160) {
+    else if (hue > 85 && hue < 110) {
         return "Green";
     }
     else {
