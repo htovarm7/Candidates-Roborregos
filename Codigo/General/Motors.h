@@ -11,6 +11,7 @@ public:
            int INB1R, int INB2R, int ENBR);   // Bottom-right motor
 
     void forward(int speed);
+    void backward();
     void stop();
     void init();
 
