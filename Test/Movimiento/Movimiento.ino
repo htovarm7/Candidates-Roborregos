@@ -34,6 +34,7 @@ const int pwmIzq = 250;
 const int pmwDer = 250;
 
 const int pwmAdelante = 255;
+const int pwmReversa = 230;
 // Valores de constante
 const int zero = 0;
   
@@ -44,53 +45,53 @@ const int zero = 0;
 
 // Control de motores
 
-// Supongo que si
+// 
 void adelante(){
     // Motor superior izquierdo
     digitalWrite(IN1_SI,HIGH);
     digitalWrite(IN2_SI,LOW);
-    analogWrite(ENA_SI,pwmAdelante);
+    analogWrite(ENA_SI,pwmReversa);
 
     // Motor inferior izquierdo
     digitalWrite(IN1_II,LOW);
     digitalWrite(IN2_II,HIGH);
-    analogWrite(ENA_II,pwmAdelante);
-    
-    // Motor superior derecho
-    digitalWrite(IN1_SD,HIGH);
-    digitalWrite(IN2_SD,LOW);
-    analogWrite(ENB_SD,pwmAdelante);
-
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,LOW);
-    digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENB_ID,pwmAdelante);
-    delay(3000);
-}
-
-
-// Esta si jala CONFIRMADO
-void reversa(){
-    // Motor superior izquierdo
-    digitalWrite(IN1_SI,LOW);
-    digitalWrite(IN2_SI,HIGH);
-    analogWrite(ENA_SI,pwmIzq);
-
-    // Motor inferior izquierdo
-    digitalWrite(IN1_II,HIGH);
-    digitalWrite(IN2_II,LOW);
-    analogWrite(ENA_II,pwmIzq);
+    analogWrite(ENA_II,pwmReversa);
     
     // Motor superior derecho
     digitalWrite(IN1_SD,LOW);
     digitalWrite(IN2_SD,HIGH);
-    analogWrite(ENB_SD,pmwDer);
+    analogWrite(ENB_SD,255);
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENB_ID,255);
+    delay(3000);
+}
+
+// ESTO YA QUEDA ASI FUNCIONA
+void reversa(){
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,HIGH);
+    analogWrite(ENA_SI,pwmAdelante);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,HIGH);
+    digitalWrite(IN2_II,LOW);
+    analogWrite(ENA_II,pwmAdelante);
+    
+    // Motor superior derecho,
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENB_SD,255);
 
     // Motor inferior derecho
     digitalWrite(IN1_ID,HIGH);
     digitalWrite(IN2_ID,LOW);
-    analogWrite(ENB_ID,pmwDer);
-    delay(1500);
+    analogWrite(ENB_ID,pwmAdelante);
+
+    delay(3000);
 }
 
 void detener(){
@@ -120,25 +121,25 @@ void giroDerecha(){
     // Motor superior izquierdo
     digitalWrite(IN1_SI,HIGH);
     digitalWrite(IN2_SI,LOW);
-    analogWrite(ENA_SI,pwmIzq);
+    analogWrite(ENA_SI,255);
 
     // Motor inferior izquierdo
     digitalWrite(IN1_II,HIGH);
     digitalWrite(IN2_II,LOW);
-    analogWrite(ENA_II,pwmIzq);
+    analogWrite(ENA_II,250);
     
     // Motor superior derecho
     digitalWrite(IN1_SD,HIGH);
     digitalWrite(IN2_SD,LOW);
-    analogWrite(ENB_SD,zero);
+    analogWrite(ENB_SD,243);
 
 
     // Motor inferior derecho
     digitalWrite(IN1_ID,HIGH);
     digitalWrite(IN2_ID,LOW);
-    analogWrite(ENB_ID,zero);
+    analogWrite(ENB_ID,248);
     
-    delay(2000);
+    delay(1400);
 }
 
 void giroIzquierda(){
@@ -232,12 +233,15 @@ void setup() {
 /* ARDUINO LOOP */
 
 void loop() {
-    adelante();
-    detener();
-    reversa();
-    /*
+    //adelante();
+    //detener();
+    //reversa();
+    //detener();
+    
     giroDerecha();
-    giroIzquierda();
-    movLateral();
-    */
+    detener();
+
+    //giroIzquierda();
+    //movLateral();
+    
 }
