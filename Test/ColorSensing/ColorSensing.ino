@@ -68,7 +68,7 @@ void printColorName(double hue)
         Serial.println("Green");
     }
     else {
-        Serial.println("None of the above");
+        Serial.println("None )of the above";
     }
     Serial.println(hue);
 }
