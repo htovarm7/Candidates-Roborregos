@@ -684,5 +684,4 @@ void loop() {
     giroIzquierda();
     reversa();
     movLateral();
-
 }
