@@ -678,10 +678,10 @@ void loop() {
         dfs(currentPosition);
     }
 
-    adelante();
-    detener();
-    giroDerecha();
-    giroIzquierda();
-    reversa();
-    movLateral();
+    // adelante();
+    // detener();
+    // giroDerecha();
+    // giroIzquierda();
+    // reversa();
+    // movLateral();
 }

@@ -1,6 +1,6 @@
-const int R = 9;
-const int G = 10;
-const int B = 11;
+const int R = 10;
+const int G = 11;
+const int B = 12;
 
 void differentColor() {
   // Yellow
