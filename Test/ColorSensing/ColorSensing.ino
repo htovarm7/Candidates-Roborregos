@@ -10,6 +10,7 @@ const int B = 12;
 
 String getColor(double hue)
 {
+    Serial.println(hue);
     if (hue > 30 && hue < 50) {
         return "Yellow";
     }
@@ -125,25 +126,26 @@ void differentColor() {
 
 void setup()
 {
+  tcs.begin(); 
   Serial.begin(9600);
+  Serial.println("Iniciando..."); // Imprime para saber si el setup se ejecuta
 
-  if (!tcs.begin())
-  {
-    Serial.println("Error al iniciar TCS34725");
-    while (1) delay(1000);
-  }
 
+
+  Serial.println("Sensor inicializado correctamente.");
   pinMode(R, OUTPUT);
   pinMode(G, OUTPUT);
   pinMode(B, OUTPUT);
 }
 
+
 void loop()
 {
+  Serial.println("¡Hola, mundo!");
   uint16_t clear, red, green, blue;
 
   tcs.setInterrupt(false);
-  delay(60); // Takes 50ms to capture the color
+  delay(60); // Takes 60ms to capture the color
   tcs.getRawData(&red, &green, &blue, &clear);
   tcs.setInterrupt(true);
 
@@ -166,7 +168,7 @@ void loop()
   Serial.println("Hue: " + String(hue * 360) + ", Color detected: " + detectedColor);  // Print hue and detected color
   showColor(detectedColor);
 
-  differentColor();
+  // differentColor();
 
   delay(1000);
 }
