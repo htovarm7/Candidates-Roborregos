@@ -75,12 +75,12 @@ const char SDA_COLOR = A4;
 // const char SCL_GIRO = A2;
 // const char SDA_GIRO = A3;
 
-// LED RGB
+// LED RGB Falta poner los pines al arduino
 const int R = A0;
 const int G = A1;
 const int B = A2;
 
-// Giroscopio PLACEHOLDER
+// Giroscopio
 const int giroSCL = 1; 
 const int giroSDA = 2; 
 
