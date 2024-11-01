@@ -5,15 +5,15 @@
 const int IN1_SI = 48; // 48
 const int IN2_SI = 23; //23
 const int ENB_SI = 6; // 6
-const int ENC_A_SI = 18; // 3
-const int ENC_B_SI = 19; // 2
+const int ENC_A_SI = 18; 
+const int ENC_B_SI = 19;
 
 // Pines motor superior derecho
 const int IN1_SD = 47; // 47
 const int IN2_SD = 46; // 46
 const int ENA_SD = 7; // 7
-const int ENC_A_SD = 17; // 9
-const int ENC_B_SD = 18; // 8
+const int ENC_A_SD = 17; 
+const int ENC_B_SD = 18;
 
 // Pines motor inferior izquierdo
 const int IN1_II = 52;
@@ -55,9 +55,9 @@ volatile int encoderCountII = 0;
 volatile int encoderCountID = 0;
 
 // Para el RGB
-const int R = 
-const int G = 
-const int B = 
+const int R = ;
+const int G = ;
+const int B = ;
 /* OBJECTS (SENSORS) */
 
 // Motor object instantiation.
