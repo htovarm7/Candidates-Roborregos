@@ -85,6 +85,7 @@ map<pair<int, int>, pair<int, int>> bfs(pair<int, int> start) {
 
 void moveToNewPosition(pair<int, int> newPosition, pair<int, int>& currentPosition) {
     // Call bfs to get the path.
+    cout << "BFS called.\n";
     map<pair<int, int>, pair<int, int>> parents = bfs(newPosition);
 
     while (parents[currentPosition] != currentPosition) {
@@ -123,6 +124,7 @@ void dfs(pair<int, int> node) {
             //}
             ballFound = true;
             ALgrid[node].push_back({1, 2});
+            ALgrid[{1, 2}].push_back(node);
         }
         if (node == make_pair(1, 3)) {
             // if (ultraright.getDistance() > 10 || ultrafront.getDistance() > 10) {
