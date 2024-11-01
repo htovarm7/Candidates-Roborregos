@@ -68,7 +68,45 @@ void printColorName(double hue)
         Serial.println("Green");
     }
     else {
-        Serial.println("None )of the above";
+        Serial.println("None of the above");
     }
     Serial.println(hue);
 }
+
+void showColor(){
+  if(Serial.available() > 0){
+    if(Serial.read("Yellow")){
+      analogWrite(R,0);
+      analogWrite(G,0);
+      analogWrite(B,255);
+    }else if(Serial.read("Black")){
+      analogWrite(R,0);
+      analogWrite(G,0);
+      analogWrite(B,0);
+    }else if(Serial.read("Purple")){
+      analogWrite(R, 31);
+      analogWrite(G, 0);
+      analogWrite(B, 56);
+    }else if(Serial.read("Blue")){
+      analogWrite(R,0);
+      analogWrite(G,0);
+      analogWrite(B,255);
+    }else if(Serial.read("Pink")){
+      analogWrite(R, 255);
+      analogWrite(G, 0);
+      analogWrite(B, 200);
+    }else if(Serial.read("Red")){
+      analogWrite(R,255);
+      analogWrite(G,0);
+      analogWrite(B,0);
+    }else if(Serial.read("Green")){
+      analogWrite(R,0);
+      analogWrite(G,0);
+      analogWrite(B,255);
+    }else{
+      analogWrite(R,0);
+      analogWrite(G,0);
+      analogWrite(B,0);
+    }
+    }
+  }
