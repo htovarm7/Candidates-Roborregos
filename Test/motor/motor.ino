@@ -19,15 +19,15 @@ const int ENC_B_SD = 18;
 const int IN1_II = 52;
 const int IN2_II = 53;
 const int ENB_II = 5;
-const int ENC_A_II = 13;
-const int ENC_B_II = 12;
+const int ENC_A_II = 9;
+const int ENC_B_II = 8;
 
 // Pines motor inferior derecho
 const int IN1_ID = 50;
 const int IN2_ID = 49;
 const int ENA_ID = 4;
-const int ENC_A_ID = 11;
-const int ENC_B_ID = 10;
+const int ENC_A_ID = 24;
+const int ENC_B_ID = 23;
 
 // Pines ultrasonico Frontal
 const int ultrasonicoFrontalEcho = 21;
@@ -55,9 +55,10 @@ volatile int encoderCountII = 0;
 volatile int encoderCountID = 0;
 
 // Para el RGB
-const int R = ;
-const int G = ;
-const int B = ;
+const int R = 10;
+const int G = 11;
+const int B = 12;
+
 /* OBJECTS (SENSORS) */
 
 // Motor object instantiation.
