@@ -117,54 +117,29 @@ void detener(){
     delay(3000);
 }
 
-void giroDerecha1(){
+void giroDerecha(){
+
     // Motor superior izquierdo
     digitalWrite(IN1_SI,HIGH);
     digitalWrite(IN2_SI,LOW);
-    analogWrite(ENB_SI,70);
+    analogWrite(ENA_SI,230);
 
     // Motor inferior izquierdo
-    digitalWrite(IN1_II,HIGH);
-    digitalWrite(IN2_II,LOW);
-    analogWrite(ENB_II,0);
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrite(ENA_II,225);
     
     // Motor superior derecho
     digitalWrite(IN1_SD,HIGH);
     digitalWrite(IN2_SD,LOW);
-    analogWrite(ENA_SD,100);
-
-
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,LOW);
-    digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENA_ID,75);
-    
-    delay(1400);
-}
-
-void giroDerecha2(){
-    // Motor superior izquierdo
-    digitalWrite(IN1_SI,HIGH);
-    digitalWrite(IN2_SI,LOW);
-    analogWrite(ENB_SI,230);
-
-    // Motor inferior izquierdo
-    digitalWrite(IN1_II,HIGH);
-    digitalWrite(IN2_II,LOW);
-    analogWrite(ENB_II,225);
-    
-    // Motor superior derecho
-    digitalWrite(IN1_SD,HIGH);
-    digitalWrite(IN2_SD,LOW);
-    analogWrite(ENA_SD,208);
-
+    analogWrite(ENB_SD,200);
 
     // Motor inferior derecho
     digitalWrite(IN1_ID,HIGH);
     digitalWrite(IN2_ID,LOW);
-    analogWrite(ENA_ID,213);
+    analogWrite(ENB_ID,200);
+    delay(1280);
     
-    delay(1400);
 }
 
 void giroIzquierda(){
@@ -263,9 +238,7 @@ void loop() {
     //reversa();
     //detener();
     
-    giroDerecha1();
-    detener();
-    giroDerecha2();
+    giroDerecha();
     detener();
 
 
