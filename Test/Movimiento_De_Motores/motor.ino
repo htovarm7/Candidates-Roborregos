@@ -29,31 +29,27 @@ const int ENB_ID = 4;
 const int ENC_A_ID = 26;
 const int ENC_B_ID = 27;
 
-  //Ultrasonicos
-  // Pines ultrasonico Izquierdo
-  const int ultrasonicoIzquierdoEcho = 42;
-  const int ultrasonicoIzquierdoTrig = 43;
-  // Pines ultrasonico Frontal
-  const int ultrasonicoFrontalEcho = 22;
-  const int ultrasonicoFrontalTrig = 24;
-  // Pines ultrasonico Derecha
-  const int ultrasonicoDerechaEcho = 38;
-  const int ultrasonicoDerechaTrig = 39;
+//Ultrasonicos
+// Pines ultrasonico Izquierdo
+const int ultrasonicoIzquierdoEcho = 42;
+const int ultrasonicoIzquierdoTrig = 43;
+// Pines ultrasonico Frontal
+const int ultrasonicoFrontalEcho = 22;
+const int ultrasonicoFrontalTrig = 24;
+// Pines ultrasonico Derecha
+const int ultrasonicoDerechaEcho = 38;
+const int ultrasonicoDerechaTrig = 39;
 
-
+// Para las velocidades que ocupe el motor
 const int pwmIzq = 250;
 const int pmwDer = 250;
 
 const int pwmAdelante = 255;
 const int pwmReversa = 230;
 
-
 const int prueba = 164;
 
 const int pwmMinimo = 150; // Minimo en el sentido de que tiene una velocidad apta para la pista
-
-// Valores de constante
-const int zero = 0;
 
 // Para los encoders
 volatile int encoderCountSI = 0;
@@ -329,10 +325,6 @@ long distanciaUltrasonico(int trigPin, int echoPin) {
   long duracion = pulseIn(echoPin, HIGH);
   long distancia = duracion * 0.034 / 2;
   return distancia;
-}
-
-void showColor(){
-
 }
 
 /* ARDUINO SETUP */
