@@ -43,7 +43,7 @@ void fixGridAL() {
     ALgrid[{1, 3}].push_back({2, 3});
     // ALgrid[{1, 3}].push_back({1, 4});
 
-    ALgrid[{1, 3}].push_back({2, 2});
+    ALgrid[{2, 3}].push_back({2, 2});
     ALgrid[{2, 3}].push_back({1, 3});
     
     ALgrid[{1, 4}].push_back({1, 3});
@@ -71,6 +71,7 @@ map<pair<int, int>, pair<int, int>> bfs(pair<int, int> start) {
         for (auto v : ALgrid[u]) {
             // Additional check on v == start as we don't initialize all distances on infinity, as per usual in BFS.
             if (dist[v] != 0 || v == start) continue;
+            // cout << u.first << " " << u.second << ": " << v.first << " " << v.second << "\n";
 
             // Update shortest distance, add node to queue, and update its parent.
             parents[v] = u;
@@ -93,6 +94,7 @@ void moveToNewPosition(pair<int, int> newPosition, pair<int, int>& currentPositi
         // TODO: create function to do this.
 
         // Virtual test:
+        // cout << currentPosition.first << " " << currentPosition.second << ": ";
         currentPosition = parents[currentPosition];
         cout << currentPosition.first << " " << currentPosition.second << endl;
     }
@@ -173,6 +175,12 @@ void dfs(pair<int, int> node) {
             // if (sensorLineaD0 = 1 && ... D8), lineFound = true;
             if (v == make_pair(2,1)) {
                 lineFound = true;
+                for (auto it = ALgrid[{2, 1}].begin(); it != ALgrid[{2, 1}].end(); it++) {
+                    if (*it == node) {
+                        ALgrid[{2, 1}].erase(it);
+                        break;
+                    }
+                }
                 if (lineFound && ballFound) { 
                     moveToNewPosition({1, 2}, node);
                     return;
