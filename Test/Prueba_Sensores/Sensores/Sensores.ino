@@ -8,8 +8,8 @@ const int leftEcho = 42;
 const int leftTrig = 43;
 
 // Pines ultrasonico Frontal
-const int frontEcho = 40;
-const int frontTrig = 41;
+const int frontEcho = 22;
+const int frontTrig = 24;
 
 // Pines ultrasonico Derecha
 const int rightEcho = 38;
