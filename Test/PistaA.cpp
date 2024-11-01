@@ -56,6 +56,57 @@ void fixGridAL() {
 
 set<pair<int, int>> visited;
 
+map<pair<int, int>, pair<int, int>> bfs(pair<int, int> start) {
+    // Declare needed data structures.
+    map<pair<int, int>, pair<int, int>> parents; // Stores parents for each node.
+    queue<pair<int, int>> q; // Node processing queue.
+    map<pair<int, int>, int> dist; // Stores distances to each node.
+    
+    // Initialize structures from start node.
+    parents[start] = start; // This helps to recognize the end of the path, by way of parent[x] == x.
+    q.push(start);
+    dist[start] = 0;
+
+    // BFS logic <3
+    while (!q.empty()) {
+        pair<int, int> u = q.front();
+        q.pop();
+
+        // For every possible connection from node u.
+        for (auto v : ALgrid[u]) {
+            // Additional check on v == start as we don't initialize all distances on infinity, as per usual in BFS.
+            if (dist[v] != 0 || v == start) continue;
+
+            // Update shortest distance, add node to queue, and update its parent.
+            parents[v] = u;
+            q.push(v);
+            dist[v] = dist[u] + 1;
+        }
+    }
+
+    // Return parent map.
+    return parents;
+}
+
+void moveToNewPosition(pair<int, int> newPosition, pair<int, int>& currentPosition) {
+    // Call bfs to get the path.
+    map<pair<int, int>, pair<int, int>> parents = bfs(newPosition);
+
+    while (parents[currentPosition] != currentPosition) {
+        // Physically move towards the parent.
+        // TODO: create function to do this.
+
+        // Virtual test:
+        currentPosition = parents[currentPosition];
+        cout << currentPosition.first << " " << currentPosition.second << endl;
+    }
+
+    if (newPosition == make_pair(1, 2)) {
+        moveToNewPosition({1, 4}, newPosition);
+    }
+}
+
+
 void bfs(pair<int, int> start, pair<int, int> end) {
     queue<pair<int, int>> 
 }
@@ -93,7 +144,7 @@ void dfs(pair<int, int> node) {
 
     if (lineFound && ballFound) {
         
-        bfs(node, {1, 2});
+        moveToNewPosition({1, 2}, node);
         return;
     }
 
