@@ -37,7 +37,6 @@ const int ENB_ID = 4;
 const int ENC_A_ID = 11;
 const int ENC_B_ID = 10;
 
-
 const int pwmIzq = 255;
 const int pmwDer = 255;
 

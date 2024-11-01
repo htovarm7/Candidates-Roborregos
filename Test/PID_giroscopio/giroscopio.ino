@@ -62,28 +62,24 @@
 #include "Wire.h"
 
 // Motores
-//  Pines motor superior izquierdo
 const int IN1_SI = 47;
 const int IN2_SI = 46;
 const int ENA_SI = 7;
 const int ENC_A_SI = 16;
 const int ENC_B_SI = 17;
 
-// Pines motor superior derecho
 const int IN1_SD = 48;
 const int IN2_SD = 49;
 const int ENB_SD = 6;
 const int ENC_A_SD = 18;
 const int ENC_B_SD = 19;
 
-// Pines motor inferior izquierdo
 const int IN1_II = 52;
 const int IN2_II = 53;
 const int ENA_II = 5;
 const int ENC_A_II = 9;
 const int ENC_B_II = 8; 
 
-// Pines motor inferior derecho
 const int IN1_ID = 50;
 const int IN2_ID = 49;
 const int ENB_ID = 4;
@@ -96,6 +92,18 @@ MPU6050 mpu(mpuAddress);
 int ax, ay, az;
 int gx, gy, gz;
 const float gyroScale = 250.0 / 32768.0;
+
+// PID constants
+float Kp = 1.0;
+float Ki = 0.0;
+float Kd = 0.0;
+
+// PID variables
+float error = 0;
+float previous_error = 0;
+float integral = 0;
+float derivative = 0;
+float output = 0;
 
 void adelante(){
     // Motor superior derecho JALA 
@@ -143,19 +151,12 @@ void setup() {
     pinMode(ENB_ID,OUTPUT);
 
     // Encoders
-    // Encoder Superior Izquierdo
     pinMode(ENC_A_SI, INPUT);
     pinMode(ENC_B_SI, INPUT);
-    
-    // Encoder Superior Derecho
     pinMode(ENC_A_SD, INPUT);
     pinMode(ENC_B_SD, INPUT);
-    
-    // Encoder Inferior Izquierdo
     pinMode(ENC_A_II, INPUT);
     pinMode(ENC_B_II, INPUT);
-
-    // Encoder Inferior Derecho
     pinMode(ENC_A_ID, INPUT);
     pinMode(ENC_B_ID, INPUT);
 }
@@ -167,21 +168,22 @@ void loop() {
     // Convierte la rotación alrededor del eje Z a grados/segundo
     float giroZ = gz * gyroScale;
 
-    // Control de movimiento hacia adelante con corrección
-    if (abs(giroZ) > 1) { // Si se detecta una rotación significativa
-        if (giroZ > 1) {
-            // Robot gira a la derecha, reduce velocidad de motores de la derecha
-            analogWrite(ENB_SD, 95);  // Motor superior derecho
-            analogWrite(ENB_ID, 95);  // Motor inferior derecho
-        } else if (giroZ < -1) {
-            // Robot gira a la izquierda, reduce velocidad de motores de la izquierda
-            analogWrite(ENA_SI, 120);  // Motor superior izquierdo
-            analogWrite(ENA_II, 120);  // Motor inferior izquierdo
-        }
-    } else {
-        // Movimiento normal hacia adelante
-        adelante();  // Función definida en tu código para avanzar
-    }
+    // PID control
+    error = -giroZ;  // Assuming we want to maintain zero rotation
+    integral += error;
+    derivative = error - previous_error;
+    output = Kp * error + Ki * integral + Kd * derivative;
+    previous_error = error;
+
+    // Adjust motor speeds based on PID output
+    int baseSpeed = 200;  // Base speed for the motors
+    int leftSpeed = baseSpeed + output;
+    int rightSpeed = baseSpeed - output;
+
+    analogWrite(ENA_SI, constrain(leftSpeed, 0, 255));
+    analogWrite(ENA_II, constrain(leftSpeed, 0, 255));
+    analogWrite(ENB_SD, constrain(rightSpeed, 0, 255));
+    analogWrite(ENB_ID, constrain(rightSpeed, 0, 255));
 
     delay(100);  // Controla la frecuencia de ajuste
 }

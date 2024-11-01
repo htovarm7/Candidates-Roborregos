@@ -331,10 +331,6 @@ long distanciaUltrasonico(int trigPin, int echoPin) {
   return distancia;
 }
 
-void showColor(){
-
-}
-
 /* ARDUINO SETUP */
 
 void setup() {
