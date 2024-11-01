@@ -1,6 +1,6 @@
 // Los include
-#include "I2Cdev.h"
-#include "MPU6050.h"
+//#include "I2Cdev.h"
+//#include "MPU6050.h"
 #include "Wire.h"
 
 // Pines ultrasonico Izquierdo
@@ -8,12 +8,12 @@ const int leftEcho = 42;
 const int leftTrig = 43;
 
 // Pines ultrasonico Frontal
-const int frontEcho = 22;
-const int frontTrig = 24;
+const int frontEcho = 15;
+const int frontTrig = 14;
 
 // Pines ultrasonico Derecha
-const int rightEcho = 38;
-const int rightTrig = 39;
+const int rightEcho = 2;
+const int rightTrig = 3;
 
 // Motores
 // Motores
@@ -47,11 +47,6 @@ const int ENC_B_ID = 27;
 
 // Actuadores
 
-// Servomotores
-const int Servo_SI = 22;
-const int Servo_SD = 23;
-
-
 /*
 Segun yo no se ocupan estos pines
 
@@ -83,10 +78,6 @@ const int sensorLineaD4 = 33;
 const int sensorLineaD3 = 32;
 const int sensorLineaD2 = 31;
 const int sensorLineaD1 = 30;
-
-// Servos
-const int servo1 = 35;
-const int servo2 = 34;
 
 // Velocidad para los motores
 const int pwmIzq = 255;
@@ -129,7 +120,7 @@ void motorSuperiorDerecho(){
 
   digitalWrite(IN1_SD,HIGH);
   digitalWrite(IN2_SD,LOW);
-  analogWrite(ENA_SD,100);
+  analogWrite(ENB_SD,100);
   delay(1500);
 
 }
@@ -141,7 +132,7 @@ void motorInferiorDerecho(){
 
   digitalWrite(IN1_ID,HIGH);
   digitalWrite(IN2_ID,LOW);
-  analogWrite(ENA_ID,100);
+  analogWrite(ENB_ID,100);
   delay(1500);
 }
 
@@ -152,7 +143,7 @@ void motorSuperiorIzquierdo(){
 
   digitalWrite(IN1_SI,HIGH);
   digitalWrite(IN2_SI,LOW);
-  analogWrite(ENB_SI,100);
+  analogWrite(ENA_SI,100);
   delay(1500);
 }
 
@@ -163,7 +154,7 @@ void motorInferiorIzquierdo(){
 
   digitalWrite(IN1_II,HIGH);
   digitalWrite(IN2_II,LOW);
-  analogWrite(ENB_II,100);
+  analogWrite(ENA_II,100);
   delay(1500);
 
 }
@@ -260,7 +251,7 @@ void detenerConReversa(){
     digitalWrite(IN1_ID,HIGH);
     digitalWrite(IN2_ID,LOW);
     analogWrite(ENB_ID,pwmAdelante);
-    delayMilis(5);
+    delay(300);
 }
 
 void giroDerecha(){
@@ -439,6 +430,8 @@ void RGB() {
 }
 
 void setup(){
+  Serial.begin(9600);
+
     // Ultrasonico Izquierdo
     pinMode(leftEcho, INPUT);
     pinMode(leftTrig, OUTPUT);
@@ -506,20 +499,11 @@ void setup(){
 }
 
 void loop(){
-    long distanciaIzquierdo = distanciaUltrasonico(ultrasonicoIzquierdoTrig, ultrasonicoIzquierdoEcho);
+    long distanciaIzquierdo = distanciaUltrasonico(leftTrig, leftEcho);
 
-    long distanciaFrontal = distanciaUltrasonico(ultrasonicoFrontalTrig, ultrasonicoFrontalEcho);
+    long distanciaFrontal = distanciaUltrasonico(frontTrig, frontEcho);
     
-    long distanciaDerecha = distanciaUltrasonico(ultrasonicoDerechaTrig, ultrasonicoDerechaEcho);
-
-    // Para que no choque
-    if(distanciaFrontal > 30){
-        adelante();
-    }
-    else { 
-        detenerConReversa();
-        //detener();
-    }
+    long distanciaDerecha = distanciaUltrasonico(rightTrig, leftEcho);
 
     // Distancia de los ultrasonicos
     //Izquierdo
@@ -536,7 +520,16 @@ void loop(){
     Serial.println(" cm");
     delay(1000);
 
-    calculateRPM();
-    RGB();
+    // Para que no choque
+    if(distanciaFrontal > 30){
+        adelante();
+    }
+    else { 
+        detenerConReversa();
+        //detener();
+    }
+
+    //calculateRPM();
+    //RGB();
 
 }
