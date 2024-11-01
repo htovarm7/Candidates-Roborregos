@@ -33,11 +33,6 @@ void fixGridAL() {
     ALgrid[{0, 2}].push_back({0, 1});
     ALgrid[{0, 2}].push_back({0, 3});
 
-    ALgrid[{1, 2}].push_back({0, 2});
-    ALgrid[{1, 2}].push_back({1, 1});
-    ALgrid[{1, 2}].push_back({1, 3});
-    ALgrid[{1, 2}].push_back({2, 2});
-
     ALgrid[{2, 2}].push_back({2, 1});
     ALgrid[{2, 2}].push_back({2, 3});
     
@@ -46,7 +41,7 @@ void fixGridAL() {
 
     ALgrid[{1, 3}].push_back({0, 3});
     ALgrid[{1, 3}].push_back({2, 3});
-    ALgrid[{1, 3}].push_back({1, 4});
+    // ALgrid[{1, 3}].push_back({1, 4});
 
     ALgrid[{1, 3}].push_back({2, 2});
     ALgrid[{2, 3}].push_back({1, 3});
@@ -102,18 +97,17 @@ void moveToNewPosition(pair<int, int> newPosition, pair<int, int>& currentPositi
     }
 
     if (newPosition == make_pair(1, 2)) {
+        ALgrid[{1, 3}].push_back({1, 4});
+        ALgrid[{1, 4}].push_back({1, 3});
         moveToNewPosition({1, 4}, newPosition);
     }
-}
-
-
-void bfs(pair<int, int> start, pair<int, int> end) {
-    queue<pair<int, int>> 
 }
 
 void dfs(pair<int, int> node) {
     if (lineFound && ballFound) return;
     visited.insert(node);
+
+    cout << node.first << " " << node.second << "\n";
 
     if (!ballFound){
         if (node == make_pair(1, 1)) {
@@ -127,6 +121,8 @@ void dfs(pair<int, int> node) {
             //    ballFound = true;
             //    ALgrid[node].push_back({1, 2});
             //}
+            ballFound = true;
+            ALgrid[node].push_back({1, 2});
         }
         if (node == make_pair(1, 3)) {
             // if (ultraright.getDistance() > 10 || ultrafront.getDistance() > 10) {
@@ -142,8 +138,7 @@ void dfs(pair<int, int> node) {
         }
     }
 
-    if (lineFound && ballFound) {
-        
+    if (lineFound && ballFound) { 
         moveToNewPosition({1, 2}, node);
         return;
     }
@@ -174,10 +169,20 @@ void dfs(pair<int, int> node) {
 
         if (!lineFound) {
             // if (sensorLineaD0 = 1 && ... D8), lineFound = true;
+            if (v == make_pair(2,1)) {
+                lineFound = true;
+                if (lineFound && ballFound) { 
+                    moveToNewPosition({1, 2}, node);
+                    return;
+                }
+                continue;
+            }
         }
 
         dfs(v);
     }
+
+    
 }
 
 int main() {
