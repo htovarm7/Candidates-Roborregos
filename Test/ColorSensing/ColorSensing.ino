@@ -84,17 +84,17 @@ void showColor(){
       analogWrite(G,0);
       analogWrite(B,0);
     }else if(Serial.read("Purple")){
-      analogWrite(R, 31);
-      analogWrite(G, 0);
-      analogWrite(B, 56);
+      analogWrite(R,184);
+      analogWrite(G,37);
+      analogWrite(B,174);
     }else if(Serial.read("Blue")){
       analogWrite(R,0);
       analogWrite(G,0);
       analogWrite(B,255);
     }else if(Serial.read("Pink")){
-      analogWrite(R, 255);
-      analogWrite(G, 0);
-      analogWrite(B, 200);
+      analogWrite(R,255);
+      analogWrite(G,23);
+      analogWrite(B,185);
     }else if(Serial.read("Red")){
       analogWrite(R,255);
       analogWrite(G,0);
@@ -104,9 +104,9 @@ void showColor(){
       analogWrite(G,0);
       analogWrite(B,255);
     }else{
-      analogWrite(R,0);
-      analogWrite(G,0);
-      analogWrite(B,0);
+      analogWrite(R,255);
+      analogWrite(G,143);
+      analogWrite(B,23);
     }
     }
   }
