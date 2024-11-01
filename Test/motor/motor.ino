@@ -34,8 +34,8 @@ const int ENC_B_ID = 27;
   const int ultrasonicoIzquierdoEcho = 42;
   const int ultrasonicoIzquierdoTrig = 43;
   // Pines ultrasonico Frontal
-  const int ultrasonicoFrontalEcho = 21;
-  const int ultrasonicoFrontalTrig = 20;
+  const int ultrasonicoFrontalEcho = 22;
+  const int ultrasonicoFrontalTrig = 24;
   // Pines ultrasonico Derecha
   const int ultrasonicoDerechaEcho = 38;
   const int ultrasonicoDerechaTrig = 39;
@@ -375,7 +375,6 @@ void setup() {
     // Ultrasonico Frontal
     pinMode(ultrasonicoFrontalEcho, INPUT);
     pinMode(ultrasonicoFrontalTrig, OUTPUT);
-    Serial.begin(9600);
 }
 
 /* ARDUINO LOOP */
