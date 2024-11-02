@@ -469,46 +469,88 @@ void dfsA(std::pair<int, int> node) {
 
         // Move according to current position and next position.
         // NORTH
-        if (orientacion == NORTH) {
-            if (nx == cx - 1) {
-                for (auto i : steps[orientation]) {
-                    handleMove(i);
-                }
-            }
-            else if (ny == cy - 1) {
-                for (auto i : steps[(orientation + 1) % 4]) {
-                    handleMove(i);
-                }
-            }
-            else if (nx == cx + 1) {
-                for (auto i : steps[(orientation + 2) % 4]) {
-                    handleMove(i);
-                }
-            }
-            else if (ny == cy + 1) {
-                for (auto i : steps[(orientation + 3) % 4]) {
-                    handleMove(i);
-                }
-            }
-        }
         // NORTH = -
         // EAST = left turn
         // WEST = right turn
+        if (orientation == NORTH) {
+            if (nx == cx - 1) {
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (ny == cy - 1) {
+                myMotors.turnLeft();
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (ny == cy + 1) {
+                myMotors.turnRight();
+                myMotors.forward();
+                myMotors.stop();
+            }
+        }
 
         // EAST
         // NORTH = right turn
         // EAST = -
         // SOUTH = left turn
+        if (orientation == EAST) {
+            if (nx == cx - 1) {
+                myMotors.turnLeft();
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (ny == cy - 1) {
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (nx == cx + 1) {
+                myMotors.turnLeft();
+                myMotors.forward();
+                myMotors.stop();
+            }
+        }
 
         // SOUTH
         // EAST = right turn
         // SOUTH = -
         // WEST = left turn
+        if (orientation == SOUTH) {
+            if (nx == cx + 1) {
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (ny == cy - 1) {
+                myMotors.turnRight();
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (ny == cy + 1) {
+                myMotors.turnLeft();
+                myMotors.forward();
+                myMotors.stop();
+            }
+        }
 
         // WEST 
         // NORTH = left turn
         // WEST = -
         // SOUTH = right turn
+        if (orientation == WEST) {
+            if (nx == cx - 1) {
+                myMotors.turnLeft();
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (ny == cy + 1) {
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (nx == cx + 1) {
+                myMotors.turnRight();
+                myMotors.forward();
+                myMotors.stop();
+            }
+        }
 
         if (!lineFound) {
             // If 5/8 sensors sense black, a line is detected.
