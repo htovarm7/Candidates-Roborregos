@@ -90,10 +90,6 @@ void setup()
 
 void loop()
 {
-  // Serial.println("Prueba de comunicación serial");
-  // delay(1000);
-
-  // Serial.println("¡Hola, mundo!");
   uint16_t clear, red, green, blue;
 
   tcs.setInterrupt(false);
