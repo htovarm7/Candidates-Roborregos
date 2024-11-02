@@ -90,7 +90,7 @@ void girarDerecha() {
     analogWrite(ENB_SI,200);
 
     //delay(1000);
-    delay(2000);
+    delay(300);
 }
 
 void girarIzquierda() {
@@ -141,6 +141,56 @@ void girarIzquierda() {
       delay(2000);
   }
 
+void giro90(){
+  // Motor superior derecho
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,190);
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENB_ID,190);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrite(ENA_II,120);
+    
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,120);
+
+    delay(710); // Este delay jalara por cuadrante de 30 cm centrado en medio
+}
+
+void movLateral(){
+  // superior derecho e inferior izquierdo
+  // superior izquierdo e inferior derecho
+
+  // Motor superior derecho
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,190);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrite(ENA_II,190);
+
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,190);
+    
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,HIGH);
+    digitalWrite(IN2_ID,LOW);
+    analogWrite(ENB_ID,190);
+
+    delay(710); // Este delay jalara por cuadrante de 30 cm centrado en medio
+}
 void setup() {
   Serial.begin(9600);
   pinMode(sensorLineaD1, INPUT);
@@ -205,9 +255,16 @@ void loop() {
   //   detener();
   // }
 
-  avanzar();
+  // Movimientos que ya jalan
+  
+  //avanzar();
+  //giro90();
+
+  movLateral();
+
   //girarDerecha();
   //girarIzquierda();
+  
   detener();
 
   delay(100); // Pequeña pausa para estabilidad
