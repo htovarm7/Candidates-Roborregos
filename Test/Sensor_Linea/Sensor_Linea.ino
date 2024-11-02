@@ -39,76 +39,124 @@ const int ENC_A_ID = 31;
 const int ENC_B_ID = 30;
 
 // Funciones de movimiento
-void avanzar() {
+void avanzarBIEN() {
     // Motor superior derecho
     digitalWrite(IN1_SD,HIGH);
     digitalWrite(IN2_SD,LOW);
-    analogWrite(ENA_SD,160);
+    analogWrite(ENA_SD,140);
 
     // Motor inferior izquierdo
     digitalWrite(IN1_II,LOW);
     digitalWrite(IN2_II,HIGH);
-    analogWrite(ENA_II,200);
+    analogWrite(ENA_II,160);
     
     // Motor inferior derecho
     digitalWrite(IN1_ID,LOW);
     digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENB_ID,160);
-    
+    analogWrite(ENB_ID,140);
+
     // Motor superior izquierdo
     digitalWrite(IN1_SI,HIGH);
     digitalWrite(IN2_SI,LOW);
-    analogWrite(ENB_SI,200);
+    analogWrite(ENB_SI,160);
 
-    //delay(1000);
-    delay(2000);
+    //delay();
+    delay(710);
+}
+
+void avanzar() {
+    // Motor superior derecho
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,150);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrite(ENA_II,190);
+    
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENB_ID,150);
+
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,190);
+
+    //delay();
+    delay(500);
+}
+
+void reversa(){
+      // Motor superior derecho
+    digitalWrite(IN1_SD,LOW);
+    digitalWrite(IN2_SD,HIGH);
+    analogWrite(ENA_SD,160);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,HIGH);
+    digitalWrite(IN2_II,LOW);
+    analogWrite(ENA_II,200);
+    
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,HIGH);
+    digitalWrite(IN2_ID,LOW);
+    analogWrite(ENB_ID,160);
+
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,HIGH);
+    analogWrite(ENB_SI,200);
+    delay(250);
 }
 
 void girarIzquierda() {
 
     digitalWrite(IN1_SD,HIGH);
     digitalWrite(IN2_SD,LOW);
-    analogWrite(ENA_SD,200);
+    analogWrite(ENA_SD,220);
 
     // Motor inferior izquierdo
     digitalWrite(IN1_II,HIGH);
     digitalWrite(IN2_II,LOW);
-    analogWrite(ENA_II,160);
+    analogWrite(ENA_II,255);
     
     // Motor superior izquierdo
     digitalWrite(IN1_SI,LOW);
     digitalWrite(IN2_SI,HIGH);
-    analogWrite(ENB_SI,160);
+    analogWrite(ENB_SI,220);
 
     // Motor inferior derecho
     digitalWrite(IN1_ID,LOW);
     digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENB_ID,200);
+    analogWrite(ENB_ID,255);
 
-    delay(1279);
+    delay(400);
 }
 
 void girarDerecha() {
-    // Motor superior derecho JALA 
+    // Motor superior derecho REVERSA
     digitalWrite(IN1_SD,LOW);
     digitalWrite(IN2_SD,HIGH);
-    analogWrite(ENA_SD,255);
+    analogWrite(ENA_SD,220);
 
-    // Motor inferior izquierdo JALA CM
+    // Motor inferior izquierdo DERECHO
     digitalWrite(IN1_II,LOW);
     digitalWrite(IN2_II,HIGH);
-    analogWrite(ENA_II,200);
+    analogWrite(ENA_II,255);
     
-    // Motor superior izquierdo
+    // Motor superior izquierdo DERECHO
     digitalWrite(IN1_SI,LOW);
     digitalWrite(IN2_SI,HIGH);
-    analogWrite(ENB_SI,255);
+    analogWrite(ENB_SI,220);
 
-    // Motor inferior derecho
+    // Motor inferior derecho REVERSA
     digitalWrite(IN1_ID,HIGH);
     digitalWrite(IN2_ID,LOW);
-    analogWrite(ENB_ID,200);
-    delay(1280);
+    analogWrite(ENB_ID,255);
+    delay(200);
 }
 
 void detener() {
@@ -133,6 +181,31 @@ void detener() {
     digitalWrite(IN2_ID,LOW);
     analogWrite(ENB_ID,0);
     delay(2000);
+}
+
+// Función para desplazamiento lateral hacia la derecha
+void desplazarDerecha() {
+
+    digitalWrite(IN1_SD, HIGH);
+    digitalWrite(IN2_SD, LOW);
+    analogWrite(ENA_SD, 255);
+
+    
+    digitalWrite(IN1_SI, LOW);
+    digitalWrite(IN2_SI, HIGH);
+    analogWrite(ENB_SI, 255);
+
+    
+    digitalWrite(IN1_II, LOW);
+    digitalWrite(IN2_II, HIGH);
+    analogWrite(ENA_II, 255);
+
+    
+    digitalWrite(IN1_ID, HIGH);
+    digitalWrite(IN2_ID, LOW);
+    analogWrite(ENB_ID, 255);
+
+    delay(1000);
 }
 
 void setup() {
@@ -165,44 +238,98 @@ void setup() {
   }
 
 void loop() {
-  // // Leer el estado de cada sensor de línea
-  // int valorD1 = digitalRead(pinD1);
-  // int valorD2 = digitalRead(pinD2);
-  // int valorD3 = digitalRead(pinD3);
-  // int valorD4 = digitalRead(pinD4);
-  // int valorD5 = digitalRead(pinD5);
-  // int valorD6 = digitalRead(pinD6);
-  // int valorD7 = digitalRead(pinD7);
-  // int valorD8 = digitalRead(pinD8);
+  // Leer el estado de cada sensor de línea
+  int valorD1 = digitalRead(sensorLineaD1);
+  int valorD2 = digitalRead(sensorLineaD2);
+  int valorD3 = digitalRead(sensorLineaD3);
+  int valorD4 = digitalRead(sensorLineaD4);
+  int valorD5 = digitalRead(sensorLineaD5);
+  int valorD6 = digitalRead(sensorLineaD6);
+  int valorD7 = digitalRead(sensorLineaD7);
+  int valorD8 = digitalRead(sensorLineaD8);
 
-  // // Imprimir el valor para depuración
-  // Serial.print(valorD1);
-  // Serial.print(valorD2);
-  // Serial.print(valorD3);
-  // Serial.print(valorD4);
-  // Serial.print(valorD5);
-  // Serial.print(valorD6);
-  // Serial.print(valorD7);
-  // Serial.println(valorD8); 
+  // Imprimir el valor para depuración
+  Serial.print(valorD1);
+  Serial.print(valorD2);
+  Serial.print(valorD3);
+  Serial.print(valorD4);
+  Serial.print(valorD5);
+  Serial.print(valorD6);
+  Serial.print(valorD7);
+  Serial.println(valorD8); 
 
-  // // Lógica báSDca de seguimiento de línea
-  // if (valorD4 == 1 && valorD5 == 1) {  // Línea centrada
-  //   avanzar();
-  // }
-  // else if (valorD1 == 1 || valorD2 == 1 || valorD3 == 1) {  // Giro a la izquierda
-  //   girarIzquierda();
-  // }
-  // else if (valorD6 == 1 || valorD7 == 1 || valorD8 == 1) {  // Giro a la derecha
-  //   girarDerecha();
-  // }
-  // else {  // Ningún sensor detecta la línea
-  //   detener();
-  // }
+  // Lógica báSDca de seguimiento de línea
+  if (valorD4 == 1 && valorD5 == 1) {  // Línea centrada
+
+     // Motor superior derecho
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,150);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrite(ENA_II,190);
+    
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENB_ID,150);
+
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,190);
+  }
+  else if (valorD1 == 1 || valorD2 == 1 || valorD3 == 1) {  // Giro a la izquierda
+    // Motor superior derecho
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,230);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrite(ENA_II,140);
+    
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENB_ID,230);
+
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,140);
+  }
+  else if (valorD6 == 1 || valorD7 == 1 || valorD8 == 1) {  // Giro a la derecha
+     // Motor superior derecho
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,140);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrite(ENA_II,230);
+    
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENB_ID,140);
+
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,230);
+  }
+  else {  // Ningún sensor detecta la línea
+    detener();
+  }
   //avanzar();
-
   //girarIzquierda();
-  girarDerecha();
-  detener();
+
   delay(100); // Pequeña pausa para estabilidad
+  //avanzar();
 }
 

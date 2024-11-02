@@ -165,6 +165,7 @@ void giroDerecha(){
     digitalWrite(IN1_ID,LOW);
     digitalWrite(IN2_ID,HIGH);
     analogWrite(ENB_ID,200);
+    hoalsda
     delay(1280);
     
 }
