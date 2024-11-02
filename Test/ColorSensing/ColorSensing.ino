@@ -41,23 +41,23 @@ void adelante(){
     // Motor superior derecho
     digitalWrite(IN1_SD,HIGH);
     digitalWrite(IN2_SD,LOW);
-    analogWrite(ENA_SD,210);
+    analogWrite(ENA_SD,200);
 
     // Motor inferior derecho
     digitalWrite(IN1_ID,LOW);
     digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENB_ID,210);
+    analogWrite(ENB_ID,200);
 
     // Motor inferior izquierdo
     digitalWrite(IN1_II,LOW);
     digitalWrite(IN2_II,HIGH);
-    analogWrite(ENA_II,220);
+    analogWrite(ENA_II,205);
     
     
     // Motor superior izquierdo
     digitalWrite(IN1_SI,HIGH);
     digitalWrite(IN2_SI,LOW);
-    analogWrite(ENB_SI,220);
+    analogWrite(ENB_SI,205);
 
     delay(710);
 }
@@ -172,5 +172,5 @@ void loop()
   // differentColor();
   delay(1000);
 
-  avanzar();
+  adelante();
 }
