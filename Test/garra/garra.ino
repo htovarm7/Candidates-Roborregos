@@ -6,11 +6,13 @@ Servo Servo2;
 void abrirCupula(){
   Servo1.write(60);
   Servo2.write(120);
+  delay(500);
 }
 
 void cerrarCupula(){
   Servo1.write(150); 
   Servo2.write(30);
+   delay(500);
 }
 
 void setup() {
@@ -23,5 +25,7 @@ void setup() {
 void loop() {
   abrirCupula();
   cerrarCupula();
+  delay(500);
+
   
 }

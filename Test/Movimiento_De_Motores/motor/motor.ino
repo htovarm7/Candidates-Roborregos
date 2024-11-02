@@ -2,32 +2,33 @@
 
 // Motores
 //  Pines motor superior izquierdo
-const int IN1_SI = 47;
-const int IN2_SI = 46;
-const int ENA_SI = 7;
-const int ENC_A_SI = 16;
-const int ENC_B_SI = 17;
+const int IN1_SI = 43;
+const int IN2_SI = 42;
+const int ENB_SI = 4;
+const int ENC_A_SI = 29;
+const int ENC_B_SI = 28;
 
 // Pines motor superior derecho
-const int IN1_SD = 48;
-const int IN2_SD = 49;
-const int ENB_SD = 6;
-const int ENC_A_SD = 18;
-const int ENC_B_SD = 19;
+const int IN1_SD = 45;
+const int IN2_SD = 44;
+const int ENA_SD = 5;
+const int ENC_A_SD = 25;
+const int ENC_B_SD = 24;
 
 // Pines motor inferior izquierdo
-const int IN1_II = 52;
-const int IN2_II = 53;
-const int ENA_II = 5;
-const int ENC_A_II = 9;
-const int ENC_B_II = 8; 
+const int IN1_II = 41;
+const int IN2_II = 40;
+const int ENA_II = 3;
+const int ENC_A_II = 27;
+const int ENC_B_II = 26;
 
 // Pines motor inferior derecho
-const int IN1_ID = 50;
-const int IN2_ID = 49;
-const int ENB_ID = 4;
-const int ENC_A_ID = 26;
-const int ENC_B_ID = 27;
+const int IN1_ID = 39;
+const int IN2_ID = 38;
+const int ENB_ID = 2;
+const int ENC_A_ID = 31;
+const int ENC_B_ID = 30;
+
 
 //Ultrasonicos
 // Pines ultrasonico Izquierdo
@@ -73,26 +74,28 @@ int idPWM = 200;
 
 // Control de motores
 void adelante(){
-    // Motor superior derecho JALA 
-    digitalWrite(IN1_SI,HIGH);
-    digitalWrite(IN2_SI,LOW);
-    analogWrite(ENA_SI,240);
-
-    // Motor inferior izquierdo JALA CM
-    digitalWrite(IN1_II,LOW);
-    digitalWrite(IN2_II,HIGH);
-    analogWrite(ENA_II,170);
-    
-    // Motor superior izquierdo
+    // Motor superior derecho
     digitalWrite(IN1_SD,HIGH);
     digitalWrite(IN2_SD,LOW);
-    analogWrite(ENB_SD,130);
+    analogWrite(ENA_SD,140);
 
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrite(ENA_II,160);
+    
     // Motor inferior derecho
     digitalWrite(IN1_ID,LOW);
     digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENB_ID,220);
-    delay(1200);
+    analogWrite(ENB_ID,140);
+
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,160);
+
+    //delay();
+    delay(710);
 }
 
 
@@ -383,13 +386,12 @@ void loop() {
     // Serial.println(" cm");
 
     //Para que no choque
-    // if(distanciaFrontal > 30){
-    //     // Serial.println("hola");
-    //     adelante();
-    // }
-    // else { 
-    //   giroDerecha();
-    // }
+    if(distanciaFrontal > 23){
+        adelante();
+    }
+    else { 
+      detener();
+    }
 
     // Serial.print("Izquierda: ");
     // Serial.print(distanciaIzquierda);
@@ -404,8 +406,8 @@ void loop() {
     */
 
     // Ya funcionan
-    adelante();
-    detener();
+    // adelante();
+    // detener();
 
     //reversa();
     //giroDerecha();
