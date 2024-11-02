@@ -472,21 +472,85 @@ void dfsA(std::pair<int, int> node) {
         // NORTH = -
         // EAST = left turn
         // WEST = right turn
+        if (orientation == NORTH) {
+            if (nx == cx - 1) {
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (ny == cy - 1) {
+                myMotors.turnLeft();
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (ny == cy + 1) {
+                myMotors.turnRight();
+                myMotors.forward();
+                myMotors.stop();
+            }
+        }
 
         // EAST
         // NORTH = right turn
         // EAST = -
         // SOUTH = left turn
+        if (orientation == EAST) {
+            if (nx == cx - 1) {
+                myMotors.turnLeft();
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (ny == cy - 1) {
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (nx == cx + 1) {
+                myMotors.turnLeft();
+                myMotors.forward();
+                myMotors.stop();
+            }
+        }
 
         // SOUTH
         // EAST = right turn
         // SOUTH = -
         // WEST = left turn
+        if (orientation == SOUTH) {
+            if (nx == cx + 1) {
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (ny == cy - 1) {
+                myMotors.turnRight();
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (ny == cy + 1) {
+                myMotors.turnLeft();
+                myMotors.forward();
+                myMotors.stop();
+            }
+        }
 
         // WEST 
         // NORTH = left turn
         // WEST = -
         // SOUTH = right turn
+        if (orientation == WEST) {
+            if (nx == cx - 1) {
+                myMotors.turnLeft();
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (ny == cy + 1) {
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (nx == cx + 1) {
+                myMotors.turnRight();
+                myMotors.forward();
+                myMotors.stop();
+            }
+        }
 
         if (!lineFound) {
             // If 5/8 sensors sense black, a line is detected.
@@ -506,19 +570,21 @@ void dfsA(std::pair<int, int> node) {
                 if (i) lineCounter++;
             }
 
-            if (v == std::make_pair(2,1)) {
+            if (lineCounter >= 5) {
                 lineFound = true;
-                for (auto it = ALA[{2, 1}].begin(); it != ALA[{2, 1}].end(); it++) {
-                    if (*it == node) {
-                        ALA[{2, 1}].erase(it);
-                        break;
+                
+                for (auto it = ALA[v].begin(); it != ALA[v].end(); it++) {
+                        if (*it == node) {
+                            ALA[v].erase(it);
+                            ALA[*it].erase(v);
+                            break;
+                        }
                     }
-                }
-                if (lineFound && ballFound) { 
-                    moveToNewPositionA({1, 2}, node);
-                    return;
-                }
-                continue;
+                    if (lineFound && ballFound) { 
+                        moveToNewPositionA({1, 2}, node);
+                        return;
+                    }
+                    continue;
             }
         }
 
@@ -688,57 +754,6 @@ std::string getColor(Adafruit_TCS34725 tcs) {
     }
 }
 
-// Funciones de los motores:
-void avanzar() {
-    // Motor superior derecho
-    digitalWrite(IN1_SD,HIGH);
-    digitalWrite(IN2_SD,LOW);
-    analogWrite(ENA_SD,190);
-
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,LOW);
-    digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENB_ID,190);
-
-    // Motor inferior izquierdo
-    digitalWrite(IN1_II,LOW);
-    digitalWrite(IN2_II,HIGH);
-    analogWrite(ENA_II,200);
-    
-    // Motor superior izquierdo
-    digitalWrite(IN1_SI,HIGH);
-    digitalWrite(IN2_SI,LOW);
-    analogWrite(ENB_SI,200);
-
-    delay(710); // Este delay jalara por cuadrante de 30 cm centrado en medio
-
-    //delay(1300); // Para ver que tan recto avanza
-}
-
-void detener() {
-    // Motor superior izquierdo
-    digitalWrite(IN1_SD,LOW);
-    digitalWrite(IN2_SD,LOW);
-    analogWrite(ENA_SD,0);
-
-    // Motor inferior izquierdo
-    digitalWrite(IN1_II,LOW);
-    digitalWrite(IN2_II,LOW);
-    analogWrite(ENA_II,0);
-    
-    // Motor superior derecho
-    digitalWrite(IN1_SI,LOW);
-    digitalWrite(IN2_SI,LOW);
-    analogWrite(ENB_SI,0);
-
-
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,LOW);
-    digitalWrite(IN2_ID,LOW);
-    analogWrite(ENB_ID,0);
-    delay(2000);
-}
-
 /* ARDUINO SETUP */
 
 void setup() {
@@ -833,7 +848,7 @@ void loop() {
         dfsC(currentPosition);
     }
 
-    //avanzar();
+    // adelante();
     // detener();
     // giroDerecha();
     // giroIzquierda();
