@@ -412,9 +412,11 @@ void loop() {
 
     // Ya funcionan
     adelante();
-    detener();
-    giroDerecha();
-    giroIzquierda();
+    if (distanciaFrontal < 10) {
+        giroDerecha();
+    }
+
+    
 
     //movLateral();
 }
