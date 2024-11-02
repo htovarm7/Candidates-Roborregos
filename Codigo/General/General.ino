@@ -34,15 +34,15 @@ const int rightTrig = 39;
 const int IN1_SI = 47;
 const int IN2_SI = 46;
 const int ENA_SI = 7;
-const int ENC_A_SI = 9;
-const int ENC_B_SI = 8;
+const int ENC_A_SI = 11;
+const int ENC_B_SI = 10;
 
 // Pines motor superior derecho
 const int IN1_SD = 48;
 const int IN2_SD = 49;
 const int ENB_SD = 6;
-const int ENC_A_SD = 3;
-const int ENC_B_SD = 2;
+const int ENC_A_SD = 9;
+const int ENC_B_SD = 8;
 
 // Pines motor inferior izquierdo
 const int IN1_II = 52;
@@ -55,8 +55,8 @@ const int ENC_B_II = 12;
 const int IN1_ID = 50;
 const int IN2_ID = 49;
 const int ENB_ID = 4;
-const int ENC_A_ID = 11;
-const int ENC_B_ID = 10;
+const int ENC_A_ID = 7;
+const int ENC_B_ID = 6;
 
 const int pwmIzq = 255;
 const int pmwDer = 255;
@@ -85,14 +85,14 @@ const int giroSCL = 1;
 const int giroSDA = 2; 
 
 // Sensores de línea
-const int sensorLineaD8 = 37;
-const int sensorLineaD7 = 36;
-const int sensorLineaD6 = 35;
-const int sensorLineaD5 = 34;
-const int sensorLineaD4 = 33;
-const int sensorLineaD3 = 32;
-const int sensorLineaD2 = 31;
-const int sensorLineaD1 = 30;
+const int sensorLineaD8 = 46;
+const int sensorLineaD7 = 47;
+const int sensorLineaD6 = 48;
+const int sensorLineaD5 = 49;
+const int sensorLineaD4 = 50;
+const int sensorLineaD3 = 51;
+const int sensorLineaD2 = 52;
+const int sensorLineaD1 = 53;
 
 // Servos
 const int servo1 = 35;
