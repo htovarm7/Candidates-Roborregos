@@ -43,29 +43,48 @@ void avanzar() {
     // Motor superior izquierdo
     digitalWrite(IN1_SI,HIGH);
     digitalWrite(IN2_SI,LOW);
-    analogWrite(ENA_SI,130);
+    analogWrite(ENA_SI,190);
 
-    // Motor inferior izquierdo
-    digitalWrite(IN1_II,HIGH);
-    digitalWrite(IN2_II,LOW);
-    analogWrite(ENA_II,130);
+    // // Motor inferior izquierdo
+    // digitalWrite(IN1_II,LOW);
+    // digitalWrite(IN2_II,HIGH);
+    // analogWrite(ENA_II,190);
     
-    // Motor superior derecho
-    digitalWrite(IN1_SD,HIGH);
-    digitalWrite(IN2_SD,LOW);
-    analogWrite(ENB_SD,130);
+    // // Motor superior derecho
+    // digitalWrite(IN1_SD,HIGH);
+    // digitalWrite(IN2_SD,LOW);
+    // analogWrite(ENB_SD,190);
 
 
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,LOW);
-    digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENB_ID,130);
+    // // Motor inferior derecho
+    // digitalWrite(IN1_ID,LOW);
+    // digitalWrite(IN2_ID,HIGH);
+    // analogWrite(ENB_ID,190);
     delay(2000);
 }
 
 void girarIzquierda() {
-  Serial.println("Girando a la izquierda");
-  // Código para girar el robot a la izquierda
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,HIGH);
+    analogWrite(ENA_SI,0);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrite(ENA_II,110);
+    
+    // Motor superior derecho
+    digitalWrite(IN1_SD,LOW);
+    digitalWrite(IN2_SD,HIGH);
+    analogWrite(ENB_SD,130);
+
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,HIGH);
+    digitalWrite(IN2_ID,LOW);
+    analogWrite(ENB_ID,130);
+    delay(2000);
 }
 
 void girarDerecha() {
@@ -74,8 +93,27 @@ void girarDerecha() {
 }
 
 void detener() {
-  Serial.println("Detenido");
-  // Código para detener el robot
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENA_SI,0);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,LOW);
+    analogWrite(ENA_II,0);
+    
+    // Motor superior derecho
+    digitalWrite(IN1_SD,LOW);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENB_SD,0);
+
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,LOW);
+    analogWrite(ENB_ID,0);
+    delay(2000);
 }
 
 void setup() {
@@ -142,6 +180,8 @@ void loop() {
   //   detener();
   // }
   avanzar();
+  detener();
+  //girarIzquierda();
   delay(100); // Pequeña pausa para estabilidad
 }
 
