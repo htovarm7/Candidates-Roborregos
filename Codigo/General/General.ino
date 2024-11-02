@@ -123,7 +123,7 @@ Servo Servo2;
 /* LOGIC VARIABLES */
 
 // Keeps track of current track, based on starting color conditions.
-std::string track = "";
+String track = "";
 
 // std::Vector that std::maps the four directions —up, left, down, right— respectively.
 std::vector<std::pair<int, int>> directions = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
@@ -187,7 +187,7 @@ std::set<std::pair<int, int>> visitedA;
 /// Track C setup.
 
 // Color mapping.
-std::vector<std::vector<std::string>> colorMap(3, std::vector<std::string> (5, ""));
+std::vector<std::vector<String>> colorMap(3, std::vector<String> (5, ""));
 
 // Walls
 std::vector<std::vector<bool>> verticalWalls(3, std::vector<bool> (4, 0));
@@ -200,7 +200,7 @@ std::set<std::pair<int, int>> visitedC;
 std::map<std::pair<int, int>, std::set<std::pair<int, int>>> ALC;
 
 // std::Map containing the ocurrences of each color.
-std::map<std::string, int> detectedColors;
+std::map<String, int> detectedColors;
 
 // Robot always starts at (1, 4).
 std::pair<int, int> currentPosition = {1, 4};
@@ -333,9 +333,9 @@ void doMove(std::pair<int, int> currentPosition, std::pair<int, int> nextPositio
 // }
 
 // Finds the most frequent color in a std::map of colors.
-std::string findMostFrequentColor(std::map<std::string, int> colorMap) {
+String findMostFrequentColor(std::map<String, int> colorMap) {
     // Iterate through the std::map of detected colors to find the most seen color.
-    std::pair<std::string, int> mostFrequent = {"Red", 0};
+    std::pair<String, int> mostFrequent = {"Red", 0};
     for (auto i : colorMap) {
         if (i.second > mostFrequent.second) {
             mostFrequent = i;
@@ -624,13 +624,13 @@ void dfsC(std::pair<int, int> node) {
     // Detect color in cell, show, and save, only if it had not been std::set before.
     if (colorMap[node.first][node.second] == ""){
         //Find color based on samples.
-        std::map<std::string, int> detectedColorCount;
+        std::map<String, int> detectedColorCount;
         
         for (int i = 0; i < 10; i++) {
             detectedColorCount[getColor(tcs)]++;
             delay(50);
         }
-        std::string detectedColor = findMostFrequentColor(detectedColorCount);
+        String detectedColor = findMostFrequentColor(detectedColorCount);
         showColor(detectedColor);
 
         colorMap[node.first][node.second] = detectedColor;
@@ -665,8 +665,14 @@ void dfsC(std::pair<int, int> node) {
         myMotors.forward();
         myMotors.stop();
 
-        std::string mostSeenColor = findMostFrequentColor(detectedColors);
-        // LEDRBG::std::setColor(mostSeenColor);
+        String mostSeenColor = findMostFrequentColor(detectedColors);
+
+        for (int i = 0; i < 5; i++){
+            showColor(mostSeenColor);
+            delay(50);
+            showColor("Black");
+            delay(50);
+        }
     }
 
     for (int i = 0; i < 4; i++) {
@@ -720,7 +726,7 @@ void dfsC(std::pair<int, int> node) {
 }
 
 // Function to get color.
-std::string getColor(Adafruit_TCS34725 tcs) {
+String getColor(Adafruit_TCS34725 tcs) {
     uint16_t clear, red, green, blue;
     tcs.setInterrupt(false);
     delay(60); 
@@ -837,7 +843,7 @@ void loop() {
     
     // Probar esto que no sé si jalaría, especialmente con lo del PID.
     if (track == "") {
-        std::string color = getColor(tcs);
+        String color = getColor(tcs);
 
         if (color == "Green") {
             track = "A";
