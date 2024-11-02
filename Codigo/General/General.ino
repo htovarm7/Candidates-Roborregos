@@ -18,45 +18,45 @@
 /* CONSTANTS */
 
 // Pines ultrasonico Izquierdo
-const int leftEcho = 42;
-const int leftTrig = 43;
+const int leftEcho = 33;
+const int leftTrig = 32;
 
 // Pines ultrasonico Frontal
-const int frontEcho = 40;
-const int frontTrig = 41;
+const int frontEcho = 35;
+const int frontTrig = 34;
 
 // Pines ultrasonico Derecha
-const int rightEcho = 38;
-const int rightTrig = 39;
+const int rightEcho = 37;
+const int rightTrig = 36;
 
 // Motores
 //  Pines motor superior izquierdo
-const int IN1_SI = 47;
-const int IN2_SI = 46;
-const int ENA_SI = 7;
-const int ENC_A_SI = 11;
-const int ENC_B_SI = 10;
+const int IN1_SI = 45;
+const int IN2_SI = 44;
+const int ENA_SI = 5;
+const int ENC_A_SI = 25;
+const int ENC_B_SI = 24;
 
 // Pines motor superior derecho
-const int IN1_SD = 48;
-const int IN2_SD = 49;
-const int ENB_SD = 6;
-const int ENC_A_SD = 9;
-const int ENC_B_SD = 8;
+const int IN1_SD = 43;
+const int IN2_SD = 42;
+const int ENB_SD = 4;
+const int ENC_A_SD = 29;
+const int ENC_B_SD = 28;
 
 // Pines motor inferior izquierdo
-const int IN1_II = 52;
-const int IN2_II = 53;
-const int ENA_II = 5;
-const int ENC_A_II = 13;
-const int ENC_B_II = 12;
+const int IN1_II = 41;
+const int IN2_II = 40;
+const int ENA_II = 3;
+const int ENC_A_II = 27;
+const int ENC_B_II = 26;
 
 // Pines motor inferior derecho
-const int IN1_ID = 50;
-const int IN2_ID = 49;
-const int ENB_ID = 4;
-const int ENC_A_ID = 7;
-const int ENC_B_ID = 6;
+const int IN1_ID = 39;
+const int IN2_ID = 38;
+const int ENB_ID = 2;
+const int ENC_A_ID = 31;
+const int ENC_B_ID = 30;
 
 const int pwmIzq = 255;
 const int pmwDer = 255;
@@ -95,8 +95,8 @@ const int sensorLineaD2 = 52;
 const int sensorLineaD1 = 53;
 
 // Servos
-const int servo1 = 35;
-const int servo2 = 34;
+const int servo1 = 22;
+const int servo2 = 23;
 
 /* OBJECTS (SENSORS) */
 
