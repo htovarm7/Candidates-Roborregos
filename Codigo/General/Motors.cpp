@@ -1,153 +1,163 @@
 #include "Motors.h"
 
-Motors::Motors(int INA1L, int INA2L, int ENAL,    // Top-left motor
-               int INB1L, int INB2L, int ENBL,    // Top-right motor
-               int INA1R, int INA2R, int ENAR,    // Bottom-left motor
-               int INB1R, int INB2R, int ENBR) {   // Bottom-right motor 
+Motors::Motors(int IN1_SI, int IN2_SI, int ENB_SI,    // Top-left motor
+               int IN1_SD, int IN2_SD, int ENA_SD,    // Top-right motor
+               int IN1_II, int IN2_II, int ENB_II,    // Bottom-left motor
+               int IN1_ID, int IN2_ID, int ENA_ID) {   // Bottom-right motor 
     // Variable assignment.
-    INA1L_ = INA1L;
-    INA2L_ = INA2L;
-    ENAL_ = ENAL;
+    IN1_SI_ = IN1_SI;
+    IN2_SI_ = IN2_SI;
+    ENB_SI_ = ENB_SI;
 
-    INB1L_ = INB1L;
-    INB2L_ = INB2L;
-    ENBL_ = ENBL;
+    IN1_SD_ = IN1_SD;
+    IN2_SD_ = IN2_SD;
+    ENA_SD_ = ENA_SD;
 
-    INA1R_ = INA1R;
-    INA2R_ = INA2R;
-    ENAR_ = ENAR;
+    IN1_II_ = IN1_II;
+    IN2_II_ = IN2_II;
+    ENB_II_ = ENB_II;
 
-    INB1R_ = INB1R;
-    INB2R_ = INB2R;
-    ENBR_ = ENBR;
+    IN1_ID_ = IN1_ID;
+    IN2_ID_ = IN2_ID;
+    ENA_ID_ = ENA_ID;
 }
 
 void Motors::init() {
     // Initialization of pins.
-    pinMode(INA1L_, OUTPUT);
-    pinMode(INA2L_, OUTPUT);
-    pinMode(ENAL_, OUTPUT);
+    pinMode(IN1_SI_, OUTPUT);
+    pinMode(IN2_SI_, OUTPUT);
+    pinMode(ENB_SI_, OUTPUT);
 
-    pinMode(INB1L_, OUTPUT);
-    pinMode(INB2L_, OUTPUT);
-    pinMode(ENBL_, OUTPUT);
+    pinMode(IN1_SD_, OUTPUT);
+    pinMode(IN2_SD_, OUTPUT);
+    pinMode(ENA_SD_, OUTPUT);
 
-    pinMode(INA1R_, OUTPUT);
-    pinMode(INA2R_, OUTPUT);
-    pinMode(ENAR_, OUTPUT);
+    pinMode(IN1_II_, OUTPUT);
+    pinMode(IN2_II_, OUTPUT);
+    pinMode(ENB_II_, OUTPUT);
 
-    pinMode(INB1R_, OUTPUT);
-    pinMode(INB2R_, OUTPUT);
-    pinMode(ENBR_, OUTPUT);
+    pinMode(IN1_ID_, OUTPUT);
+    pinMode(IN2_ID_, OUTPUT);
+    pinMode(ENA_ID_, OUTPUT);
 }
 
 
 void Motors::forward() {
-    digitalWrite(INA1L_, HIGH);
-    digitalWrite(INA2L_, LOW);
-    analogWrite(ENAL_, 240);
+    // Motor superior derecho
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,190);
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENB_ID,190);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrite(ENA_II,200);
     
-    
-    digitalWrite(INB1L_, HIGH);
-    digitalWrite(INB2L_, LOW);
-    analogWrite(ENBL_, 170);
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,200);
 
-
-    digitalWrite(INA1R_, HIGH);
-    digitalWrite(INA2R_, LOW);
-    analogWrite(ENAR_, 130);
-
-
-    digitalWrite(INB1R_, HIGH);
-    digitalWrite(INB2R_, LOW);
-    analogWrite(ENBR_, 220);
+    delay(710); // Este delay jalara por cuadrante de 30 cm centrado en medio
 }
 
 void Motors::backward(){
+    // Motor superior derecho
+    digitalWrite(IN1_SD,LOW);
+    digitalWrite(IN2_SD,HIGH);
+    analogWrite(ENA_SD,160);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,HIGH);
+    digitalWrite(IN2_II,LOW);
+    analogWrite(ENA_II,200);
     
-    digitalWrite(INA1L_, LOW);
-    digitalWrite(INA2L_, LOW);
-    analogWrite(ENAL_, 0);
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,HIGH);
+    digitalWrite(IN2_ID,LOW);
+    analogWrite(ENB_ID,160);
 
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,HIGH);
+    analogWrite(ENB_SI,200);
 
-    digitalWrite(INA1R_, LOW);
-    digitalWrite(INA2R_, LOW);
-    analogWrite(ENAR_, 0);
-
-
-    digitalWrite(INB1L_, LOW);
-    digitalWrite(INB2L_, LOW);
-    analogWrite(ENBL_, 0);
-
-
-    digitalWrite(INB1R_, LOW);
-    digitalWrite(INB2R_, LOW);
-    analogWrite(ENBR_, 0);
-}
+    //delay(1000);
+    delay(300);
 
 void Motors::stop(){
-    digitalWrite(INA1L_, LOW);
-    digitalWrite(INA2L_, LOW);
-    analogWrite(ENAL_, 0);
+    // Motor superior izquierdo
+    digitalWrite(IN1_SD,LOW);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,0);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,LOW);
+    analogWrite(ENA_II,0);
+    
+    // Motor superior derecho
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,0);
 
 
-    digitalWrite(INA1R_, LOW);
-    digitalWrite(INA2R_, LOW);
-    analogWrite(ENAR_, 0);
-
-
-    digitalWrite(INB1L_, LOW);
-    digitalWrite(INB2L_, LOW);
-    analogWrite(ENBL_, 0);
-
-
-    digitalWrite(INB1R_, LOW);
-    digitalWrite(INB2R_, LOW);
-    analogWrite(ENBR_, 0);
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,LOW);
+    analogWrite(ENB_ID,0);
+    delay(200);
 }
 
 void Motors::turnLeft() {
-    digitalWrite(INA1L_, HIGH);
-    digitalWrite(INA2L_, LOW);
-    analogWrite(ENAL_, 200);
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,220);
 
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,HIGH);
+    digitalWrite(IN2_II,LOW);
+    analogWrite(ENA_II,255);
+    
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,HIGH);
+    analogWrite(ENB_SI,220);
 
-    digitalWrite(INA1R_, HIGH);
-    digitalWrite(INA2R_, LOW);
-    analogWrite(ENAR_, 200);
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENB_ID,255);
 
-
-    digitalWrite(INB1L_, LOW);
-    digitalWrite(INB2L_, HIGH);
-    analogWrite(ENBL_, 230);
-
-
-    digitalWrite(INB1R_, LOW);
-    digitalWrite(INB2R_, HIGH);
-    analogWrite(ENBR_, 230);
-
-    delay(1280);
+    delay(400);
 }
 
 void Motors::turnRight() {
-    digitalWrite(INA1L_, HIGH);
-    digitalWrite(INA2L_, LOW);
-    analogWrite(ENAL_, 0);
+    // Motor superior derecho
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,70);
 
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENB_ID,70);
 
-    digitalWrite(INA1R_, LOW);
-    digitalWrite(INA2R_, HIGH);
-    analogWrite(ENAR_, 200);
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,HIGH);
+    digitalWrite(IN2_II,LOW);
+    analogWrite(ENA_II,200);
+    
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,190);
 
-
-    digitalWrite(INB1L_, HIGH);
-    digitalWrite(INB2L_, LOW);
-    analogWrite(ENBL_, 200);
-
-
-    digitalWrite(INB1R_, LOW);
-    digitalWrite(INB2R_, HIGH);
-    analogWrite(ENBR_, 200);
-
-    delay(1280);
+    //delay();
+    delay(500);
 }
