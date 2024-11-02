@@ -2,6 +2,7 @@
 #define MOTORS_H
 
 #include <Arduino.h>
+#include "PID.h"
 
 class Motors {
 public:
@@ -10,8 +11,10 @@ public:
            int INA1R, int INA2R, int ENAR,    // Bottom-left motor
            int INB1R, int INB2R, int ENBR);   // Bottom-right motor
 
-    void forward(int speed);
+    void forward();
     void backward();
+    void turnLeft();
+    void turnRight();
     void stop();
     void init();
 

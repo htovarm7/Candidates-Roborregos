@@ -42,25 +42,25 @@ void Motors::init() {
 }
 
 
-void Motors::forward(int speed) {
+void Motors::forward() {
     digitalWrite(INA1L_, HIGH);
     digitalWrite(INA2L_, LOW);
-    analogWrite(ENAL_, speed);
+    analogWrite(ENAL_, 240);
     
     
     digitalWrite(INB1L_, HIGH);
     digitalWrite(INB2L_, LOW);
-    analogWrite(ENBL_, speed);
+    analogWrite(ENBL_, 170);
 
 
     digitalWrite(INA1R_, HIGH);
     digitalWrite(INA2R_, LOW);
-    analogWrite(ENAR_, speed);
+    analogWrite(ENAR_, 130);
 
 
     digitalWrite(INB1R_, HIGH);
     digitalWrite(INB2R_, LOW);
-    analogWrite(ENBR_, speed);
+    analogWrite(ENBR_, 220);
 }
 
 void Motors::backward(){
@@ -86,7 +86,6 @@ void Motors::backward(){
 }
 
 void Motors::stop(){
-    
     digitalWrite(INA1L_, LOW);
     digitalWrite(INA2L_, LOW);
     analogWrite(ENAL_, 0);
@@ -105,4 +104,50 @@ void Motors::stop(){
     digitalWrite(INB1R_, LOW);
     digitalWrite(INB2R_, LOW);
     analogWrite(ENBR_, 0);
+}
+
+void Motors::turnLeft() {
+    digitalWrite(INA1L_, HIGH);
+    digitalWrite(INA2L_, LOW);
+    analogWrite(ENAL_, 200);
+
+
+    digitalWrite(INA1R_, HIGH);
+    digitalWrite(INA2R_, LOW);
+    analogWrite(ENAR_, 200);
+
+
+    digitalWrite(INB1L_, LOW);
+    digitalWrite(INB2L_, HIGH);
+    analogWrite(ENBL_, 230);
+
+
+    digitalWrite(INB1R_, LOW);
+    digitalWrite(INB2R_, HIGH);
+    analogWrite(ENBR_, 230);
+
+    delay(1280);
+}
+
+void Motors::turnRight() {
+    digitalWrite(INA1L_, HIGH);
+    digitalWrite(INA2L_, LOW);
+    analogWrite(ENAL_, 0);
+
+
+    digitalWrite(INA1R_, LOW);
+    digitalWrite(INA2R_, HIGH);
+    analogWrite(ENAR_, 200);
+
+
+    digitalWrite(INB1L_, HIGH);
+    digitalWrite(INB2L_, LOW);
+    analogWrite(ENBL_, 200);
+
+
+    digitalWrite(INB1R_, LOW);
+    digitalWrite(INB2R_, HIGH);
+    analogWrite(ENBR_, 200);
+
+    delay(1280);
 }
