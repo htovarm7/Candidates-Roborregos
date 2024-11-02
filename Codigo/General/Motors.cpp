@@ -45,17 +45,16 @@ void Motors::init() {
 void Motors::forward() {
     digitalWrite(INA1L_, HIGH);
     digitalWrite(INA2L_, LOW);
-    analogWrite(ENAL_, 240);
+    analogWrite(ENA_SD_, 190);
     
     
     digitalWrite(INB1L_, HIGH);
     digitalWrite(INB2L_, LOW);
-    analogWrite(ENBL_, 170);
-
+    analogWrite(ENA_ID_, 170);
 
     digitalWrite(INA1R_, HIGH);
     digitalWrite(INA2R_, LOW);
-    analogWrite(ENAR_, 130);
+    analogWrite(ENBR_, 130);
 
 
     digitalWrite(INB1R_, HIGH);
