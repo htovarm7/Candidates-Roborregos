@@ -131,8 +131,53 @@ enum Direction {
     WEST = 3
 };
 
-// Robot's current orientation; starts east.
-int orientation = EAST;
+// Robot's current orientation.
+int orientation;
+
+/// Track A setup
+
+// Grid for the area.
+std::map<std::pair<int, int>, std::vector<std::pair<int, int>>> ALA;
+
+// Control variables.
+bool ballFound = false;
+bool lineFound = false;
+
+// Fixes the adjacency list according to what we can know.
+// This circumvents the use of directions, yet it's not hardcoding!!
+void fixGridAL() {
+    ALA[{1, 0}].push_back({1, 1});
+
+    ALA[{1, 1}].push_back({1, 0});
+    ALA[{1, 1}].push_back({0, 1});
+    ALA[{1, 1}].push_back({2, 1});
+
+    ALA[{0, 1}].push_back({1, 1});
+    ALA[{0, 1}].push_back({0, 2});
+    
+    ALA[{2, 1}].push_back({1, 1});
+    ALA[{2, 1}].push_back({2, 2});
+
+    ALA[{0, 2}].push_back({0, 1});
+    ALA[{0, 2}].push_back({0, 3});
+
+    ALA[{2, 2}].push_back({2, 1});
+    ALA[{2, 2}].push_back({2, 3});
+    
+    ALA[{0, 3}].push_back({0, 2});
+    ALA[{0, 3}].push_back({1, 3});
+
+    ALA[{1, 3}].push_back({0, 3});
+    ALA[{1, 3}].push_back({2, 3});
+    // ALA[{1, 3}].push_back({1, 4}); // This needs to be "unlocked"
+
+    ALA[{2, 3}].push_back({2, 2});
+    ALA[{2, 3}].push_back({1, 3});
+    
+    ALA[{1, 4}].push_back({1, 3});
+}
+
+set<pair<int, int>> visitedA;
 
 /// Track C setup.
 
@@ -144,10 +189,10 @@ std::vector<std::vector<bool>> verticalWalls(3, std::vector<bool> (4, 0));
 std::vector<std::vector<bool>> horizontalWalls(2, std::vector<bool> (5, 0));
 
 // std::Set that holds the currently visited cells.
-std::set<std::pair<int, int>> visited;
+std::set<std::pair<int, int>> visitedC;
 
 // Adjacency list of the area.
-std::map<std::pair<int, int>, std::set<std::pair<int, int>>> AL;
+std::map<std::pair<int, int>, std::set<std::pair<int, int>>> ALC;
 
 // std::Map containing the ocurrences of each color.
 std::map<std::string, int> detectedColors;
@@ -165,105 +210,6 @@ enum Steps {
 std::vector<std::vector<int>> steps = {{FORWARD}, {RIGHT, FORWARD}, {RIGHT, RIGHT, FORWARD}, {LEFT, FORWARD}};
 
 /* CONTROL FUNCTIONS */
-
-void giroDerecha(){
-    // Motor superior izquierdo
-    digitalWrite(IN1_SI,HIGH);
-    digitalWrite(IN2_SI,LOW);
-    analogWrite(ENA_SI,pwmIzq);
-
-    // Motor inferior izquierdo
-    digitalWrite(IN1_II,HIGH);
-    digitalWrite(IN2_II,HIGH);
-    analogWrite(ENA_II,pwmIzq);
-    
-    // Motor superior derecho
-    digitalWrite(IN1_SD,HIGH);
-    digitalWrite(IN2_SD,LOW);
-    analogWrite(ENB_SD,0);
-
-
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,HIGH);
-    digitalWrite(IN2_ID,LOW);
-    analogWrite(ENB_ID,0);
-    
-    delay(2000);
-}
-
-void giroIzquierda(){
-    // Motor superior izquierdo
-    digitalWrite(IN1_SI,HIGH);
-    digitalWrite(IN2_SI,LOW);
-    analogWrite(ENA_SI,0);
-
-    // Motor inferior izquierdo
-    digitalWrite(IN1_II,HIGH);
-    digitalWrite(IN2_II,HIGH);
-    analogWrite(ENA_II,0);
-    
-    // Motor superior derecho
-    digitalWrite(IN1_SD,HIGH);
-    digitalWrite(IN2_SD,LOW);
-    analogWrite(ENB_SD,pmwDer);
-
-
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,HIGH);
-    digitalWrite(IN2_ID,LOW);
-    analogWrite(ENB_ID,pmwDer);
-
-    delay(2000);
-}
-
-void reversa(){
-    // Motor superior izquierdo
-    digitalWrite(IN1_SI,LOW);
-    digitalWrite(IN2_SI,HIGH);
-    analogWrite(ENA_SI,pwmIzq);
-
-    // Motor inferior izquierdo
-    digitalWrite(IN1_II,LOW);
-    digitalWrite(IN2_II,HIGH);
-    analogWrite(ENA_II,pwmIzq);
-    
-    // Motor superior derecho
-    digitalWrite(IN1_SD,LOW);
-    digitalWrite(IN2_SD,HIGH);
-    analogWrite(ENB_SD,pmwDer);
-
-
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,LOW);
-    digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENB_ID,pmwDer);
-
-    delay(2000);
-}
-
-void movLateral(){
-    // Motor superior izquierdo
-    digitalWrite(IN1_SI,LOW);
-    digitalWrite(IN2_SI,HIGH);
-    analogWrite(ENA_SI,pwmIzq);
-
-    // Motor inferior izquierdo
-    digitalWrite(IN1_II,HIGH);
-    digitalWrite(IN2_II,LOW);
-    analogWrite(ENA_II,pwmIzq);
-    
-    // Motor superior derecho
-    digitalWrite(IN1_SD,LOW);
-    digitalWrite(IN2_SD,HIGH);
-    analogWrite(ENB_SD,pmwDer);
-
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,HIGH);
-    digitalWrite(IN2_ID,LOW);
-    analogWrite(ENB_ID,pmwDer);\
-    
-    delay(2000);
-}
 
 void showColor(String color){
     if(color == "Yellow"){
@@ -382,7 +328,7 @@ std::string findMostFrequentColor(std::map<std::string, int> colorMap) {
     return mostFrequent.first;
 }
 
-std::map<std::pair<int, int>, std::pair<int, int>> bfs(std::pair<int, int> start) {
+std::map<std::pair<int, int>, std::pair<int, int>> bfs(std::pair<int, int> start, std::map<std::pair<int, int>, std::vector<std::pair<int, int>>> AL) {
     // Declare needed data structures.
     std::map<std::pair<int, int>, std::pair<int, int>> parents; // Stores parents for each node.
     std::queue<std::pair<int, int>> q; // Node processing std::queue.
@@ -410,24 +356,117 @@ std::map<std::pair<int, int>, std::pair<int, int>> bfs(std::pair<int, int> start
         }
     }
 
-    // Return parent std::map.
+    // Return parent map.
     return parents;
 }
 
 void moveToNewPosition(std::pair<int, int> newPosition, std::pair<int, int>& currentPosition) {
     // Call bfs to get the path.
-    std::map<std::pair<int, int>, std::pair<int, int>> parents = bfs(newPosition);
+    std::map<std::pair<int, int>, std::pair<int, int>> parents = bfs(newPosition, ALC);
 
     while (parents[currentPosition] != currentPosition) {
         // Physically move towards the parent.
         doMove(currentPosition, parents[currentPosition]);
         currentPosition = parents[currentPosition];
     }
+
+    if (track == "A" && newPosition == make_pair(1, 2)) {
+        ALgrid[{1, 3}].push_back({1, 4});
+        ALgrid[{1, 4}].push_back({1, 3});
+        moveToNewPosition({1, 4}, newPosition);
+    }
 }
 
-void dfs(std::pair<int, int> node) {
-    visited.insert(node);
-    if (AL[node].find(currentPosition) == AL[node].end()) {
+void dfsA(pair<int, int> node) {
+    if (lineFound && ballFound) return;
+    visitedA.insert(node);
+
+    cout << node.first << " " << node.second << "\n";
+
+    if (!ballFound){
+        if (node == make_pair(1, 1)) {
+            // if (ultrafront.getDistance() > 10) {
+            //    ballFound = true;
+            //    ALA[node].push_back({1, 2});
+            //}
+        }
+        if (node == make_pair(0, 2)) {
+            // if (ultraright.getDistance() > 10 || ultrafront.getDistance() > 10) {
+            //    ballFound = true;
+            //    ALA[node].push_back({1, 2});
+            //}
+            ballFound = true;
+            ALA[node].push_back({1, 2});
+            ALA[{1, 2}].push_back(node);
+        }
+        if (node == make_pair(1, 3)) {
+            // if (ultraright.getDistance() > 10 || ultrafront.getDistance() > 10) {
+            //    ballFound = true;
+            //    ALA[node].push_back({1, 2});
+            //}
+        }
+        if (node == make_pair(2, 2)) {
+            // if (ultraright.getDistance() > 10 || ultrafront.getDistance() > 10) {
+            //    ballFound = true;
+            //    ALA[node].push_back({1, 2});
+            //}
+        }
+    }
+
+    if (lineFound && ballFound) { 
+        moveToNewPosition({1, 2}, node);
+        return;
+    }
+
+    for (auto v : ALA[node]) {
+        if (visitedA.count(v)) continue;
+
+        // Move according to current position and next position.
+        // NORTH
+        // NORTH = -
+        // EAST = left turn
+        // WEST = right turn
+
+        // EAST
+        // NORTH = right turn
+        // EAST = -
+        // SOUTH = left turn
+
+        // SOUTH
+        // EAST = right turn
+        // SOUTH = -
+        // WEST = left turn
+
+        // WEST 
+        // NORTH = left turn
+        // WEST = -
+        // SOUTH = right turn
+
+        if (!lineFound) {
+            // if (sensorLineaD0 = 1 && ... D8), lineFound = true;
+            if (v == make_pair(2,1)) {
+                lineFound = true;
+                for (auto it = ALA[{2, 1}].begin(); it != ALA[{2, 1}].end(); it++) {
+                    if (*it == node) {
+                        ALA[{2, 1}].erase(it);
+                        break;
+                    }
+                }
+                if (lineFound && ballFound) { 
+                    moveToNewPosition({1, 2}, node);
+                    return;
+                }
+                continue;
+            }
+        }
+
+        dfsA(v);
+    } 
+}
+
+void dfsC(std::pair<int, int> node) {
+    visitedC.insert(node);
+    if (ALC[node].find(currentPosition) == ALC[node].end()) {
         Serial.println("Call BFS!");
         moveToNewPosition(node, currentPosition);
 
@@ -472,7 +511,7 @@ void dfs(std::pair<int, int> node) {
     }
 
     // If all cells are visited, move to checkpoint.
-    if (visited.size() == 15) {
+    if (visitedC.size() == 15) {
         moveToNewPosition({0, 0}, currentPosition);
 
         // Face the checkpoint.
@@ -512,11 +551,11 @@ void dfs(std::pair<int, int> node) {
         }
 
         // If there's no wall, update adjacency list. 
-        AL[node].insert({nx, ny});
-        AL[{nx, ny}].insert(node);
+        ALC[node].insert({nx, ny});
+        ALC[{nx, ny}].insert(node);
 
         // Call dfs with new node only if it's not been visited yet.
-        if (!visited.count({nx, ny})) {
+        if (!visitedC.count({nx, ny})) {
             // Move in that direction, then call dfs.
             if (i == 0) {
                 myMotors.forward();
@@ -533,7 +572,7 @@ void dfs(std::pair<int, int> node) {
             }
             myMotors.stop();
 
-            dfs({nx, ny});
+            dfsC({nx, ny});
         }
     }
 }
@@ -637,8 +676,6 @@ void setup() {
 /* ARDUINO LOOP */
 
 void loop() {
-    if 
-    
     float distanciaFrontal = frontUltrasonic.getDistance();
     float distanciaDerecha = rightUltrasonic.getDistance();
     float distanciaIzquierda = leftUltrasonic.getDistance();
@@ -668,8 +705,15 @@ void loop() {
     }
 
     // Start track C logic.
-    if (track == "C") {
-        dfs(currentPosition);
+    if (track == "A") {
+        orientation == WEST;
+        currentPosition = {1, 0};
+        dfsA(currentPosition):
+    }
+    else if (track == "C") {
+        orientation == EAST;
+        currentPosition = {1, 4};
+        dfsC(currentPosition);
     }
 
     // adelante();
