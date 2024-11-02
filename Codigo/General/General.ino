@@ -260,6 +260,7 @@ void showColor(String color){
         analogWrite(G,143);
         analogWrite(B,23);
     }
+    delay(1500);
 }
 
 void handleMove(int movement) {
@@ -630,7 +631,7 @@ void dfsC(std::pair<int, int> node) {
             delay(50);
         }
         std::string detectedColor = findMostFrequentColor(detectedColorCount);
-        // LEDRBG: std::setColor(detectedColor);
+        showColor(detectedColor);
 
         colorMap[node.first][node.second] = detectedColor;
         detectedColors[detectedColor]++;
