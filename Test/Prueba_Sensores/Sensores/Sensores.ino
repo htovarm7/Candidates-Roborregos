@@ -9,90 +9,79 @@ const int leftEcho = 42;
 const int leftTrig = 43;
 
 // Pines ultrasonico Frontal
-const int frontEcho = 15;
-const int frontTrig = 14;
+const int frontEcho = 40;
+const int frontTrig = 41;
 
 // Pines ultrasonico Derecha
-const int rightEcho = 2;
-const int rightTrig = 3;
+const int rightEcho = 38;
+const int rightTrig = 39;
 
-// Motores
 // Motores
 //  Pines motor superior izquierdo
 const int IN1_SI = 47;
 const int IN2_SI = 46;
 const int ENA_SI = 7;
-const int ENC_A_SI = 16;
-const int ENC_B_SI = 17;
+const int ENC_A_SI = 11;
+const int ENC_B_SI = 10;
 
 // Pines motor superior derecho
 const int IN1_SD = 48;
 const int IN2_SD = 49;
 const int ENB_SD = 6;
-const int ENC_A_SD = 18;
-const int ENC_B_SD = 19;
+const int ENC_A_SD = 9;
+const int ENC_B_SD = 8;
 
 // Pines motor inferior izquierdo
 const int IN1_II = 52;
 const int IN2_II = 53;
 const int ENA_II = 5;
-const int ENC_A_II = 9;
-const int ENC_B_II = 8; 
+const int ENC_A_II = 13;
+const int ENC_B_II = 12;
 
 // Pines motor inferior derecho
 const int IN1_ID = 50;
 const int IN2_ID = 49;
 const int ENB_ID = 4;
-const int ENC_A_ID = 26;
-const int ENC_B_ID = 27;
+const int ENC_A_ID = 7;
+const int ENC_B_ID = 6;
+
+const int pwmIzq = 255;
+const int pmwDer = 255;
 
 // Actuadores
 
-/*
-Segun yo no se ocupan estos pines
-
-// Giroscopio
-const char SCL_GIRO = A2;
-const char SDA_GIRO = A3;
-
-// Giroscopio
-const int giroSCL = 1; 
-const int giroSDA = 2; 
+// Servomotores
+const int Servo_SI = 22;
+const int Servo_SD = 23;
+Servo Servo1;
+Servo Servo2;
 
 // Sensor de color
 const char SCL_COLOR = A5;
 const char SDA_COLOR = A4; 
 
-*/
+// Giroscopio
+// const char SCL_GIRO = A2;
+// const char SDA_GIRO = A3;
 
 // LED RGB Falta poner los pines al arduino
 const int R = 10;
 const int G = 11;
 const int B = 12;
 
+// Giroscopio
+const int giroSCL = 1; 
+const int giroSDA = 2; 
+
 // Sensores de línea
-const int sensorLineaD8 = 37;
-const int sensorLineaD7 = 36;
-const int sensorLineaD6 = 35;
-const int sensorLineaD5 = 34;
-const int sensorLineaD4 = 33;
-const int sensorLineaD3 = 32;
-const int sensorLineaD2 = 31;
-const int sensorLineaD1 = 30;
-
-// Velocidad para los motores
-const int pwmIzq = 255;
-const int pmwDer = 255;
-
-// Los servos
-// const int Servo_SI = 22;
-// const int Servo_SD = 23;
-Servo Servo1;
-Servo Servo2;
-
-// Velocidades para los motores
-const int pwmAdelante = 255;
-const int pwmReversa = 230;
+const int sensorLineaD8 = 46;
+const int sensorLineaD7 = 47;
+const int sensorLineaD6 = 48;
+const int sensorLineaD5 = 49;
+const int sensorLineaD4 = 50;
+const int sensorLineaD3 = 51;
+const int sensorLineaD2 = 52;
+const int sensorLineaD1 = 53;
 
 // Para los encoders
 volatile int encoderCountSI = 0;
@@ -100,6 +89,8 @@ volatile int encoderCountSD = 0;
 volatile int encoderCountII = 0;
 volatile int encoderCountID = 0;
 
+// Velocidad de motores
+const int pwmAdelante = 130;
 
 // FUnciones para probar cada sensor
 long distanciaUltrasonico(int trigPin, int echoPin) {
@@ -548,10 +539,10 @@ void loop(){
     //     detenerConReversa();
     //     //detener();
     // }
-
+    adelante();
     calculateRPM();
-    abrirCupula();
-    cerrarCupula();
+    // abrirCupula();
+    // cerrarCupula();
 
     //RGB();
 }
