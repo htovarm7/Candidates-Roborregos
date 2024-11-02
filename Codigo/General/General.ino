@@ -10,6 +10,7 @@
 // Own function includes
 #include "PID.h"
 #include <Wire.h>
+#include <Servo.h>
 #include "Adafruit_TCS34725.h"
 #include "ColorConverterLib.h"
 #include "Ultrasonic.h"
@@ -80,19 +81,19 @@ const int R = 6;
 const int G = 8;
 const int B = 7;
 
-// Giroscopio
-const int giroSCL = 1; 
-const int giroSDA = 2; 
+// Gyroscopes (burnt, my bad)
+// const int giroSCL = 1; 
+// const int giroSDA = 2; 
 
-// Sensores de línea
-const int sensorLineaD8 = 46;
-const int sensorLineaD7 = 47;
-const int sensorLineaD6 = 48;
-const int sensorLineaD5 = 49;
-const int sensorLineaD4 = 50;
-const int sensorLineaD3 = 51;
-const int sensorLineaD2 = 52;
-const int sensorLineaD1 = 53;
+// Line sensor
+const int lineSensorD8 = 46;
+const int lineSensorD7 = 47;
+const int lineSensorD6 = 48;
+const int lineSensorD5 = 49;
+const int lineSensorD4 = 50;
+const int lineSensorD3 = 51;
+const int lineSensorD2 = 52;
+const int lineSensorD1 = 53;
 
 // Servos
 const int servo1 = 22;
@@ -114,6 +115,10 @@ Ultrasonic leftUltrasonic(leftEcho, leftTrig);
 
 // Color sensor.
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_1X);
+
+// Servos.
+Servo Servo1;
+Servo Servo2;
 
 /* LOGIC VARIABLES */
 
@@ -210,6 +215,16 @@ enum Steps {
 std::vector<std::vector<int>> steps = {{FORWARD}, {RIGHT, FORWARD}, {RIGHT, RIGHT, FORWARD}, {LEFT, FORWARD}};
 
 /* CONTROL FUNCTIONS */
+
+void openDome(){
+    Servo1.write(60);
+    Servo2.write(120);
+}
+
+void closeDome(){
+    Servo1.write(150); 
+    Servo2.write(30);
+}
 
 void showColor(String color){
     if(color == "Yellow"){
@@ -312,7 +327,6 @@ void doMove(std::pair<int, int> currentPosition, std::pair<int, int> nextPositio
 //         // Check vertical wall at (x, y).
 //         return verticalWalls[x][y];
 //     }
-    
 // }
 
 // Finds the most frequent color in a std::map of colors.
@@ -415,6 +429,8 @@ void moveToNewPositionA(std::pair<int, int> newPosition, std::pair<int, int>& cu
     }
 
     if (newPosition == std::make_pair(1, 2)) {
+        openDome();
+        closeDome();
         ALA[{1, 3}].push_back({1, 4});
         ALA[{1, 4}].push_back({1, 3});
         moveToNewPositionA({1, 4}, newPosition);
@@ -427,35 +443,23 @@ void dfsA(std::pair<int, int> node) {
 
     if (!ballFound){
         if (node == std::make_pair(1, 1)) {
-            // if (ultrafront.getDistance() > 10) {
-            //    ballFound = true;
-            //    ALA[node].push_back({1, 2});
-            //}
+            if (frontUltrasonic.getDistance() > 10) {
+                ballFound = true;
+                ALA[{1, 2}].push_back(node);
+                ALA[node].push_back({1, 2});
+            }
         }
-        if (node == std::make_pair(0, 2)) {
-            // if (ultraright.getDistance() > 10 || ultrafront.getDistance() > 10) {
-            //    ballFound = true;
-            //    ALA[node].push_back({1, 2});
-            //}
-            ballFound = true;
-            ALA[node].push_back({1, 2});
-            ALA[{1, 2}].push_back(node);
-        }
-        if (node == std::make_pair(1, 3)) {
-            // if (ultraright.getDistance() > 10 || ultrafront.getDistance() > 10) {
-            //    ballFound = true;
-            //    ALA[node].push_back({1, 2});
-            //}
-        }
-        if (node == std::make_pair(2, 2)) {
-            // if (ultraright.getDistance() > 10 || ultrafront.getDistance() > 10) {
-            //    ballFound = true;
-            //    ALA[node].push_back({1, 2});
-            //}
+        if (node == std::make_pair(0, 2) || node == std::make_pair(1, 3) || node == std::make_pair(2, 2)) {
+            if (rightUltrasonic.getDistance() > 10) {
+                ballFound = true;
+                ALA[node].push_back({1, 2});
+                ALA[{1, 2}].push_back(node);
+            }
         }
     }
 
     if (lineFound && ballFound) { 
+        // Regresar a donde está la pelota, sabiendo que está en {1, 2};
         moveToNewPositionA({1, 2}, node);
         return;
     }
@@ -485,7 +489,23 @@ void dfsA(std::pair<int, int> node) {
         // SOUTH = right turn
 
         if (!lineFound) {
-            // if (sensorLineaD0 = 1 && ... D8), lineFound = true;
+            // If 5/8 sensors sense black, a line is detected.
+            int lineCounter = 0;
+            int valueD1 = digitalRead(lineSensorD1);
+            int valueD2 = digitalRead(lineSensorD2);
+            int valueD3 = digitalRead(lineSensorD3);
+            int valueD4 = digitalRead(lineSensorD4);
+            int valueD5 = digitalRead(lineSensorD5);
+            int valueD6 = digitalRead(lineSensorD6);
+            int valueD7 = digitalRead(lineSensorD7);
+            int valueD8 = digitalRead(lineSensorD8);
+
+            std::vector<int> lineValues = {valueD1, valueD2, valueD3, valueD4, valueD5, valueD6, valueD7, valueD8};
+            
+            for (auto i : lineValues) {
+                if (i) lineCounter++;
+            }
+
             if (v == std::make_pair(2,1)) {
                 lineFound = true;
                 for (auto it = ALA[{2, 1}].begin(); it != ALA[{2, 1}].end(); it++) {
@@ -681,8 +701,12 @@ void setup() {
 
     // Ensure color sensor is on.
     while (!tcs.begin()) delay(1000);
- 
-    // Actuadores
+    
+    // Servos
+    Servo1.attach(Servo_SI);
+    Servo2.attach(Servo_SD);
+
+    // RGB LED
     pinMode(R, OUTPUT);
     pinMode(B, OUTPUT);
     pinMode(G, OUTPUT);
@@ -704,15 +728,15 @@ void setup() {
     pinMode(ENC_A_ID, INPUT);
     pinMode(ENC_B_ID, INPUT);
     
-    // Sensor de Linea
-    pinMode(sensorLineaD8, INPUT);
-    pinMode(sensorLineaD7, INPUT);
-    pinMode(sensorLineaD6, INPUT);
-    pinMode(sensorLineaD5, INPUT);
-    pinMode(sensorLineaD4, INPUT);
-    pinMode(sensorLineaD3, INPUT);
-    pinMode(sensorLineaD2, INPUT);
-    pinMode(sensorLineaD1, INPUT);
+    // Line Sensor
+    pinMode(lineSensorD8, INPUT);
+    pinMode(lineSensorD7, INPUT);
+    pinMode(lineSensorD6, INPUT);
+    pinMode(lineSensorD5, INPUT);
+    pinMode(lineSensorD4, INPUT);
+    pinMode(lineSensorD3, INPUT);
+    pinMode(lineSensorD2, INPUT);
+    pinMode(lineSensorD1, INPUT);
 }
 
 /* ARDUINO LOOP */
