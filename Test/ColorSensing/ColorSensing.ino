@@ -4,9 +4,9 @@
 
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_1X);
 
-const int R = 10;
-const int G = 11;
-const int B = 12;
+const int R = 6;
+const int G = 8;
+const int B = 7;
 
 String getColor(double hue)
 {
@@ -126,13 +126,13 @@ void differentColor() {
 
 void setup()
 {
-  tcs.begin(); 
   Serial.begin(9600);
-  Serial.println("Iniciando..."); // Imprime para saber si el setup se ejecuta
-
-
-
-  Serial.println("Sensor inicializado correctamente.");
+  if (!tcs.begin()) {
+    Serial.println("No se detectó el sensor TCS34725. Verifique la conexión.");
+    while (1);
+  }else{
+    Serial.println("Se inicio correctamente");
+  }
   pinMode(R, OUTPUT);
   pinMode(G, OUTPUT);
   pinMode(B, OUTPUT);
@@ -141,6 +141,9 @@ void setup()
 
 void loop()
 {
+  Serial.println("Prueba de comunicación serial");
+  delay(1000);
+
   Serial.println("¡Hola, mundo!");
   uint16_t clear, red, green, blue;
 
@@ -149,25 +152,24 @@ void loop()
   tcs.getRawData(&red, &green, &blue, &clear);
   tcs.setInterrupt(true);
 
-  // Make rgb measurement relative
-  uint32_t sum = clear;
-  float r, g, b;
-  r = red; r /= sum;
-  g = green; g /= sum;
-  b = blue; b /= sum;
+  // // Make rgb measurement relative
+  // uint32_t sum = clear;
+  // float r, g, b;
+  // r = red; r /= sum;
+  // g = green; g /= sum;
+  // b = blue; b /= sum;
 
-  // Scale rgb to bytes
-  r *= 256; g *= 256; b *= 256;
+  // // Scale rgb to bytes
+  // r *= 256; g *= 256; b *= 256;
 
-  // Convert to hue, saturation, value
-  double hue, saturation, value;
-  ColorConverter::RgbToHsv(static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b), hue, saturation, value);
+  // // Convert to hue, saturation, value
+  // double hue, saturation, value;
+  // ColorConverter::RgbToHsv(static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b), hue, saturation, value);
 
-  // Show color name
-  String detectedColor = getColor(hue * 360);
-  Serial.println("Hue: " + String(hue * 360) + ", Color detected: " + detectedColor);  // Print hue and detected color
-  showColor(detectedColor);
-
+  // // Show color name
+  // String detectedColor = getColor(hue * 360);
+  // Serial.println("Hue: " + String(hue * 360) + ", Color detected: " + detectedColor);  // Print hue and detected color
+  // showColor(detectedColor);
   // differentColor();
 
   delay(1000);

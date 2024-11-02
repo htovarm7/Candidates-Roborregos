@@ -10,6 +10,7 @@
 // Own function includes
 #include "PID.h"
 #include <Wire.h>
+#include <Servo.h>
 #include "Adafruit_TCS34725.h"
 #include "ColorConverterLib.h"
 #include "Ultrasonic.h"
@@ -76,23 +77,23 @@ const char SDA_COLOR = A4;
 // const char SDA_GIRO = A3;
 
 // LED RGB Falta poner los pines al arduino
-const int R = 10;
-const int G = 11;
-const int B = 12;
+const int R = 6;
+const int G = 8;
+const int B = 7;
 
-// Giroscopio
-const int giroSCL = 1; 
-const int giroSDA = 2; 
+// Gyroscopes (burnt, my bad)
+// const int giroSCL = 1; 
+// const int giroSDA = 2; 
 
-// Sensores de línea
-const int sensorLineaD8 = 46;
-const int sensorLineaD7 = 47;
-const int sensorLineaD6 = 48;
-const int sensorLineaD5 = 49;
-const int sensorLineaD4 = 50;
-const int sensorLineaD3 = 51;
-const int sensorLineaD2 = 52;
-const int sensorLineaD1 = 53;
+// Line sensor
+const int lineSensorD8 = 46;
+const int lineSensorD7 = 47;
+const int lineSensorD6 = 48;
+const int lineSensorD5 = 49;
+const int lineSensorD4 = 50;
+const int lineSensorD3 = 51;
+const int lineSensorD2 = 52;
+const int lineSensorD1 = 53;
 
 // Servos
 const int servo1 = 22;
@@ -114,6 +115,10 @@ Ultrasonic leftUltrasonic(leftEcho, leftTrig);
 
 // Color sensor.
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_1X);
+
+// Servos.
+Servo Servo1;
+Servo Servo2;
 
 /* LOGIC VARIABLES */
 
@@ -177,7 +182,7 @@ void fixGridAL() {
     ALA[{1, 4}].push_back({1, 3});
 }
 
-set<pair<int, int>> visitedA;
+std::set<std::pair<int, int>> visitedA;
 
 /// Track C setup.
 
@@ -210,6 +215,16 @@ enum Steps {
 std::vector<std::vector<int>> steps = {{FORWARD}, {RIGHT, FORWARD}, {RIGHT, RIGHT, FORWARD}, {LEFT, FORWARD}};
 
 /* CONTROL FUNCTIONS */
+
+void openDome(){
+    Servo1.write(60);
+    Servo2.write(120);
+}
+
+void closeDome(){
+    Servo1.write(150); 
+    Servo2.write(30);
+}
 
 void showColor(String color){
     if(color == "Yellow"){
@@ -312,7 +327,6 @@ void doMove(std::pair<int, int> currentPosition, std::pair<int, int> nextPositio
 //         // Check vertical wall at (x, y).
 //         return verticalWalls[x][y];
 //     }
-    
 // }
 
 // Finds the most frequent color in a std::map of colors.
@@ -328,7 +342,7 @@ std::string findMostFrequentColor(std::map<std::string, int> colorMap) {
     return mostFrequent.first;
 }
 
-std::map<std::pair<int, int>, std::pair<int, int>> bfs(std::pair<int, int> start, std::map<std::pair<int, int>, std::vector<std::pair<int, int>>> AL) {
+std::map<std::pair<int, int>, std::pair<int, int>> bfsA(std::pair<int, int> start) {
     // Declare needed data structures.
     std::map<std::pair<int, int>, std::pair<int, int>> parents; // Stores parents for each node.
     std::queue<std::pair<int, int>> q; // Node processing std::queue.
@@ -345,7 +359,7 @@ std::map<std::pair<int, int>, std::pair<int, int>> bfs(std::pair<int, int> start
         q.pop();
 
         // For every possible connection from node u.
-        for (auto v : AL[u]) {
+        for (auto v : ALA[u]) {
             // Additional check on v == start as we don't initialize all distances on infinity, as per usual in BFS.
             if (dist[v] != 0 || v == start) continue;
 
@@ -360,9 +374,53 @@ std::map<std::pair<int, int>, std::pair<int, int>> bfs(std::pair<int, int> start
     return parents;
 }
 
-void moveToNewPosition(std::pair<int, int> newPosition, std::pair<int, int>& currentPosition) {
+
+std::map<std::pair<int, int>, std::pair<int, int>> bfsC(std::pair<int, int> start) {
+    // Declare needed data structures.
+    std::map<std::pair<int, int>, std::pair<int, int>> parents; // Stores parents for each node.
+    std::queue<std::pair<int, int>> q; // Node processing std::queue.
+    std::map<std::pair<int, int>, int> dist; // Stores distances to each node.
+    
+    // Initialize structures from start node.
+    parents[start] = start; // This helps to recognize the end of the path, by way of parent[x] == x.
+    q.push(start);
+    dist[start] = 0;
+
+    // BFS logic.
+    while (!q.empty()) {
+        std::pair<int, int> u = q.front();
+        q.pop();
+
+        // For every possible connection from node u.
+        for (auto v : ALC[u]) {
+            // Additional check on v == start as we don't initialize all distances on infinity, as per usual in BFS.
+            if (dist[v] != 0 || v == start) continue;
+
+            // Update shortest distance, add node to std::queue, and update its parent.
+            parents[v] = u;
+            q.push(v);
+            dist[v] = dist[u] + 1;
+        }
+    }
+
+    // Return parent map.
+    return parents;
+}
+
+void moveToNewPositionC(std::pair<int, int> newPosition, std::pair<int, int>& currentPosition) {
     // Call bfs to get the path.
-    std::map<std::pair<int, int>, std::pair<int, int>> parents = bfs(newPosition, ALC);
+    std::map<std::pair<int, int>, std::pair<int, int>> parents = bfsC(newPosition);
+
+    while (parents[currentPosition] != currentPosition) {
+        // Physically move towards the parent.
+        doMove(currentPosition, parents[currentPosition]);
+        currentPosition = parents[currentPosition];
+    }
+}
+
+void moveToNewPositionA(std::pair<int, int> newPosition, std::pair<int, int>& currentPosition) {
+    // Call bfs to get the path.
+    std::map<std::pair<int, int>, std::pair<int, int>> parents = bfsA(newPosition);
 
     while (parents[currentPosition] != currentPosition) {
         // Physically move towards the parent.
@@ -370,51 +428,39 @@ void moveToNewPosition(std::pair<int, int> newPosition, std::pair<int, int>& cur
         currentPosition = parents[currentPosition];
     }
 
-    if (track == "A" && newPosition == make_pair(1, 2)) {
-        ALgrid[{1, 3}].push_back({1, 4});
-        ALgrid[{1, 4}].push_back({1, 3});
-        moveToNewPosition({1, 4}, newPosition);
+    if (newPosition == std::make_pair(1, 2)) {
+        openDome();
+        closeDome();
+        ALA[{1, 3}].push_back({1, 4});
+        ALA[{1, 4}].push_back({1, 3});
+        moveToNewPositionA({1, 4}, newPosition);
     }
 }
 
-void dfsA(pair<int, int> node) {
+void dfsA(std::pair<int, int> node) {
     if (lineFound && ballFound) return;
     visitedA.insert(node);
 
-    cout << node.first << " " << node.second << "\n";
-
     if (!ballFound){
-        if (node == make_pair(1, 1)) {
-            // if (ultrafront.getDistance() > 10) {
-            //    ballFound = true;
-            //    ALA[node].push_back({1, 2});
-            //}
+        if (node == std::make_pair(1, 1)) {
+            if (frontUltrasonic.getDistance() > 10) {
+                ballFound = true;
+                ALA[{1, 2}].push_back(node);
+                ALA[node].push_back({1, 2});
+            }
         }
-        if (node == make_pair(0, 2)) {
-            // if (ultraright.getDistance() > 10 || ultrafront.getDistance() > 10) {
-            //    ballFound = true;
-            //    ALA[node].push_back({1, 2});
-            //}
-            ballFound = true;
-            ALA[node].push_back({1, 2});
-            ALA[{1, 2}].push_back(node);
-        }
-        if (node == make_pair(1, 3)) {
-            // if (ultraright.getDistance() > 10 || ultrafront.getDistance() > 10) {
-            //    ballFound = true;
-            //    ALA[node].push_back({1, 2});
-            //}
-        }
-        if (node == make_pair(2, 2)) {
-            // if (ultraright.getDistance() > 10 || ultrafront.getDistance() > 10) {
-            //    ballFound = true;
-            //    ALA[node].push_back({1, 2});
-            //}
+        if (node == std::make_pair(0, 2) || node == std::make_pair(1, 3) || node == std::make_pair(2, 2)) {
+            if (rightUltrasonic.getDistance() > 10) {
+                ballFound = true;
+                ALA[node].push_back({1, 2});
+                ALA[{1, 2}].push_back(node);
+            }
         }
     }
 
     if (lineFound && ballFound) { 
-        moveToNewPosition({1, 2}, node);
+        // Regresar a donde está la pelota, sabiendo que está en {1, 2};
+        moveToNewPositionA({1, 2}, node);
         return;
     }
 
@@ -426,37 +472,119 @@ void dfsA(pair<int, int> node) {
         // NORTH = -
         // EAST = left turn
         // WEST = right turn
+        if (orientation == NORTH) {
+            if (nx == cx - 1) {
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (ny == cy - 1) {
+                myMotors.turnLeft();
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (ny == cy + 1) {
+                myMotors.turnRight();
+                myMotors.forward();
+                myMotors.stop();
+            }
+        }
 
         // EAST
         // NORTH = right turn
         // EAST = -
         // SOUTH = left turn
+        if (orientation == EAST) {
+            if (nx == cx - 1) {
+                myMotors.turnLeft();
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (ny == cy - 1) {
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (nx == cx + 1) {
+                myMotors.turnLeft();
+                myMotors.forward();
+                myMotors.stop();
+            }
+        }
 
         // SOUTH
         // EAST = right turn
         // SOUTH = -
         // WEST = left turn
+        if (orientation == SOUTH) {
+            if (nx == cx + 1) {
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (ny == cy - 1) {
+                myMotors.turnRight();
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (ny == cy + 1) {
+                myMotors.turnLeft();
+                myMotors.forward();
+                myMotors.stop();
+            }
+        }
 
         // WEST 
         // NORTH = left turn
         // WEST = -
         // SOUTH = right turn
+        if (orientation == WEST) {
+            if (nx == cx - 1) {
+                myMotors.turnLeft();
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (ny == cy + 1) {
+                myMotors.forward();
+                myMotors.stop();
+            }
+            else if (nx == cx + 1) {
+                myMotors.turnRight();
+                myMotors.forward();
+                myMotors.stop();
+            }
+        }
 
         if (!lineFound) {
-            // if (sensorLineaD0 = 1 && ... D8), lineFound = true;
-            if (v == make_pair(2,1)) {
+            // If 5/8 sensors sense black, a line is detected.
+            int lineCounter = 0;
+            int valueD1 = digitalRead(lineSensorD1);
+            int valueD2 = digitalRead(lineSensorD2);
+            int valueD3 = digitalRead(lineSensorD3);
+            int valueD4 = digitalRead(lineSensorD4);
+            int valueD5 = digitalRead(lineSensorD5);
+            int valueD6 = digitalRead(lineSensorD6);
+            int valueD7 = digitalRead(lineSensorD7);
+            int valueD8 = digitalRead(lineSensorD8);
+
+            std::vector<int> lineValues = {valueD1, valueD2, valueD3, valueD4, valueD5, valueD6, valueD7, valueD8};
+            
+            for (auto i : lineValues) {
+                if (i) lineCounter++;
+            }
+
+            if (lineCounter >= 5) {
                 lineFound = true;
-                for (auto it = ALA[{2, 1}].begin(); it != ALA[{2, 1}].end(); it++) {
-                    if (*it == node) {
-                        ALA[{2, 1}].erase(it);
-                        break;
+                
+                for (auto it = ALA[v].begin(); it != ALA[v].end(); it++) {
+                        if (*it == node) {
+                            ALA[v].erase(it);
+                            ALA[*it].erase(v);
+                            break;
+                        }
                     }
-                }
-                if (lineFound && ballFound) { 
-                    moveToNewPosition({1, 2}, node);
-                    return;
-                }
-                continue;
+                    if (lineFound && ballFound) { 
+                        moveToNewPositionA({1, 2}, node);
+                        return;
+                    }
+                    continue;
             }
         }
 
@@ -468,7 +596,7 @@ void dfsC(std::pair<int, int> node) {
     visitedC.insert(node);
     if (ALC[node].find(currentPosition) == ALC[node].end()) {
         Serial.println("Call BFS!");
-        moveToNewPosition(node, currentPosition);
+        moveToNewPositionC(node, currentPosition);
 
         Serial.println("BFS Done.");
     }
@@ -496,8 +624,8 @@ void dfsC(std::pair<int, int> node) {
     // Keep going only if it's not a black square.
     if (colorMap[node.first][node.second] == "Black") {
         // TODO: girar!
-        myMotors.turnLeft(orientation);
-        myMotors.turnLeft(orientation);
+        myMotors.turnLeft();
+        myMotors.turnLeft();
         delay(1000);
         myMotors.forward();
         delay(800);
@@ -512,11 +640,11 @@ void dfsC(std::pair<int, int> node) {
 
     // If all cells are visited, move to checkpoint.
     if (visitedC.size() == 15) {
-        moveToNewPosition({0, 0}, currentPosition);
+        moveToNewPositionC({0, 0}, currentPosition);
 
         // Face the checkpoint.
         if (orientation == NORTH) {
-            myMotors.turnLeft(orientation);
+            myMotors.turnLeft();
         }
         myMotors.forward();
         delay(1000);
@@ -564,7 +692,7 @@ void dfsC(std::pair<int, int> node) {
             else if (i == 1) {
                 myMotors.turnLeft();
                 myMotors.forward();
-                delay(1000)
+                delay(1000);
             }
             else {
                 myMotors.turnRight();
@@ -639,8 +767,12 @@ void setup() {
 
     // Ensure color sensor is on.
     while (!tcs.begin()) delay(1000);
- 
-    // Actuadores
+    
+    // Servos
+    Servo1.attach(Servo_SI);
+    Servo2.attach(Servo_SD);
+
+    // RGB LED
     pinMode(R, OUTPUT);
     pinMode(B, OUTPUT);
     pinMode(G, OUTPUT);
@@ -662,15 +794,15 @@ void setup() {
     pinMode(ENC_A_ID, INPUT);
     pinMode(ENC_B_ID, INPUT);
     
-    // Sensor de Linea
-    pinMode(sensorLineaD8, INPUT);
-    pinMode(sensorLineaD7, INPUT);
-    pinMode(sensorLineaD6, INPUT);
-    pinMode(sensorLineaD5, INPUT);
-    pinMode(sensorLineaD4, INPUT);
-    pinMode(sensorLineaD3, INPUT);
-    pinMode(sensorLineaD2, INPUT);
-    pinMode(sensorLineaD1, INPUT);
+    // Line Sensor
+    pinMode(lineSensorD8, INPUT);
+    pinMode(lineSensorD7, INPUT);
+    pinMode(lineSensorD6, INPUT);
+    pinMode(lineSensorD5, INPUT);
+    pinMode(lineSensorD4, INPUT);
+    pinMode(lineSensorD3, INPUT);
+    pinMode(lineSensorD2, INPUT);
+    pinMode(lineSensorD1, INPUT);
 }
 
 /* ARDUINO LOOP */
@@ -708,7 +840,7 @@ void loop() {
     if (track == "A") {
         orientation == WEST;
         currentPosition = {1, 0};
-        dfsA(currentPosition):
+        dfsA(currentPosition);
     }
     else if (track == "C") {
         orientation == EAST;
