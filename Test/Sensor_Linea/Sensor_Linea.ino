@@ -43,17 +43,18 @@ void avanzar() {
     // Motor superior derecho
     digitalWrite(IN1_SD,HIGH);
     digitalWrite(IN2_SD,LOW);
-    analogWrite(ENA_SD,160);
+    analogWrite(ENA_SD,180);
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENB_ID,190);
 
     // Motor inferior izquierdo
     digitalWrite(IN1_II,LOW);
     digitalWrite(IN2_II,HIGH);
     analogWrite(ENA_II,200);
     
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,LOW);
-    digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENB_ID,160);
     
     // Motor superior izquierdo
     digitalWrite(IN1_SI,HIGH);
@@ -89,26 +90,28 @@ void girarIzquierda() {
 }
 
 void girarDerecha() {
-    // Motor superior derecho JALA 
-    digitalWrite(IN1_SD,LOW);
-    digitalWrite(IN2_SD,HIGH);
-    analogWrite(ENA_SD,255);
-
-    // Motor inferior izquierdo JALA CM
-    digitalWrite(IN1_II,LOW);
-    digitalWrite(IN2_II,HIGH);
-    analogWrite(ENA_II,200);
-    
-    // Motor superior izquierdo
-    digitalWrite(IN1_SI,LOW);
-    digitalWrite(IN2_SI,HIGH);
-    analogWrite(ENB_SI,255);
+    // Motor superior derecho
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,130);
 
     // Motor inferior derecho
     digitalWrite(IN1_ID,HIGH);
     digitalWrite(IN2_ID,LOW);
-    analogWrite(ENB_ID,200);
-    delay(1280);
+    analogWrite(ENB_ID,130);
+
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,HIGH);
+    analogWrite(ENB_SI,200);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrite(ENA_II,200);
+    
+    //delay(1000);
+    delay(1780);
 }
 
 void detener() {
@@ -200,6 +203,7 @@ void loop() {
   // }
   //avanzar();
 
+  //avanzar();
   //girarIzquierda();
   girarDerecha();
   detener();
