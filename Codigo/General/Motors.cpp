@@ -63,7 +63,7 @@ void Motors::forward() {
     digitalWrite(IN2_SI,LOW);
     analogWrite(ENB_SI,200);
 
-    delay(710); // Este delay jalara por cuadrante de 30 cm centrado en medio
+    delay(710); // Este delay jalará por cuadrante de 30 cm centrado en medio
 }
 
 void Motors::backward(){
@@ -89,6 +89,7 @@ void Motors::backward(){
 
     //delay(1000);
     delay(300);
+}
 
 void Motors::stop(){
     // Motor superior izquierdo
@@ -158,6 +159,5 @@ void Motors::turnRight() {
     digitalWrite(IN2_SI,LOW);
     analogWrite(ENB_SI,190);
 
-    //delay();
     delay(500);
 }
