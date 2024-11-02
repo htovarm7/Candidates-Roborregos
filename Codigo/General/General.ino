@@ -657,22 +657,48 @@ void dfsC(std::pair<int, int> node) {
     if (visitedC.size() == 15) {
         moveToNewPositionC({0, 0}, currentPosition);
 
-        // Face the checkpoint.
-        if (orientation == NORTH) {
-            myMotors.turnLeft();
-            myMotors.stop();
-        }
-        myMotors.forward();
-        myMotors.stop();
-
+        // Move to a cell of the most seen color.
         String mostSeenColor = findMostFrequentColor(detectedColors);
+        // Find such a cell.
+        int x = 0, y = 0;
+        for (x; x < 3; x++) {
+            for (y; y < 5; y++) {
+                if (colorMap[x][y] == mostSeenColor) {
+                    break;
+                }
+            }
+        }
+        // Perform the movement.
+        moveToNewPositionC({x, y}, currentPosition);
 
+        // Flash the RGB LED;
         for (int i = 0; i < 5; i++){
             showColor(mostSeenColor);
             delay(50);
             showColor("Black");
             delay(50);
         }
+        
+        // Move back to (0, 0).
+        moveToNewPositionC({0, 0}, currentPosition);
+
+        // Face the checkpoint.
+        if (orientation == NORTH) {
+            myMotors.turnLeft();
+            myMotors.stop();
+        }
+
+        // Go to the checkpoint.
+        myMotors.forward();
+        myMotors.stop();
+
+        // C part two: ramp.
+        myMotors.forward();
+        myMotors.forward();
+        myMotors.forward();
+        myMotors.forward();
+        myMotors.forward();
+        myMotors.stop();
     }
 
     for (int i = 0; i < 4; i++) {
