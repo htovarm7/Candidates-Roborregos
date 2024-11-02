@@ -385,17 +385,18 @@ void loop() {
     long distanciaFrontal = distanciaUltrasonico(ultrasonicoFrontalTrig, ultrasonicoFrontalEcho);
     // long distanciaIzquierda = distanciaUltrasonico(ultrasonicoIzquierdoTrig, ultrasonicoIzquierdoEcho);
 
-    // Serial.print("Frontal: ");
-    // Serial.print(distanciaFrontal);
-    // Serial.println(" cm");
+    Serial.print("Frontal: ");
+    Serial.print(distanciaFrontal);
+    Serial.println(" cm");
+    delay(50);
 
-    //Para que no choque
-    if(distanciaFrontal > 23){
-        adelante();
-    }
-    else { 
-      detener();
-    }
+    // //Para que no choque
+    // if(distanciaFrontal > 23){
+    //     adelante();
+    // }
+    // else { 
+    //   detener();
+    // }
 
     // Serial.print("Izquierda: ");
     // Serial.print(distanciaIzquierda);
