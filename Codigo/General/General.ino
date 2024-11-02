@@ -277,6 +277,24 @@ void handleMove(int movement) {
     myMotors.stop();
 }
 
+void changeOrientation(Steps turning, int& orientation) {
+    if (turning == FORWARD) {
+        orientation = orientation;
+    }
+    else if (turning == LEFT {
+        orientation++;
+        if (orientation == 4) {
+            orientation = 0;
+        }
+    }
+    else if (turning == RIGHT) {
+        orientation--;
+        if (orientation == -1) {
+            orientation = 3;
+        }
+    }
+}
+
 void doMove(std::pair<int, int> currentPosition, std::pair<int, int> nextPosition) {
     int cx = currentPosition.first;
     int cy = currentPosition.second;
@@ -286,21 +304,25 @@ void doMove(std::pair<int, int> currentPosition, std::pair<int, int> nextPositio
     if (nx == cx - 1) {
         for (auto i : steps[orientation]) {
             handleMove(i);
+            changeOrientation(i, orientation);
         }
     }
     else if (ny == cy - 1) {
         for (auto i : steps[(orientation + 1) % 4]) {
             handleMove(i);
+            changeOrientation(i, orientation);
         }
     }
     else if (nx == cx + 1) {
         for (auto i : steps[(orientation + 2) % 4]) {
             handleMove(i);
+            changeOrientation(i, orientation);
         }
     }
     else if (ny == cy + 1) {
         for (auto i : steps[(orientation + 3) % 4]) {
             handleMove(i);
+            changeOrientation(i, orientation);
         }
     }
 }
@@ -685,6 +707,7 @@ void dfsC(std::pair<int, int> node) {
         // Face the checkpoint.
         if (orientation == NORTH) {
             myMotors.turnLeft();
+            orientation == EAST;
             myMotors.stop();
         }
 
@@ -738,10 +761,12 @@ void dfsC(std::pair<int, int> node) {
             }
             else if (i == 1) {
                 myMotors.turnLeft();
+                changeOrientation(LEFT, orientation);
                 myMotors.forward();
             }
             else {
                 myMotors.turnRight();
+                changeOrientation(RIGHT, orientation);
                 myMotors.forward();
             }
             myMotors.stop();
