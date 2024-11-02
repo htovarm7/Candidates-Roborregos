@@ -65,8 +65,8 @@ const int pmwDer = 255;
 // Actuadores
 
 // Servomotores
-const int Servo_SI = 22;
-const int Servo_SD = 23;
+const int Servo_SI = 9;
+const int Servo_SD = 22;
 
 // Sensor de color
 const char SCL_COLOR = A5;
@@ -958,6 +958,73 @@ String getColor(Adafruit_TCS34725 tcs) {
     }
 }
 
+<<<<<<< HEAD
+void avanzar() {
+    // Motor superior derecho
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,190);
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENB_ID,190);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrite(ENA_II,200);
+    
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,200);
+
+    delay(710); // Este delay jalara por cuadrante de 30 cm centrado en medio
+
+    //delay(1300); // Para ver que tan recto avanza
+}
+
+void detener() {
+    // Motor superior izquierdo
+    digitalWrite(IN1_SD,LOW);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,0);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,LOW);
+    analogWrite(ENA_II,0);
+
+    // Motor superior derecho
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,0);
+
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,LOW);
+    analogWrite(ENB_ID,0);
+    delay(200);
+}
+
+// Actuadores
+void abrirCupula(){
+  Servo1.write(60);
+  Servo2.write(120);
+  delay(500);
+}
+
+void cerrarCupula(){
+  Servo1.write(150); 
+  Servo2.write(30);
+   delay(500);
+}
+
+
+=======
+>>>>>>> b782ab17ea390daa88e8d7a6fe3d1a94b7996344
 /* ARDUINO SETUP */
 
 void setup() {
@@ -997,8 +1064,7 @@ void setup() {
     while (!tcs.begin()) delay(1000);
     
     // Servos
-    Servo1.attach(Servo_SI);
-    Servo2.attach(Servo_SD);
+    Servo1.attach(Servo_SI);  Servo2.attach(Servo_SD);
 
     // RGB LED
     pinMode(R, OUTPUT);
@@ -1049,6 +1115,11 @@ void loop() {
     // Serial.print(distanciaIzquierda);
     // Serial.println(" cm");  
     
+    while(!getcolor("Green") || !getcolor("Black")){
+      if(distanciaFrontal <= 14 ||){
+
+      }
+    }
     // Probar esto que no sé si jalaría, especialmente con lo del PID.
     // if (track == "") {
     //     String color = getColor(tcs);
