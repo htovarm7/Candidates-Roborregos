@@ -126,7 +126,7 @@ void loop() {
     // PID control
     error = -giroZ;  // Mantener giroZ en cero
     integral += error;
-    integral = constrain(integral, -50, 50);  // Anti-windup limit for integral term
+    integral = constrain(integral, -50, 50);  // limite para el termino de integral
 
     if (abs(error) < 0.1) integral = 0;  // Banda muerta
 
@@ -150,10 +150,13 @@ void loop() {
     // Movimiento hacia adelante
     digitalWrite(IN1_SI, HIGH);
     digitalWrite(IN2_SI, LOW);
+
     digitalWrite(IN1_SD, HIGH);
     digitalWrite(IN2_SD, LOW);
+
     digitalWrite(IN1_II, LOW);
     digitalWrite(IN2_II, HIGH);
+    
     digitalWrite(IN1_ID, LOW);
     digitalWrite(IN2_ID, HIGH);
 
