@@ -117,29 +117,29 @@ void girarIzquierda() {
     delay(1279);
 }
 
-void detener() {
-    // Motor superior izquierdo
-    digitalWrite(IN1_SD,LOW);
-    digitalWrite(IN2_SD,LOW);
-    analogWrite(ENA_SD,0);
+  void detener() {
+      // Motor superior izquierdo
+      digitalWrite(IN1_SD,LOW);
+      digitalWrite(IN2_SD,LOW);
+      analogWrite(ENA_SD,0);
 
-    // Motor inferior izquierdo
-    digitalWrite(IN1_II,LOW);
-    digitalWrite(IN2_II,LOW);
-    analogWrite(ENA_II,0);
-    
-    // Motor superior derecho
-    digitalWrite(IN1_SI,LOW);
-    digitalWrite(IN2_SI,LOW);
-    analogWrite(ENB_SI,0);
+      // Motor inferior izquierdo
+      digitalWrite(IN1_II,LOW);
+      digitalWrite(IN2_II,LOW);
+      analogWrite(ENA_II,0);
+      
+      // Motor superior derecho
+      digitalWrite(IN1_SI,LOW);
+      digitalWrite(IN2_SI,LOW);
+      analogWrite(ENB_SI,0);
 
 
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,LOW);
-    digitalWrite(IN2_ID,LOW);
-    analogWrite(ENB_ID,0);
-    delay(2000);
-}
+      // Motor inferior derecho
+      digitalWrite(IN1_ID,LOW);
+      digitalWrite(IN2_ID,LOW);
+      analogWrite(ENB_ID,0);
+      delay(2000);
+  }
 
 void setup() {
   Serial.begin(9600);
