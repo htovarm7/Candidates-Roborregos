@@ -1,7 +1,7 @@
-//GND - GND
-//VCC - VCC
-//SDA - Pin A4
-//SCL - Pin A5
+// //GND - GND
+// //VCC - VCC
+// //SDA - Pin A4
+// //SCL - Pin A5
  
 // #include "I2Cdev.h"
 // #include "MPU6050.h"
@@ -65,68 +65,33 @@
 const int IN1_SI = 47;
 const int IN2_SI = 46;
 const int ENA_SI = 7;
-const int ENC_A_SI = 16;
-const int ENC_B_SI = 17;
-
 const int IN1_SD = 48;
 const int IN2_SD = 49;
 const int ENB_SD = 6;
-const int ENC_A_SD = 18;
-const int ENC_B_SD = 19;
-
 const int IN1_II = 52;
 const int IN2_II = 53;
 const int ENA_II = 5;
-const int ENC_A_II = 9;
-const int ENC_B_II = 8; 
-
 const int IN1_ID = 50;
 const int IN2_ID = 49;
 const int ENB_ID = 4;
-const int ENC_A_ID = 26;
-const int ENC_B_ID = 27;
 
 const int mpuAddress = 0x68;  // Dirección I2C del MPU6050
 MPU6050 mpu(mpuAddress);
 
-int ax, ay, az;
 int gx, gy, gz;
 const float gyroScale = 250.0 / 32768.0;
 
 // PID constants
-float Kp = 1.0;
-float Ki = 0.0;
-float Kd = 0.0;
+float Kp = 1;   
+float Ki = 3;  
+float Kd = 10;
 
 // PID variables
-float error = 0;
+float error = 4;
 float previous_error = 0;
 float integral = 0;
 float derivative = 0;
 float output = 0;
-
-void adelante(){
-    // Motor superior derecho JALA 
-    digitalWrite(IN1_SI,HIGH);
-    digitalWrite(IN2_SI,LOW);
-    analogWrite(ENA_SI,240);
-
-    // Motor inferior izquierdo JALA CM
-    digitalWrite(IN1_II,LOW);
-    digitalWrite(IN2_II,HIGH);
-    analogWrite(ENA_II,170);
-    
-    // Motor superior izquierdo
-    digitalWrite(IN1_SD,HIGH);
-    digitalWrite(IN2_SD,LOW);
-    analogWrite(ENB_SD,130);
-
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,LOW);
-    digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENB_ID,220);
-    delay(1200);
-}
 
 void setup() {
     Serial.begin(9600);
@@ -134,56 +99,63 @@ void setup() {
     mpu.initialize();
     Serial.println(mpu.testConnection() ? F("IMU iniciado correctamente") : F("Error al iniciar IMU"));
     
-    pinMode(IN1_SI,OUTPUT);
-    pinMode(IN2_SI,OUTPUT);
-    pinMode(ENA_SI,OUTPUT);
+    pinMode(IN1_SI, OUTPUT);
+    pinMode(IN2_SI, OUTPUT);
+    pinMode(ENA_SI, OUTPUT);
 
-    pinMode(IN1_SD,OUTPUT);
-    pinMode(IN2_SD,OUTPUT);
-    pinMode(ENB_SD,OUTPUT);
+    pinMode(IN1_SD, OUTPUT);
+    pinMode(IN2_SD, OUTPUT);
+    pinMode(ENB_SD, OUTPUT);
 
-    pinMode(IN1_II,OUTPUT);
-    pinMode(IN2_II,OUTPUT);
-    pinMode(ENA_II,OUTPUT);
+    pinMode(IN1_II, OUTPUT);
+    pinMode(IN2_II, OUTPUT);
+    pinMode(ENA_II, OUTPUT);
 
-    pinMode(IN1_ID,OUTPUT);
-    pinMode(IN2_ID,OUTPUT);
-    pinMode(ENB_ID,OUTPUT);
-
-    // Encoders
-    pinMode(ENC_A_SI, INPUT);
-    pinMode(ENC_B_SI, INPUT);
-    pinMode(ENC_A_SD, INPUT);
-    pinMode(ENC_B_SD, INPUT);
-    pinMode(ENC_A_II, INPUT);
-    pinMode(ENC_B_II, INPUT);
-    pinMode(ENC_A_ID, INPUT);
-    pinMode(ENC_B_ID, INPUT);
+    pinMode(IN1_ID, OUTPUT);
+    pinMode(IN2_ID, OUTPUT);
+    pinMode(ENB_ID, OUTPUT);
 }
 
 void loop() {
     // Leer datos de giroscopio
     mpu.getRotation(&gx, &gy, &gz);
-
+  
     // Convierte la rotación alrededor del eje Z a grados/segundo
     float giroZ = gz * gyroScale;
 
     // PID control
-    error = -giroZ;  // Assuming we want to maintain zero rotation
+    error = -giroZ;  // Mantener giroZ en cero
     integral += error;
+    integral = constrain(integral, -50, 50);  // Anti-windup limit for integral term
+
+    if (abs(error) < 0.1) integral = 0;  // Banda muerta
+
     derivative = error - previous_error;
     output = Kp * error + Ki * integral + Kd * derivative;
+    output = constrain(output, -255, 255);  // Limit output to valid range
     previous_error = error;
 
-    // Adjust motor speeds based on PID output
-    int baseSpeed = 200;  // Base speed for the motors
-    int leftSpeed = baseSpeed + output;
-    int rightSpeed = baseSpeed - output;
+    // Ajuste de velocidades base por desbalanceo
+    int leftBaseSpeed = 150;   
+    int rightBaseSpeed = 130;  
+
+    int leftSpeed = leftBaseSpeed + output;
+    int rightSpeed = rightBaseSpeed - output;
 
     analogWrite(ENA_SI, constrain(leftSpeed, 0, 255));
     analogWrite(ENA_II, constrain(leftSpeed, 0, 255));
     analogWrite(ENB_SD, constrain(rightSpeed, 0, 255));
     analogWrite(ENB_ID, constrain(rightSpeed, 0, 255));
 
-    delay(100);  // Controla la frecuencia de ajuste
+    // Movimiento hacia adelante
+    digitalWrite(IN1_SI, HIGH);
+    digitalWrite(IN2_SI, LOW);
+    digitalWrite(IN1_SD, HIGH);
+    digitalWrite(IN2_SD, LOW);
+    digitalWrite(IN1_II, LOW);
+    digitalWrite(IN2_II, HIGH);
+    digitalWrite(IN1_ID, LOW);
+    digitalWrite(IN2_ID, HIGH);
+
+    delay(100);
 }
