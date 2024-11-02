@@ -1,33 +1,27 @@
-#include <Servo.h> 
+#include <Servo.h>
 
-Servo garra;  
+Servo Servo1;
+Servo Servo2;
 
-// Definir ángulos
-int anguloCerrado = 0;   // Ángulo en que la garra está cerrada (agarrando la pelota)
-int anguloAbierto = 90;  // Ángulo en que la garra está abierta (lista para agarrar)
+void abrirCupula(){
+  Servo1.write(60);
+  Servo2.write(120);
+}
+
+void cerrarCupula(){
+  Servo1.write(150); 
+  Servo2.write(30);
+}
 
 void setup() {
-  garra.attach(9);  // Conectar el servo de la garra al pin digital 9
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  Servo1.attach(22); //Derecho
+  Servo2.attach(23); // Izquierdo considerando que se ve desde enfrent
 }
 
 void loop() {
-  // Abrir la garra
-  abrirGarra();
-  delay(2000); 
-
-  // Cerrar la garra
-  cerrarGarra();
-  delay(2000); 
-}
-
-// Abrir la garra
-void abrirGarra() {
-  garra.write(anguloAbierto);  
-  delay(500); 
-}
-
-// Cerrar la garra
-void cerrarGarra() {
-  garra.write(anguloCerrado);
-  delay(500);  
+  abrirCupula();
+  cerrarCupula();
+  
 }

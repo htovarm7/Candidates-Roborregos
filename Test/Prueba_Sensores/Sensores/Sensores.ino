@@ -2,6 +2,7 @@
 //#include "I2Cdev.h"
 //#include "MPU6050.h"
 #include "Wire.h"
+#include <Servo.h>   
 
 // Pines ultrasonico Izquierdo
 const int leftEcho = 42;
@@ -84,8 +85,10 @@ const int pwmIzq = 255;
 const int pmwDer = 255;
 
 // Los servos
-const int Servo_SI = 22;
-const int Servo_SD = 23;
+// const int Servo_SI = 22;
+// const int Servo_SD = 23;
+Servo Servo1;
+Servo Servo2;
 
 // Velocidades para los motores
 const int pwmAdelante = 255;
@@ -375,6 +378,7 @@ void calculateRPM() {
         encoderCountII = 0;
         encoderCountID = 0;
         lastTime = currentTime;
+        delay(1000);
     }
 }
 
@@ -427,6 +431,18 @@ void RGB() {
   analogWrite(G, 255);
   analogWrite(B, 0);
   delay(2000);
+}
+
+void abrirCupula(){
+  Servo1.write(135); 
+  Servo2.write(45);
+  delay(1000); 
+}
+
+void cerrarCupula(){
+  Servo1.write(135); 
+  Servo2.write(45);
+  delay(1000); 
 }
 
 void setup(){
@@ -496,40 +512,46 @@ void setup(){
     pinMode(sensorLineaD3, INPUT);
     pinMode(sensorLineaD2, INPUT);
     pinMode(sensorLineaD1, INPUT);
+
+    // Servomotor
+    Servo1.attach(22); //Derecho
+    Servo2.attach(23); // Izquierdo considerando que se ve desde enfrente
 }
 
 void loop(){
-    long distanciaIzquierdo = distanciaUltrasonico(leftTrig, leftEcho);
+    // long distanciaIzquierdo = distanciaUltrasonico(leftTrig, leftEcho);
 
-    long distanciaFrontal = distanciaUltrasonico(frontTrig, frontEcho);
+    // long distanciaFrontal = distanciaUltrasonico(frontTrig, frontEcho);
     
-    long distanciaDerecha = distanciaUltrasonico(rightTrig, leftEcho);
+    // long distanciaDerecha = distanciaUltrasonico(rightTrig, leftEcho);
 
-    // Distancia de los ultrasonicos
-    //Izquierdo
-    Serial.print("Izquierdo: ");
-    Serial.print(distanciaIzquierdo);
-    Serial.println(" cm");
-    //Frontal
-    Serial.print("Frontal: ");
-    Serial.print(distanciaFrontal);
-    Serial.println(" cm");
-    //Derecha
-    Serial.print("Derecha: ");
-    Serial.print(distanciaDerecha);
-    Serial.println(" cm");
-    delay(1000);
+    // // Distancia de los ultrasonicos
+    // //Izquierdo
+    // Serial.print("Izquierdo: ");
+    // Serial.print(distanciaIzquierdo);
+    // Serial.println(" cm");
+    // //Frontal
+    // Serial.print("Frontal: ");
+    // Serial.print(distanciaFrontal);
+    // Serial.println(" cm");
+    // //Derecha
+    // Serial.print("Derecha: ");
+    // Serial.print(distanciaDerecha);
+    // Serial.println(" cm");
+    // delay(1000);
 
     // Para que no choque
-    if(distanciaFrontal > 30){
-        adelante();
-    }
-    else { 
-        detenerConReversa();
-        //detener();
-    }
+    // if(distanciaFrontal > 30){
+    //     adelante();
+    // }
+    // else { 
+    //     detenerConReversa();
+    //     //detener();
+    // }
 
-    //calculateRPM();
+    calculateRPM();
+    abrirCupula();
+    cerrarCupula();
+
     //RGB();
-
 }
