@@ -162,7 +162,7 @@ void detener() {
 
   // Motor inferior derecho
   digitalWrite(IN1_ID,LOW);
-  digitalWrite(IN2_ID,LOW);
+  digitalWrite(IN2_ID ,LOW);
   analogWrite(ENA_ID,0);
   delay(1000);
 }
