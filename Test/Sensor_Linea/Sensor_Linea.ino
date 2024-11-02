@@ -11,18 +11,18 @@ const int sensorLineaD1 = 53;
 
 // Motores
 //  Pines motor superior izquierdo
-const int IN1_SI = 45;
-const int IN2_SI = 44;
-const int ENA_SI = 5;
-const int ENC_A_SI = 25;
-const int ENC_B_SI = 24;
+const int IN1_SD = 45;
+const int IN2_SD = 44;
+const int ENA_SD = 5;
+const int ENC_A_SD = 25;
+const int ENC_B_SD = 24;
 
 // Pines motor superior derecho
-const int IN1_SD = 43;
-const int IN2_SD = 42;
-const int ENB_SD = 4;
-const int ENC_A_SD = 29;
-const int ENC_B_SD = 28;
+const int IN1_SI = 43;
+const int IN2_SI = 42;
+const int ENB_SI = 4;
+const int ENC_A_SI = 29;
+const int ENC_B_SI = 28;
 
 // Pines motor inferior izquierdo
 const int IN1_II = 41;
@@ -41,9 +41,9 @@ const int ENC_B_ID = 30;
 // Funciones de movimiento
 void avanzar() {
     // Motor superior izquierdo
-    digitalWrite(IN1_SI,HIGH);
-    digitalWrite(IN2_SI,LOW);
-    analogWrite(ENA_SI,190);
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,190);
 
     // // Motor inferior izquierdo
     // digitalWrite(IN1_II,LOW);
@@ -51,9 +51,9 @@ void avanzar() {
     // analogWrite(ENA_II,190);
     
     // // Motor superior derecho
-    // digitalWrite(IN1_SD,HIGH);
-    // digitalWrite(IN2_SD,LOW);
-    // analogWrite(ENB_SD,190);
+    // digitalWrite(IN1_SI,HIGH);
+    // digitalWrite(IN2_SI,LOW);
+    // analogWrite(ENB_SI,190);
 
 
     // // Motor inferior derecho
@@ -65,9 +65,9 @@ void avanzar() {
 
 void girarIzquierda() {
     // Motor superior izquierdo
-    digitalWrite(IN1_SI,LOW);
-    digitalWrite(IN2_SI,HIGH);
-    analogWrite(ENA_SI,0);
+    digitalWrite(IN1_SD,LOW);
+    digitalWrite(IN2_SD,HIGH);
+    analogWrite(ENA_SD,0);
 
     // Motor inferior izquierdo
     digitalWrite(IN1_II,LOW);
@@ -75,9 +75,9 @@ void girarIzquierda() {
     analogWrite(ENA_II,110);
     
     // Motor superior derecho
-    digitalWrite(IN1_SD,LOW);
-    digitalWrite(IN2_SD,HIGH);
-    analogWrite(ENB_SD,130);
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,HIGH);
+    analogWrite(ENB_SI,130);
 
 
     // Motor inferior derecho
@@ -94,9 +94,9 @@ void girarDerecha() {
 
 void detener() {
     // Motor superior izquierdo
-    digitalWrite(IN1_SI,LOW);
-    digitalWrite(IN2_SI,LOW);
-    analogWrite(ENA_SI,0);
+    digitalWrite(IN1_SD,LOW);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,0);
 
     // Motor inferior izquierdo
     digitalWrite(IN1_II,LOW);
@@ -104,9 +104,9 @@ void detener() {
     analogWrite(ENA_II,0);
     
     // Motor superior derecho
-    digitalWrite(IN1_SD,LOW);
-    digitalWrite(IN2_SD,LOW);
-    analogWrite(ENB_SD,0);
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,0);
 
 
     // Motor inferior derecho
@@ -129,12 +129,12 @@ void setup() {
   
     // Encoders
     // Encoder Superior Izquierdo
-    pinMode(ENC_A_SI, INPUT);
-    pinMode(ENC_B_SI, INPUT);
-    
-    // Encoder Superior Derecho
     pinMode(ENC_A_SD, INPUT);
     pinMode(ENC_B_SD, INPUT);
+    
+    // Encoder Superior Derecho
+    pinMode(ENC_A_SI, INPUT);
+    pinMode(ENC_B_SI, INPUT);
     
     // Encoder Inferior Izquierdo
     pinMode(ENC_A_II, INPUT);
@@ -166,7 +166,7 @@ void loop() {
   // Serial.print(valorD7);
   // Serial.println(valorD8); 
 
-  // // Lógica básica de seguimiento de línea
+  // // Lógica báSDca de seguimiento de línea
   // if (valorD4 == 1 && valorD5 == 1) {  // Línea centrada
   //   avanzar();
   // }
