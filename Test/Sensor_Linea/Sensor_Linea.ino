@@ -11,18 +11,18 @@ const int sensorLineaD1 = 53;
 
 // Motores
 //  Pines motor superior izquierdo
-const int IN1_SD = 45;
-const int IN2_SD = 44;
-const int ENA_SD = 5;
-const int ENC_A_SD = 25;
-const int ENC_B_SD = 24;
-
-// Pines motor superior derecho
 const int IN1_SI = 43;
 const int IN2_SI = 42;
 const int ENB_SI = 4;
 const int ENC_A_SI = 29;
 const int ENC_B_SI = 28;
+
+// Pines motor superior derecho
+const int IN1_SD = 45;
+const int IN2_SD = 44;
+const int ENA_SD = 5;
+const int ENC_A_SD = 25;
+const int ENC_B_SD = 24;
 
 // Pines motor inferior izquierdo
 const int IN1_II = 41;
