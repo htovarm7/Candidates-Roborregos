@@ -31,31 +31,31 @@ const int rightEcho = 37;
 const int rightTrig = 36;
 
 // Motores
-// Pines motor superior izquierdo
+//  Pines motor superior izquierdo
 const int IN1_SI = 43;
 const int IN2_SI = 42;
 const int ENB_SI = 4;
 const int ENC_A_SI = 29;
 const int ENC_B_SI = 28;
 
-//  Pines motor superior derecho
+// Pines motor inferior izquierdo
+const int IN1_II = 41;
+const int IN2_II = 40;
+const int ENB_II = 3;
+const int ENC_A_II = 27;
+const int ENC_B_II = 26;
+
+// Pines motor superior derecho
 const int IN1_SD = 45;
 const int IN2_SD = 44;
 const int ENA_SD = 5;
 const int ENC_A_SD = 25;
 const int ENC_B_SD = 24;
 
-// Pines motor inferior izquierdo
-const int IN1_II = 41;
-const int IN2_II = 40;
-const int ENA_II = 3;
-const int ENC_A_II = 27;
-const int ENC_B_II = 26;
-
 // Pines motor inferior derecho
 const int IN1_ID = 39;
 const int IN2_ID = 38;
-const int ENB_ID = 2;
+const int ENA_ID = 2;
 const int ENC_A_ID = 31;
 const int ENC_B_ID = 30;
 
@@ -103,10 +103,10 @@ const int servo2 = 23;
 
 // Motor object instantiation.
 Motors myMotors(
-    IN1_SI, IN2_SI, ENA_SI, 
-    IN1_II, IN2_II, ENA_II,
-    IN1_SD, IN2_SI, ENB_SD, 
-    IN1_ID, IN2_ID, ENB_ID);
+    IN1_SI, IN2_SI, ENB_SI, 
+    IN1_II, IN2_II, ENB_II,
+    IN1_SD, IN2_SI, ENA_SD, 
+    IN1_ID, IN2_ID, ENA_ID);
 
 // Ultrasonic sensor object instantiation.
 Ultrasonic frontUltrasonic(frontEcho, frontTrig);
@@ -272,6 +272,8 @@ void handleMove(int movement) {
     else if (movement == LEFT) {
         myMotors.turnLeft();
     }
+
+    myMotors.stop();
 }
 
 void doMove(std::pair<int, int> currentPosition, std::pair<int, int> nextPosition) {
@@ -466,6 +468,11 @@ void dfsA(std::pair<int, int> node) {
 
     for (auto v : ALA[node]) {
         if (visitedA.count(v)) continue;
+        int nx = v.first;
+        int ny = v.second;
+        int cx = node.first;
+        int cy = node.second;
+
 
         // Move according to current position and next position.
         // NORTH
@@ -574,17 +581,25 @@ void dfsA(std::pair<int, int> node) {
                 lineFound = true;
                 
                 for (auto it = ALA[v].begin(); it != ALA[v].end(); it++) {
-                        if (*it == node) {
-                            ALA[v].erase(it);
-                            ALA[*it].erase(v);
-                            break;
-                        }
+                    if (*it == node) {
+                        ALA[v].erase(it);
+                        break;
                     }
-                    if (lineFound && ballFound) { 
-                        moveToNewPositionA({1, 2}, node);
-                        return;
+                }
+
+                for (auto it = ALA[node].begin(); it != ALA[node].end(); it++) {
+                    if (*it == v) {
+                        ALA[node].erase(it);
+                        break;
                     }
-                    continue;
+                }
+
+                if (lineFound && ballFound) { 
+                    moveToNewPositionA({1, 2}, node);
+                    return;
+                }
+                
+                continue;
             }
         }
 
@@ -625,16 +640,15 @@ void dfsC(std::pair<int, int> node) {
     if (colorMap[node.first][node.second] == "Black") {
         // TODO: girar!
         myMotors.turnLeft();
+        myMotors.stop();
         myMotors.turnLeft();
-        delay(1000);
+        myMotors.stop();
         myMotors.forward();
-        delay(800);
         myMotors.stop();
         return;
     }
     else {
         myMotors.forward();
-        delay(800);
         myMotors.stop();
     }
 
@@ -645,9 +659,10 @@ void dfsC(std::pair<int, int> node) {
         // Face the checkpoint.
         if (orientation == NORTH) {
             myMotors.turnLeft();
+            myMotors.stop();
         }
         myMotors.forward();
-        delay(1000);
+        myMotors.stop();
 
         std::string mostSeenColor = findMostFrequentColor(detectedColors);
         // LEDRBG::std::setColor(mostSeenColor);
@@ -687,12 +702,10 @@ void dfsC(std::pair<int, int> node) {
             // Move in that direction, then call dfs.
             if (i == 0) {
                 myMotors.forward();
-                delay(1000);
             }
             else if (i == 1) {
                 myMotors.turnLeft();
                 myMotors.forward();
-                delay(1000);
             }
             else {
                 myMotors.turnRight();
@@ -752,56 +765,6 @@ std::string getColor(Adafruit_TCS34725 tcs) {
     else {
         return "None of the above";
     }
-}
-
-void avanzar() {
-    // Motor superior derecho
-    digitalWrite(IN1_SD,HIGH);
-    digitalWrite(IN2_SD,LOW);
-    analogWrite(ENA_SD,190);
-
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,LOW);
-    digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENB_ID,190);
-
-    // Motor inferior izquierdo
-    digitalWrite(IN1_II,LOW);
-    digitalWrite(IN2_II,HIGH);
-    analogWrite(ENA_II,200);
-    
-    // Motor superior izquierdo
-    digitalWrite(IN1_SI,HIGH);
-    digitalWrite(IN2_SI,LOW);
-    analogWrite(ENB_SI,200);
-
-    delay(710); // Este delay jalara por cuadrante de 30 cm centrado en medio
-
-    //delay(1300); // Para ver que tan recto avanza
-}
-
-void detener() {
-    // Motor superior izquierdo
-    digitalWrite(IN1_SD,LOW);
-    digitalWrite(IN2_SD,LOW);
-    analogWrite(ENA_SD,0);
-
-    // Motor inferior izquierdo
-    digitalWrite(IN1_II,LOW);
-    digitalWrite(IN2_II,LOW);
-    analogWrite(ENA_II,0);
-
-    // Motor superior derecho
-    digitalWrite(IN1_SI,LOW);
-    digitalWrite(IN2_SI,LOW);
-    analogWrite(ENB_SI,0);
-
-
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,LOW);
-    digitalWrite(IN2_ID,LOW);
-    analogWrite(ENB_ID,0);
-    delay(200);
 }
 
 /* ARDUINO SETUP */
@@ -878,9 +841,6 @@ void loop() {
         if (color == "Green") {
             track = "A";
         }
-        else if (color == "Blue") {
-            track = "C";
-        }
         else {
             track = "B";
         }
@@ -897,11 +857,4 @@ void loop() {
         currentPosition = {1, 4};
         dfsC(currentPosition);
     }
-
-    // adelante();
-    // detener();
-    // giroDerecha();
-    // giroIzquierda();
-    // reversa();
-    // movLateral();
 }
