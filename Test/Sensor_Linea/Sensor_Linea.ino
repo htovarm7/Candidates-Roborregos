@@ -7,18 +7,84 @@ const int pinD6 = 35;
 const int pinD7 = 36;
 const int pinD8 = 37;
 
-void setup() {
-  Serial.begin(9600);
-  pinMode(pinD1, INPUT);
-  pinMode(pinD2, INPUT);
-  pinMode(pinD3, INPUT);
-  pinMode(pinD4, INPUT);
-  pinMode(pinD5, INPUT);
-  pinMode(pinD6, INPUT);
-  pinMode(pinD7, INPUT);
-  pinMode(pinD8, INPUT);
-  
-  // Configurar pines de los motores aquí
+// Motores
+//  Pines motor superior izquierdo
+const int IN1_SI = 47;
+const int IN2_SI = 46;
+const int ENA_SI = 7;
+const int ENC_A_SI = 11;
+const int ENC_B_SI = 10;
+
+// Pines motor superior derecho
+const int IN1_SD = 48;
+const int IN2_SD = 49;
+const int ENB_SD = 6;
+const int ENC_A_SD = 9;
+const int ENC_B_SD = 8;
+
+// Pines motor inferior izquierdo
+const int IN1_II = 52;
+const int IN2_II = 53;
+const int ENA_II = 5;
+const int ENC_A_II = 13;
+const int ENC_B_II = 12;
+
+// Pines motor inferior derecho
+const int IN1_ID = 50;
+const int IN2_ID = 49;
+const int ENB_ID = 4;
+const int ENC_A_ID = 7;
+const int ENC_B_ID = 6;
+
+// Funciones de movimiento
+void adelante(){
+    // Motor superior derecho JALA 
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENA_SI,240);
+
+    // Motor inferior izquierdo JALA CM
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrite(ENA_II,170);
+    
+    // Motor superior izquierdo
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENB_SD,130);
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENB_ID,220);
+    delay(1200);
+}
+
+void girarIzquierda() {
+
+}
+
+void girarDerecha() {
+    // Motor superior derecho JALA 
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENA_SI,0);
+
+    // Motor inferior izquierdo JALA CM
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrite(ENA_II,120);
+    
+    // Motor superior izquierdo
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENB_SD,120);
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENB_ID,120);
+    delay(500);
 }
 
 void loop() {
@@ -44,7 +110,7 @@ void loop() {
 
   // Lógica básica de seguimiento de línea
   if (valorD4 == 1 && valorD5 == 1) {  // Línea centrada
-    avanzar();
+    adelante();
   }
   else if (valorD1 == 1 || valorD2 == 1 || valorD3 == 1) {  // Giro a la izquierda
     girarIzquierda();
@@ -59,23 +125,3 @@ void loop() {
   delay(100); // Pequeña pausa para estabilidad
 }
 
-// Funciones de movimiento
-void avanzar() {
-  Serial.println("Avanzando");
-  // Código para avanzar el robot
-}
-
-void girarIzquierda() {
-  Serial.println("Girando a la izquierda");
-  // Código para girar el robot a la izquierda
-}
-
-void girarDerecha() {
-  Serial.println("Girando a la derecha");
-  // Código para girar el robot a la derecha
-}
-
-void detener() {
-  Serial.println("Detenido");
-  // Código para detener el robot
-}
