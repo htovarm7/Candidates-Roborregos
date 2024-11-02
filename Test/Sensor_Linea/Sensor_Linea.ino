@@ -57,8 +57,8 @@ void avanzar() {
 
 
     // Motor inferior derecho
-    digitalWrite(IN1_ID,HIGH);
-    digitalWrite(IN2_ID,LOW);
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
     analogWrite(ENB_ID,130);
     delay(2000);
 }
