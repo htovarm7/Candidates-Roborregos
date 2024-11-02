@@ -65,8 +65,8 @@ const int pmwDer = 255;
 // Actuadores
 
 // Servomotores
-const int Servo_SI = 22;
-const int Servo_SD = 23;
+const int Servo_SI = 9;
+const int Servo_SD = 22;
 
 // Sensor de color
 const char SCL_COLOR = A5;
@@ -804,6 +804,20 @@ void detener() {
     delay(200);
 }
 
+// Actuadores
+void abrirCupula(){
+  Servo1.write(60);
+  Servo2.write(120);
+  delay(500);
+}
+
+void cerrarCupula(){
+  Servo1.write(150); 
+  Servo2.write(30);
+   delay(500);
+}
+
+
 /* ARDUINO SETUP */
 
 void setup() {
@@ -819,8 +833,7 @@ void setup() {
     while (!tcs.begin()) delay(1000);
     
     // Servos
-    Servo1.attach(Servo_SI);
-    Servo2.attach(Servo_SD);
+    Servo1.attach(Servo_SI);  Servo2.attach(Servo_SD);
 
     // RGB LED
     pinMode(R, OUTPUT);
@@ -871,6 +884,11 @@ void loop() {
     Serial.print(distanciaIzquierda);
     Serial.println(" cm");  
     
+    while(!getcolor("Green") || !getcolor("Black")){
+      if(distanciaFrontal <= 14 ||){
+
+      }
+    }
     // Probar esto que no sé si jalaría, especialmente con lo del PID.
     if (track == "") {
         std::string color = getColor(tcs);
