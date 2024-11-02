@@ -32,30 +32,30 @@ const int rightTrig = 36;
 
 // Motores
 //  Pines motor superior izquierdo
-const int IN1_SI = 45;
-const int IN2_SI = 44;
-const int ENA_SI = 5;
-const int ENC_A_SI = 25;
-const int ENC_B_SI = 24;
-
-// Pines motor superior derecho
-const int IN1_SD = 43;
-const int IN2_SD = 42;
-const int ENB_SD = 4;
-const int ENC_A_SD = 29;
-const int ENC_B_SD = 28;
+const int IN1_SI = 43;
+const int IN2_SI = 42;
+const int ENB_SI = 4;
+const int ENC_A_SI = 29;
+const int ENC_B_SI = 28;
 
 // Pines motor inferior izquierdo
 const int IN1_II = 41;
 const int IN2_II = 40;
-const int ENA_II = 3;
+const int ENB_II = 3;
 const int ENC_A_II = 27;
 const int ENC_B_II = 26;
+
+// Pines motor superior derecho
+const int IN1_SD = 45;
+const int IN2_SD = 44;
+const int ENA_SD = 5;
+const int ENC_A_SD = 25;
+const int ENC_B_SD = 24;
 
 // Pines motor inferior derecho
 const int IN1_ID = 39;
 const int IN2_ID = 38;
-const int ENB_ID = 2;
+const int ENA_ID = 2;
 const int ENC_A_ID = 31;
 const int ENC_B_ID = 30;
 
@@ -103,10 +103,10 @@ const int servo2 = 23;
 
 // Motor object instantiation.
 Motors myMotors(
-    IN1_SI, IN2_SI, ENA_SI, 
-    IN1_II, IN2_II, ENA_II,
-    IN1_SD, IN2_SI, ENB_SD, 
-    IN1_ID, IN2_ID, ENB_ID);
+    IN1_SI, IN2_SI, ENB_SI, 
+    IN1_II, IN2_II, ENB_II,
+    IN1_SD, IN2_SI, ENA_SD, 
+    IN1_ID, IN2_ID, ENA_ID);
 
 // Ultrasonic sensor object instantiation.
 Ultrasonic frontUltrasonic(frontEcho, frontTrig);
@@ -123,7 +123,7 @@ Servo Servo2;
 /* LOGIC VARIABLES */
 
 // Keeps track of current track, based on starting color conditions.
-std::string track = "";
+String track = "";
 
 // std::Vector that std::maps the four directions —up, left, down, right— respectively.
 std::vector<std::pair<int, int>> directions = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
@@ -187,7 +187,7 @@ std::set<std::pair<int, int>> visitedA;
 /// Track C setup.
 
 // Color mapping.
-std::vector<std::vector<std::string>> colorMap(3, std::vector<std::string> (5, ""));
+std::vector<std::vector<String>> colorMap(3, std::vector<String> (5, ""));
 
 // Walls
 std::vector<std::vector<bool>> verticalWalls(3, std::vector<bool> (4, 0));
@@ -200,7 +200,7 @@ std::set<std::pair<int, int>> visitedC;
 std::map<std::pair<int, int>, std::set<std::pair<int, int>>> ALC;
 
 // std::Map containing the ocurrences of each color.
-std::map<std::string, int> detectedColors;
+std::map<String, int> detectedColors;
 
 // Robot always starts at (1, 4).
 std::pair<int, int> currentPosition = {1, 4};
@@ -260,6 +260,7 @@ void showColor(String color){
         analogWrite(G,143);
         analogWrite(B,23);
     }
+    delay(1500);
 }
 
 void handleMove(int movement) {
@@ -272,6 +273,26 @@ void handleMove(int movement) {
     else if (movement == LEFT) {
         myMotors.turnLeft();
     }
+
+    myMotors.stop();
+}
+
+void changeOrientation(int turning, int& orientation) {
+    if (turning == FORWARD) {
+        orientation = orientation;
+    }
+    else if (turning == LEFT) {
+        orientation++;
+        if (orientation == 4) {
+            orientation = 0;
+        }
+    }
+    else if (turning == RIGHT) {
+        orientation--;
+        if (orientation == -1) {
+            orientation = 3;
+        }
+    }
 }
 
 void doMove(std::pair<int, int> currentPosition, std::pair<int, int> nextPosition) {
@@ -283,21 +304,25 @@ void doMove(std::pair<int, int> currentPosition, std::pair<int, int> nextPositio
     if (nx == cx - 1) {
         for (auto i : steps[orientation]) {
             handleMove(i);
+            changeOrientation(i, orientation);
         }
     }
     else if (ny == cy - 1) {
         for (auto i : steps[(orientation + 1) % 4]) {
             handleMove(i);
+            changeOrientation(i, orientation);
         }
     }
     else if (nx == cx + 1) {
         for (auto i : steps[(orientation + 2) % 4]) {
             handleMove(i);
+            changeOrientation(i, orientation);
         }
     }
     else if (ny == cy + 1) {
         for (auto i : steps[(orientation + 3) % 4]) {
             handleMove(i);
+            changeOrientation(i, orientation);
         }
     }
 }
@@ -330,9 +355,9 @@ void doMove(std::pair<int, int> currentPosition, std::pair<int, int> nextPositio
 // }
 
 // Finds the most frequent color in a std::map of colors.
-std::string findMostFrequentColor(std::map<std::string, int> colorMap) {
+String findMostFrequentColor(std::map<String, int> colorMap) {
     // Iterate through the std::map of detected colors to find the most seen color.
-    std::pair<std::string, int> mostFrequent = {"Red", 0};
+    std::pair<String, int> mostFrequent = {"Red", 0};
     for (auto i : colorMap) {
         if (i.second > mostFrequent.second) {
             mostFrequent = i;
@@ -466,6 +491,11 @@ void dfsA(std::pair<int, int> node) {
 
     for (auto v : ALA[node]) {
         if (visitedA.count(v)) continue;
+        int nx = v.first;
+        int ny = v.second;
+        int cx = node.first;
+        int cy = node.second;
+
 
         // Move according to current position and next position.
         // NORTH
@@ -574,17 +604,25 @@ void dfsA(std::pair<int, int> node) {
                 lineFound = true;
                 
                 for (auto it = ALA[v].begin(); it != ALA[v].end(); it++) {
-                        if (*it == node) {
-                            ALA[v].erase(it);
-                            ALA[*it].erase(v);
-                            break;
-                        }
+                    if (*it == node) {
+                        ALA[v].erase(it);
+                        break;
                     }
-                    if (lineFound && ballFound) { 
-                        moveToNewPositionA({1, 2}, node);
-                        return;
+                }
+
+                for (auto it = ALA[node].begin(); it != ALA[node].end(); it++) {
+                    if (*it == v) {
+                        ALA[node].erase(it);
+                        break;
                     }
-                    continue;
+                }
+
+                if (lineFound && ballFound) { 
+                    moveToNewPositionA({1, 2}, node);
+                    return;
+                }
+                
+                continue;
             }
         }
 
@@ -608,14 +646,14 @@ void dfsC(std::pair<int, int> node) {
     // Detect color in cell, show, and save, only if it had not been std::set before.
     if (colorMap[node.first][node.second] == ""){
         //Find color based on samples.
-        std::map<std::string, int> detectedColorCount;
+        std::map<String, int> detectedColorCount;
         
         for (int i = 0; i < 10; i++) {
             detectedColorCount[getColor(tcs)]++;
             delay(50);
         }
-        std::string detectedColor = findMostFrequentColor(detectedColorCount);
-        // LEDRBG: std::setColor(detectedColor);
+        String detectedColor = findMostFrequentColor(detectedColorCount);
+        showColor(detectedColor);
 
         colorMap[node.first][node.second] = detectedColor;
         detectedColors[detectedColor]++;
@@ -625,16 +663,15 @@ void dfsC(std::pair<int, int> node) {
     if (colorMap[node.first][node.second] == "Black") {
         // TODO: girar!
         myMotors.turnLeft();
+        myMotors.stop();
         myMotors.turnLeft();
-        delay(1000);
+        myMotors.stop();
         myMotors.forward();
-        delay(800);
         myMotors.stop();
         return;
     }
     else {
         myMotors.forward();
-        delay(800);
         myMotors.stop();
     }
 
@@ -642,15 +679,49 @@ void dfsC(std::pair<int, int> node) {
     if (visitedC.size() == 15) {
         moveToNewPositionC({0, 0}, currentPosition);
 
+        // Move to a cell of the most seen color.
+        String mostSeenColor = findMostFrequentColor(detectedColors);
+        // Find such a cell.
+        int x = 0, y = 0;
+        for (x; x < 3; x++) {
+            for (y; y < 5; y++) {
+                if (colorMap[x][y] == mostSeenColor) {
+                    break;
+                }
+            }
+        }
+        // Perform the movement.
+        moveToNewPositionC({x, y}, currentPosition);
+
+        // Flash the RGB LED;
+        for (int i = 0; i < 5; i++){
+            showColor(mostSeenColor);
+            delay(50);
+            showColor("Black");
+            delay(50);
+        }
+        
+        // Move back to (0, 0).
+        moveToNewPositionC({0, 0}, currentPosition);
+
         // Face the checkpoint.
         if (orientation == NORTH) {
             myMotors.turnLeft();
+            orientation == EAST;
+            myMotors.stop();
         }
-        myMotors.forward();
-        delay(1000);
 
-        std::string mostSeenColor = findMostFrequentColor(detectedColors);
-        // LEDRBG::std::setColor(mostSeenColor);
+        // Go to the checkpoint.
+        myMotors.forward();
+        myMotors.stop();
+
+        // C part two: ramp.
+        myMotors.forward();
+        myMotors.forward();
+        myMotors.forward();
+        myMotors.forward();
+        myMotors.forward();
+        myMotors.stop();
     }
 
     for (int i = 0; i < 4; i++) {
@@ -687,15 +758,15 @@ void dfsC(std::pair<int, int> node) {
             // Move in that direction, then call dfs.
             if (i == 0) {
                 myMotors.forward();
-                delay(1000);
             }
             else if (i == 1) {
                 myMotors.turnLeft();
+                changeOrientation(LEFT, orientation);
                 myMotors.forward();
-                delay(1000);
             }
             else {
                 myMotors.turnRight();
+                changeOrientation(RIGHT, orientation);
                 myMotors.forward();
             }
             myMotors.stop();
@@ -706,7 +777,7 @@ void dfsC(std::pair<int, int> node) {
 }
 
 // Function to get color.
-std::string getColor(Adafruit_TCS34725 tcs) {
+String getColor(Adafruit_TCS34725 tcs) {
     uint16_t clear, red, green, blue;
     tcs.setInterrupt(false);
     delay(60); 
@@ -754,6 +825,7 @@ std::string getColor(Adafruit_TCS34725 tcs) {
     }
 }
 
+<<<<<<< HEAD
 void avanzar() {
     // Motor superior derecho
     digitalWrite(IN1_SD,HIGH);
@@ -818,6 +890,8 @@ void cerrarCupula(){
 }
 
 
+=======
+>>>>>>> b782ab17ea390daa88e8d7a6fe3d1a94b7996344
 /* ARDUINO SETUP */
 
 void setup() {
@@ -891,13 +965,10 @@ void loop() {
     }
     // Probar esto que no sé si jalaría, especialmente con lo del PID.
     if (track == "") {
-        std::string color = getColor(tcs);
+        String color = getColor(tcs);
 
         if (color == "Green") {
             track = "A";
-        }
-        else if (color == "Blue") {
-            track = "C";
         }
         else {
             track = "B";
@@ -915,11 +986,4 @@ void loop() {
         currentPosition = {1, 4};
         dfsC(currentPosition);
     }
-
-    // adelante();
-    // detener();
-    // giroDerecha();
-    // giroIzquierda();
-    // reversa();
-    // movLateral();
 }
