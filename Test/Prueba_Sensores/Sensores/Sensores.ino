@@ -160,7 +160,7 @@ void adelante(){
     digitalWrite(IN2_SI,LOW);
     analogWrite(ENA_SI,240);
 
-    // Motor inferior izquierdo JALA CM
+    // Motor inferior izquierdo JALA CM 
     digitalWrite(IN1_II,LOW);
     digitalWrite(IN2_II,HIGH);
     analogWrite(ENA_II,170);
@@ -176,7 +176,6 @@ void adelante(){
     analogWrite(ENB_ID,220);
     delay(1200);
 }
-
 
 // ESTO YA QUEDA ASI FUNCIONA
 void reversa(){
