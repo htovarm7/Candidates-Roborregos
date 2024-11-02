@@ -277,11 +277,11 @@ void handleMove(int movement) {
     myMotors.stop();
 }
 
-void changeOrientation(Steps turning, int& orientation) {
+void changeOrientation(int turning, int& orientation) {
     if (turning == FORWARD) {
         orientation = orientation;
     }
-    else if (turning == LEFT {
+    else if (turning == LEFT) {
         orientation++;
         if (orientation == 4) {
             orientation = 0;
