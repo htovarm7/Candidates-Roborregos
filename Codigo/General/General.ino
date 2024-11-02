@@ -1022,9 +1022,6 @@ void cerrarCupula(){
    delay(500);
 }
 
-
-=======
->>>>>>> b782ab17ea390daa88e8d7a6fe3d1a94b7996344
 /* ARDUINO SETUP */
 
 void setup() {
