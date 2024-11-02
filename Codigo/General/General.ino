@@ -227,18 +227,18 @@ void closeDome(){
 }
 
 void showColor(String color){
-    if(color == "Yellow"){
-        analogWrite(R,0);
-        analogWrite(G,0);
-        analogWrite(B,255);
+    if (color == "Yellow"){
+        analogWrite(R,255);
+        analogWrite(G,255);
+        analogWrite(B,0);
     }else if(color == "Black"){
         analogWrite(R,0);
         analogWrite(G,0);
         analogWrite(B,0);
     }else if(color == "Purple"){
-        analogWrite(R,184);
-        analogWrite(G,37);
-        analogWrite(B,174);
+        analogWrite(R,100);
+        analogWrite(G,0);
+        analogWrite(B,100);
     }else if(color == "Blue"){
         analogWrite(R,0);
         analogWrite(G,0);
@@ -246,15 +246,15 @@ void showColor(String color){
     }else if(color == "Pink"){
         analogWrite(R,255);
         analogWrite(G,23);
-        analogWrite(B,185);
+        analogWrite(B,192);
     }else if(color == "Red"){
         analogWrite(R,255);
         analogWrite(G,0);
         analogWrite(B,0);
     }else if(color == "Green"){
         analogWrite(R,0);
-        analogWrite(G,0);
-        analogWrite(B,255);
+        analogWrite(G,255);
+        analogWrite(B,0);
     }else{
         analogWrite(R,255);
         analogWrite(G,143);
@@ -728,10 +728,10 @@ std::string getColor(Adafruit_TCS34725 tcs) {
     Serial.println(hue);
 
     // Return color based on tested values.
-    if (hue > 30 && hue < 50) {
+    if (hue > 30 && hue < 59.5) {
         return "Yellow";
     }
-    else if (hue > 55 && hue < 65) {
+    else if (hue > 59.9 && hue < 65) {
         return "Black";
     }
     else if (hue > 222 && hue < 265) {
@@ -746,7 +746,7 @@ std::string getColor(Adafruit_TCS34725 tcs) {
     else if (hue > 0 && hue < 25) {
         return "Red";
     }
-    else if (hue > 85 && hue < 110) {
+    else if (hue > 85 && hue < 125) {
         return "Green";
     }
     else {
