@@ -32,14 +32,14 @@ const int ENC_B_ID = 30;
 
 //Ultrasonicos
 // Pines ultrasonico Izquierdo
-const int ultrasonicoIzquierdoEcho = 42;
-const int ultrasonicoIzquierdoTrig = 43;
+const int ultrasonicoIzquierdoEcho = 33;
+const int ultrasonicoIzquierdoTrig = 32;
 // Pines ultrasonico Frontal
-const int ultrasonicoFrontalEcho = 22;
-const int ultrasonicoFrontalTrig = 24;
+const int ultrasonicoFrontalEcho = 35;
+const int ultrasonicoFrontalTrig = 34;
 // Pines ultrasonico Derecha
-const int ultrasonicoDerechaEcho = 38;
-const int ultrasonicoDerechaTrig = 39;
+const int ultrasonicoDerechaEcho = 37;
+const int ultrasonicoDerechaTrig = 36;
 
 // Para las velocidades que ocupe el motor
 const int pwmIzq = 250;
@@ -77,123 +77,126 @@ void adelante(){
     // Motor superior derecho
     digitalWrite(IN1_SD,HIGH);
     digitalWrite(IN2_SD,LOW);
-    analogWrite(ENA_SD,140);
+    analogWrite(ENA_SD,190);
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENB_ID,190);
 
     // Motor inferior izquierdo
     digitalWrite(IN1_II,LOW);
     digitalWrite(IN2_II,HIGH);
-    analogWrite(ENA_II,160);
+    analogWrite(ENA_II,200);
     
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,LOW);
-    digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENB_ID,140);
-
+    
     // Motor superior izquierdo
     digitalWrite(IN1_SI,HIGH);
     digitalWrite(IN2_SI,LOW);
-    analogWrite(ENB_SI,160);
+    analogWrite(ENB_SI,200);
 
-    //delay();
     delay(710);
 }
 
 
-// ESTO YA QUEDA ASI FUNCIONA
 void reversa(){
-    // Motor superior izquierdo
-    digitalWrite(IN1_SI,LOW);
-    digitalWrite(IN2_SI,HIGH);
-    analogWrite(ENA_SI,pwmAdelante);
+      // Motor superior derecho
+    digitalWrite(IN1_SD,LOW);
+    digitalWrite(IN2_SD,HIGH);
+    analogWrite(ENA_SD,160);
 
     // Motor inferior izquierdo
     digitalWrite(IN1_II,HIGH);
     digitalWrite(IN2_II,LOW);
-    analogWrite(ENA_II,pwmAdelante);
+    analogWrite(ENA_II,200);
     
-    // Motor superior derecho,
-    digitalWrite(IN1_SD,HIGH);
-    digitalWrite(IN2_SD,LOW);
-    analogWrite(ENB_SD,255);
-
     // Motor inferior derecho
     digitalWrite(IN1_ID,HIGH);
     digitalWrite(IN2_ID,LOW);
-    analogWrite(ENB_ID,pwmAdelante);
+    analogWrite(ENB_ID,160);
 
-    delay(3000);
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,HIGH);
+    analogWrite(ENB_SI,200);
+
+    //delay(1000);
+    delay(300);
 }
 
 void detener(){
-  // Motor superior izquierdo
-    digitalWrite(IN1_SI,LOW);
-    digitalWrite(IN2_SI,LOW);
-    analogWrite(ENA_SI,0);
+      // Motor superior izquierdo
+      digitalWrite(IN1_SD,LOW);
+      digitalWrite(IN2_SD,LOW);
+      analogWrite(ENA_SD,0);
 
-    // Motor inferior izquierdo
-    digitalWrite(IN1_II,LOW);
-    digitalWrite(IN2_II,LOW);
-    analogWrite(ENA_II,0);
-    
-    // Motor superior derecho
-    digitalWrite(IN1_SD,LOW);
-    digitalWrite(IN2_SD,LOW);
-    analogWrite(ENB_SD,0);
+      // Motor inferior izquierdo
+      digitalWrite(IN1_II,LOW);
+      digitalWrite(IN2_II,LOW);
+      analogWrite(ENA_II,0);
+      
+      // Motor superior derecho
+      digitalWrite(IN1_SI,LOW);
+      digitalWrite(IN2_SI,LOW);
+      analogWrite(ENB_SI,0);
 
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,LOW);
-    digitalWrite(IN2_ID,LOW);
-    analogWrite(ENB_ID,0);
-    delay(3000);
+
+      // Motor inferior derecho
+      digitalWrite(IN1_ID,LOW);
+      digitalWrite(IN2_ID,LOW);
+      analogWrite(ENB_ID,0);
+      delay(2000);
 }
 
 void giroDerecha(){
 
-    // Motor superior derecho JALA 
-    digitalWrite(IN1_SI,HIGH);
-    digitalWrite(IN2_SI,LOW);
-    analogWrite(ENA_SI,0);
-
-    // Motor inferior izquierdo JALA CM
-    digitalWrite(IN1_II,LOW);
-    digitalWrite(IN2_II,HIGH);
-    analogWrite(ENA_II,200);
-    
-    // Motor superior izquierdo
+    // Motor superior derecho
     digitalWrite(IN1_SD,HIGH);
     digitalWrite(IN2_SD,LOW);
-    analogWrite(ENB_SD,200);
+    analogWrite(ENA_SD,70);
 
     // Motor inferior derecho
     digitalWrite(IN1_ID,LOW);
     digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENB_ID,200);
-    hoalsda
-    delay(1280);
-    
-}
-
-void giroIzquierda(){
-    // Motor superior DERECHO
-    digitalWrite(IN1_SI,HIGH);
-    digitalWrite(IN2_SI,LOW);
-    analogWrite(ENA_SI,200);
+    analogWrite(ENB_ID,70);
 
     // Motor inferior izquierdo
     digitalWrite(IN1_II,HIGH);
     digitalWrite(IN2_II,LOW);
     analogWrite(ENA_II,200);
     
-    // // Motor superior IZQUIERDO
-    digitalWrite(IN1_SD,LOW);
-    digitalWrite(IN2_SD,HIGH);
-    analogWrite(ENB_SD,230);
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,190);
+
+    //delay();
+    delay(500);
+    
+}
+
+void giroIzquierda(){
+
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,220);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,HIGH);
+    digitalWrite(IN2_II,LOW);
+    analogWrite(ENA_II,255);
+    
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,HIGH);
+    analogWrite(ENB_SI,220);
 
     // Motor inferior derecho
     digitalWrite(IN1_ID,LOW);
     digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENB_ID,230);
-    delay(1280);
+    analogWrite(ENB_ID,255);
+
+    delay(400);
 }
 
 // void movLateral(){
@@ -336,13 +339,13 @@ long distanciaUltrasonico(int trigPin, int echoPin) {
 void setup() {
     Serial.begin(9600);
 
-    pinMode(IN1_SI,OUTPUT);
-    pinMode(IN2_SI,OUTPUT);
-    pinMode(ENA_SI,OUTPUT);
-
     pinMode(IN1_SD,OUTPUT);
     pinMode(IN2_SD,OUTPUT);
-    pinMode(ENB_SD,OUTPUT);
+    pinMode(ENA_SD,OUTPUT);
+
+    pinMode(IN1_SI,OUTPUT);
+    pinMode(IN2_SI,OUTPUT);
+    pinMode(ENB_SI,OUTPUT);
 
     pinMode(IN1_II,OUTPUT);
     pinMode(IN2_II,OUTPUT);
@@ -371,6 +374,7 @@ void setup() {
     // Ultrasonico Frontal
     pinMode(ultrasonicoFrontalEcho, INPUT);
     pinMode(ultrasonicoFrontalTrig, OUTPUT);
+    Serial.begin(9600);
 }
 
 /* ARDUINO LOOP */
