@@ -142,7 +142,7 @@ void Motors::turnRight() {
     // Motor superior derecho
     digitalWrite(IN1_SD_,HIGH);
     digitalWrite(IN2_SD_,LOW);
-    analogWrite(ENA_SD_,255);
+    analogWrite(ENA_SD_,180);
 
     // Motor inferior derecho
     digitalWrite(IN1_ID_,LOW);
