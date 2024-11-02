@@ -668,6 +668,57 @@ std::string getColor(Adafruit_TCS34725 tcs) {
     }
 }
 
+// Funciones de los motores:
+void avanzar() {
+    // Motor superior derecho
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,190);
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENB_ID,190);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrite(ENA_II,200);
+    
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,200);
+
+    delay(710); // Este delay jalara por cuadrante de 30 cm centrado en medio
+
+    //delay(1300); // Para ver que tan recto avanza
+}
+
+void detener() {
+    // Motor superior izquierdo
+    digitalWrite(IN1_SD,LOW);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,0);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,LOW);
+    analogWrite(ENA_II,0);
+    
+    // Motor superior derecho
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,0);
+
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,LOW);
+    analogWrite(ENB_ID,0);
+    delay(2000);
+}
+
 /* ARDUINO SETUP */
 
 void setup() {
@@ -758,7 +809,7 @@ void loop() {
         dfsC(currentPosition);
     }
 
-    // adelante();
+    //avanzar();
     // detener();
     // giroDerecha();
     // giroIzquierda();

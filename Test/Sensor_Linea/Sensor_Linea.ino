@@ -39,11 +39,13 @@ const int ENC_A_ID = 31;
 const int ENC_B_ID = 30;
 
 // Funciones de movimiento
+
+// Esta PERFECTO por cuadrante
 void avanzar() {
     // Motor superior derecho
     digitalWrite(IN1_SD,HIGH);
     digitalWrite(IN2_SD,LOW);
-    analogWrite(ENA_SD,180);
+    analogWrite(ENA_SD,190);
 
     // Motor inferior derecho
     digitalWrite(IN1_ID,LOW);
@@ -55,6 +57,32 @@ void avanzar() {
     digitalWrite(IN2_II,HIGH);
     analogWrite(ENA_II,200);
     
+    
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,200);
+
+    delay(710); // Este delay jalara por cuadrante de 30 cm centrado en medio
+
+    //delay(1300); // Para ver que tan recto avanza
+}
+
+void girarDerecha() {
+    // Motor superior derecho
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,70);
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENB_ID,70);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,HIGH);
+    digitalWrite(IN2_II,LOW);
+    analogWrite(ENA_II,200);
     
     // Motor superior izquierdo
     digitalWrite(IN1_SI,HIGH);
@@ -87,31 +115,6 @@ void girarIzquierda() {
     analogWrite(ENB_ID,200);
 
     delay(1279);
-}
-
-void girarDerecha() {
-    // Motor superior derecho
-    digitalWrite(IN1_SD,HIGH);
-    digitalWrite(IN2_SD,LOW);
-    analogWrite(ENA_SD,130);
-
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,HIGH);
-    digitalWrite(IN2_ID,LOW);
-    analogWrite(ENB_ID,130);
-
-    // Motor superior izquierdo
-    digitalWrite(IN1_SI,LOW);
-    digitalWrite(IN2_SI,HIGH);
-    analogWrite(ENB_SI,200);
-
-    // Motor inferior izquierdo
-    digitalWrite(IN1_II,LOW);
-    digitalWrite(IN2_II,HIGH);
-    analogWrite(ENA_II,200);
-    
-    //delay(1000);
-    delay(1780);
 }
 
 void detener() {
@@ -169,14 +172,14 @@ void setup() {
 
 void loop() {
   // // Leer el estado de cada sensor de línea
-  // int valorD1 = digitalRead(pinD1);
-  // int valorD2 = digitalRead(pinD2);
-  // int valorD3 = digitalRead(pinD3);
-  // int valorD4 = digitalRead(pinD4);
-  // int valorD5 = digitalRead(pinD5);
-  // int valorD6 = digitalRead(pinD6);
-  // int valorD7 = digitalRead(pinD7);
-  // int valorD8 = digitalRead(pinD8);
+  // int valorD1 = digitalRead(sensorLineaD1);
+  // int valorD2 = digitalRead(sensorLineaD2);
+  // int valorD3 = digitalRead(sensorLineaD3);
+  // int valorD4 = digitalRead(sensorLineaD4);
+  // int valorD5 = digitalRead(sensorLineaD5);
+  // int valorD6 = digitalRead(sensorLineaD6);
+  // int valorD7 = digitalRead(sensorLineaD7);
+  // int valorD8 = digitalRead(sensorLineaD8);
 
   // // Imprimir el valor para depuración
   // Serial.print(valorD1);
@@ -201,12 +204,12 @@ void loop() {
   // else {  // Ningún sensor detecta la línea
   //   detener();
   // }
-  //avanzar();
 
-  //avanzar();
+  avanzar();
+  //girarDerecha();
   //girarIzquierda();
-  girarDerecha();
   detener();
+
   delay(100); // Pequeña pausa para estabilidad
 }
 
