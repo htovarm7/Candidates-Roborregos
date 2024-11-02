@@ -166,56 +166,6 @@ std::vector<std::vector<int>> steps = {{FORWARD}, {RIGHT, FORWARD}, {RIGHT, RIGH
 
 /* CONTROL FUNCTIONS */
 
-// Control de motores
-void adelante(){
-    
-    // Motor superior izquierdo
-    digitalWrite(IN1_SI,HIGH);
-    digitalWrite(IN2_SI,LOW);
-    analogWrite(ENA_SI,pwmIzq);
-
-    // Motor inferior izquierdo
-    digitalWrite(IN1_II,HIGH);
-    digitalWrite(IN2_II,LOW);
-    analogWrite(ENA_II,pwmIzq);
-    
-    // Motor superior derecho
-    digitalWrite(IN1_SD,HIGH);
-    digitalWrite(IN2_SD,LOW);
-    analogWrite(ENB_SD,pmwDer);
-
-
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,HIGH);
-    digitalWrite(IN2_ID,LOW);
-    analogWrite(ENB_ID,pmwDer);
-    delay(2000);
-}
-
-void detener(){
-    // Motor superior izquierdo
-    digitalWrite(IN1_SI,LOW);
-    digitalWrite(IN2_SI,LOW);
-    analogWrite(ENA_SI,0);
-
-    // Motor inferior izquierdo
-    digitalWrite(IN1_II,LOW);
-    digitalWrite(IN2_II,LOW);
-    analogWrite(ENA_II,0);
-    
-    // Motor superior derecho
-    digitalWrite(IN1_SD,LOW);
-    digitalWrite(IN2_SD,LOW);
-    analogWrite(ENB_SD,0);
-
-
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,LOW);
-    digitalWrite(IN2_ID,LOW);
-    analogWrite(ENB_ID,0);
-    delay(2000);
-}
-
 void giroDerecha(){
     // Motor superior izquierdo
     digitalWrite(IN1_SI,HIGH);
@@ -315,30 +265,51 @@ void movLateral(){
     delay(2000);
 }
 
-void encenderRGB(){
-    // Hay que ver que colores van haber y crear un if de que lo que dio 
-    // el sensor de color pues colocar un color, son
-    // 4 cuadros rosas
-    // 4 cuadros morados
-    // 1 cuadro azul que es el inicio
-    // 1 cuadro rojo que es el cheeckpoint
-    // 1 cuadro verde que es el final
-    // 1 cuadro negro que no se debe tocar
-    // 5 cuadros amarrillos
-    analogWrite(R,125);
-    analogWrite(G,125);
-    analogWrite(B,125);
+void showColor(String color){
+    if(color == "Yellow"){
+        analogWrite(R,0);
+        analogWrite(G,0);
+        analogWrite(B,255);
+    }else if(color == "Black"){
+        analogWrite(R,0);
+        analogWrite(G,0);
+        analogWrite(B,0);
+    }else if(color == "Purple"){
+        analogWrite(R,184);
+        analogWrite(G,37);
+        analogWrite(B,174);
+    }else if(color == "Blue"){
+        analogWrite(R,0);
+        analogWrite(G,0);
+        analogWrite(B,255);
+    }else if(color == "Pink"){
+        analogWrite(R,255);
+        analogWrite(G,23);
+        analogWrite(B,185);
+    }else if(color == "Red"){
+        analogWrite(R,255);
+        analogWrite(G,0);
+        analogWrite(B,0);
+    }else if(color == "Green"){
+        analogWrite(R,0);
+        analogWrite(G,0);
+        analogWrite(B,255);
+    }else{
+        analogWrite(R,255);
+        analogWrite(G,143);
+        analogWrite(B,23);
+    }
 }
 
 void handleMove(int movement) {
     if (movement == FORWARD) {
-        myMotors.forward(100);
+        myMotors.forward();
     }
     else if (movement == RIGHT) {
-        //MovimientosLocos::GiroDerecha();
+        myMotors.turnRight();
     }
     else if (movement == LEFT) {
-        //MovimientosLocos::GiroIzquierda();
+        myMotors.turnLeft();
     }
 }
 
@@ -486,17 +457,17 @@ void dfs(std::pair<int, int> node) {
     // Keep going only if it's not a black square.
     if (colorMap[node.first][node.second] == "Black") {
         // TODO: girar!
-        // MovimientosLocos::GiroIzquierda();
-        // MovimientosLocos::GiroIzquierda();
+        myMotors.turnLeft(orientation);
+        myMotors.turnLeft(orientation);
         delay(1000);
-        myMotors.forward(100);
-        delay(1000);
+        myMotors.forward();
+        delay(800);
         myMotors.stop();
         return;
     }
     else {
-        myMotors.forward(100);
-        delay(1000);
+        myMotors.forward();
+        delay(800);
         myMotors.stop();
     }
 
@@ -504,8 +475,11 @@ void dfs(std::pair<int, int> node) {
     if (visited.size() == 15) {
         moveToNewPosition({0, 0}, currentPosition);
 
-        // girar(90); // to face the checkpoint.
-        myMotors.forward(100);
+        // Face the checkpoint.
+        if (orientation == NORTH) {
+            myMotors.turnLeft(orientation);
+        }
+        myMotors.forward();
         delay(1000);
 
         std::string mostSeenColor = findMostFrequentColor(detectedColors);
@@ -522,12 +496,20 @@ void dfs(std::pair<int, int> node) {
         // If coordinates are out of bounds, skip.
         if (nx < 0 || ny < 0 || nx > 2 || ny > 4) continue;
 
-        // Turn to direction
-        // girar(90) o algo así
-
         // If there's a wall, skip.
         // Physical:
-        if (frontUltrasonic.getDistance() < 10) continue;
+        if (i == 0){
+            if (frontUltrasonic.getDistance() < 10) continue;
+        }
+        else if (i == 1) {
+            if (leftUltrasonic.getDistance() < 10) continue;
+        }
+        else if (i == 2) {
+            continue;
+        }
+        else {
+            if (rightUltrasonic.getDistance() < 10) continue;
+        }
 
         // If there's no wall, update adjacency list. 
         AL[node].insert({nx, ny});
@@ -536,8 +518,19 @@ void dfs(std::pair<int, int> node) {
         // Call dfs with new node only if it's not been visited yet.
         if (!visited.count({nx, ny})) {
             // Move in that direction, then call dfs.
-            myMotors.forward(100);
-            delay(1000);
+            if (i == 0) {
+                myMotors.forward();
+                delay(1000);
+            }
+            else if (i == 1) {
+                myMotors.turnLeft();
+                myMotors.forward();
+                delay(1000)
+            }
+            else {
+                myMotors.turnRight();
+                myMotors.forward();
+            }
             myMotors.stop();
 
             dfs({nx, ny});
@@ -644,6 +637,7 @@ void setup() {
 /* ARDUINO LOOP */
 
 void loop() {
+    if 
     
     float distanciaFrontal = frontUltrasonic.getDistance();
     float distanciaDerecha = rightUltrasonic.getDistance();
