@@ -163,12 +163,12 @@ void giroDerecha(){
     // Motor inferior izquierdo
     digitalWrite(IN1_II,HIGH);
     digitalWrite(IN2_II,LOW);
-    analogWrite(ENA_II,200);
+    analogWrite(ENA_II,255);
     
     // Motor superior izquierdo
     digitalWrite(IN1_SI,HIGH);
     digitalWrite(IN2_SI,LOW);
-    analogWrite(ENB_SI,190);
+    analogWrite(ENB_SI,255);
 
     //delay();
     delay(500);
@@ -411,12 +411,10 @@ void loop() {
     */
 
     // Ya funcionan
-    // adelante();
-    // detener();
+    adelante();
+    detener();
+    giroDerecha();
+    giroIzquierda();
 
-    //reversa();
-    //giroDerecha();
-    //giroIzquierda();
-    //detener();
     //movLateral();
 }
