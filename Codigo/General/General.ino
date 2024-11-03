@@ -1111,12 +1111,6 @@ void loop() {
     // Serial.print(" cm, Izquierda: ");
     // Serial.print(distanciaIzquierda);
     // Serial.println(" cm");  
-    
-    while(!getcolor("Green") || !getcolor("Black")){
-      if(distanciaFrontal <= 14 ||){
-
-      }
-    }
     // Probar esto que no sé si jalaría, especialmente con lo del PID.
     // if (track == "") {
     //     String color = getColor(tcs);
@@ -1133,9 +1127,9 @@ void loop() {
 
     // Start track C logic.
     // if (track == "A") {
-        orientation == WEST;
-        currentPosition = {1, 0};
-        dfsA(currentPosition);
+    orientation == WEST;
+    currentPosition = {1, 0};
+    dfsA(currentPosition);
     // }
     // else if (track == "C") {
     // String color = getColor(tcs);

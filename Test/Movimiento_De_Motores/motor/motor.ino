@@ -413,6 +413,8 @@ void loop() {
     // Ya funcionan
     adelante();
     if (distanciaFrontal < 10) {
+      reversa();
+      delay(1000);
         giroDerecha();
     }
 
