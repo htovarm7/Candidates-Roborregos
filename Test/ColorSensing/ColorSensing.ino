@@ -8,6 +8,60 @@ const int R = 6;
 const int G = 8;
 const int B = 7;
 
+// Motores
+//  Pines motor superior izquierdo
+const int IN1_SI = 43;
+const int IN2_SI = 42;
+const int ENB_SI = 4;
+const int ENC_A_SI = 29;
+const int ENC_B_SI = 28;
+
+// Pines motor superior derecho
+const int IN1_SD = 45;
+const int IN2_SD = 44;
+const int ENA_SD = 5;
+const int ENC_A_SD = 25;
+const int ENC_B_SD = 24;
+
+// Pines motor inferior izquierdo
+const int IN1_II = 41;
+const int IN2_II = 40;
+const int ENA_II = 3;
+const int ENC_A_II = 27;
+const int ENC_B_II = 26;
+
+// Pines motor inferior derecho
+const int IN1_ID = 39;
+const int IN2_ID = 38;
+const int ENB_ID = 2;
+const int ENC_A_ID = 31;
+const int ENC_B_ID = 30;
+
+void adelante(){
+    // Motor superior derecho
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,210);
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENB_ID,210);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrite(ENA_II,220);
+    
+    
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,220);
+
+    delay(710);
+}
+
 String getColor(double hue)
 {
     Serial.println(hue);
@@ -116,6 +170,7 @@ void loop()
   Serial.println("Hue: " + String(hue * 360) + ", Color detected: " + detectedColor);  // Print hue and detected color
   showColor(detectedColor);
   // differentColor();
-
   delay(1000);
+
+  avanzar();
 }

@@ -71,43 +71,45 @@ void girarDerecha() {
     // Motor superior derecho
     digitalWrite(IN1_SD,HIGH);
     digitalWrite(IN2_SD,LOW);
-    analogWrite(ENA_SD,70);
+    analogWrite(ENA_SD,180);
 
     // Motor inferior derecho
     digitalWrite(IN1_ID,LOW);
     digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENA_ID,70);
+    analogWrite(ENA_ID,80);
 
-    // Motor inferior izquierdo
-    digitalWrite(IN1_II,HIGH);
-    digitalWrite(IN2_II,LOW);
-    analogWrite(ENB_II,200);
-    
+    // Ya crea el efecto de giro 
+
     // Motor superior izquierdo
     digitalWrite(IN1_SI,HIGH);
     digitalWrite(IN2_SI,LOW);
-    analogWrite(ENB_SI,190);
-
-    //delay();
-    delay(500);
+    analogWrite(ENB_SI,255);
+    
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrite(ENB_II,255);
+    
+    delay(3500); // Tiempo para girar
 }
+
 
 void reversa(){
     // Motor superior derecho
     digitalWrite(IN1_SD,LOW);
     digitalWrite(IN2_SD,HIGH);
-    analogWrite(ENA_SD,190);
-
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,HIGH);
-    digitalWrite(IN2_ID,LOW);
-    analogWrite(ENA_ID,190);
+    analogWrite(ENA_SD,160);
 
     // Motor inferior izquierdo
     digitalWrite(IN1_II,HIGH);
     digitalWrite(IN2_II,LOW);
     analogWrite(ENB_II,200);
     
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,HIGH);
+    digitalWrite(IN2_ID,LOW);
+    analogWrite(ENA_ID,160);
+
     // Motor superior izquierdo
     digitalWrite(IN1_SI,LOW);
     digitalWrite(IN2_SI,HIGH);
@@ -140,80 +142,80 @@ void girarIzquierda() {
     delay(400);
 }
 
-  void detener() {
-      // Motor superior izquierdo
-      digitalWrite(IN1_SD,LOW);
-      digitalWrite(IN2_SD,LOW);
-      analogWrite(ENA_SD,0);
+void detener() {
+  // Motor superior izquierdo
+  digitalWrite(IN1_SD,LOW);
+  digitalWrite(IN2_SD,LOW);
+  analogWrite(ENA_SD,0);
 
-      // Motor inferior izquierdo
-      digitalWrite(IN1_II,LOW);
-      digitalWrite(IN2_II,LOW);
-      analogWrite(ENB_II,0);
-      
-      // Motor superior derecho
-      digitalWrite(IN1_SI,LOW);
-      digitalWrite(IN2_SI,LOW);
-      analogWrite(ENB_SI,0);
-
+  // Motor inferior izquierdo
+  digitalWrite(IN1_II,LOW);
+  digitalWrite(IN2_II,LOW);
+  analogWrite(ENB_II,0);
+  
+  // Motor superior derecho
+  digitalWrite(IN1_SI,LOW);
+  digitalWrite(IN2_SI,LOW);
+  analogWrite(ENB_SI,0);
 
       // Motor inferior derecho
       digitalWrite(IN1_ID,LOW);
       digitalWrite(IN2_ID,LOW);
       analogWrite(ENA_ID,0);
-      delay(800);
+      delay(200);
   }
 
-void giro90(){
-  // Motor superior derecho
-    digitalWrite(IN1_SD,HIGH);
-    digitalWrite(IN2_SD,LOW);
-    analogWrite(ENA_SD,190);
+// void giro90(){
+//   // Motor superior derecho
+//     digitalWrite(IN1_SD,HIGH);
+//     digitalWrite(IN2_SD,LOW);
+//     analogWrite(ENA_SD,150);
 
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,LOW);
-    digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENA_ID,190);
+//     // Motor inferior derecho
+//     digitalWrite(IN1_ID,LOW);
+//     digitalWrite(IN2_ID,HIGH);
+//     analogWrite(ENA_ID,150);
 
-    // Motor inferior izquierdo
-    digitalWrite(IN1_II,LOW);
-    digitalWrite(IN2_II,HIGH);
-    analogWrite(ENB_II,120);
+//     // Motor inferior izquierdo
+//     digitalWrite(IN1_II,LOW);
+//     digitalWrite(IN2_II,HIGH);
+//     analogWrite(ENB_II,120);
     
-    // Motor superior izquierdo
-    digitalWrite(IN1_SI,HIGH);
-    digitalWrite(IN2_SI,LOW);
-    analogWrite(ENB_SI,120);
+//     // Motor superior izquierdo
+//     digitalWrite(IN1_SI,HIGH);
+//     digitalWrite(IN2_SI,LOW);
+//     analogWrite(ENB_SI,120);
 
-    delay(710); // Este delay jalara por cuadrante de 30 cm centrado en medio
-}
+//     delay(710); // Este delay jalara por cuadrante de 30 cm centrado en medio
+// }
 
-void movLateral(){
-  // superior derecho e inferior izquierdo
-  // superior izquierdo e inferior derecho
+// void movLateral(){
+//   // superior derecho e inferior izquierdo
+//   // superior izquierdo e inferior derecho
 
-  // Motor superior derecho
-    digitalWrite(IN1_SD,HIGH);
-    digitalWrite(IN2_SD,LOW);
-    analogWrite(ENA_SD,190);
+//   // Motor superior derecho
+//     digitalWrite(IN1_SD,HIGH);
+//     digitalWrite(IN2_SD,LOW);
+//     analogWrite(ENA_SD,190);
 
-    // Motor inferior izquierdo
-    digitalWrite(IN1_II,LOW);
-    digitalWrite(IN2_II,HIGH);
-    analogWrite(ENB_II,190);
+//     // Motor inferior izquierdo
+//     digitalWrite(IN1_II,LOW);
+//     digitalWrite(IN2_II,HIGH);
+//     analogWrite(ENB_II,190);
 
-    // Motor superior izquierdo
-    digitalWrite(IN1_SI,HIGH);
-    digitalWrite(IN2_SI,LOW);
-    analogWrite(ENB_SI,190);
+//     // Motor superior izquierdo
+//     digitalWrite(IN1_SI,HIGH);
+//     digitalWrite(IN2_SI,LOW);
+//     analogWrite(ENB_SI,190);
     
-    // Motor inferior derecho
-    digitalWrite(IN1_ID,HIGH);
-    digitalWrite(IN2_ID,LOW);
-    analogWrite(ENA_ID,190);
+//     // Motor inferior derecho
+//     digitalWrite(IN1_ID,HIGH);
+//     digitalWrite(IN2_ID,LOW);
+//     analogWrite(ENA_ID,190);
 
-    delay(710); // Este delay jalara por cuadrante de 30 cm centrado en medio
-}
+//     delay(710); // Este delay jalara por cuadrante de 30 cm centrado en medio
+// }
+
 void setup() {
   Serial.begin(9600);
   pinMode(sensorLineaD1, INPUT);
@@ -225,23 +227,23 @@ void setup() {
   pinMode(sensorLineaD7, INPUT);
   pinMode(sensorLineaD8, INPUT);
   
-    // Encoders
-    // Encoder Superior Izquierdo
-    pinMode(ENC_A_SD, INPUT);
-    pinMode(ENC_B_SD, INPUT);
-    
-    // Encoder Superior Derecho
-    pinMode(ENC_A_SI, INPUT);
-    pinMode(ENC_B_SI, INPUT);
-    
-    // Encoder Inferior Izquierdo
-    pinMode(ENC_A_II, INPUT);
-    pinMode(ENC_B_II, INPUT);
+  // Encoders
+  // Encoder Superior Izquierdo
+  pinMode(ENC_A_SD, INPUT);
+  pinMode(ENC_B_SD, INPUT);
+  
+  // Encoder Superior Derecho
+  pinMode(ENC_A_SI, INPUT);
+  pinMode(ENC_B_SI, INPUT);
+  
+  // Encoder Inferior Izquierdo
+  pinMode(ENC_A_II, INPUT);
+  pinMode(ENC_B_II, INPUT);
 
-    // Encoder Inferior Derecho
-    pinMode(ENC_A_ID, INPUT);
-    pinMode(ENC_B_ID, INPUT);
-  }
+  // Encoder Inferior Derecho
+  pinMode(ENC_A_ID, INPUT);
+  pinMode(ENC_B_ID, INPUT);
+}
 
 void loop() {
   // Leer el estado de cada sensor de línea
@@ -286,15 +288,19 @@ void loop() {
   
   //avanzar();
 
+  girarDerecha();
+  // girarIzquierda();
+  
+  //giro90();
   // movLateral();
 
   // //girarDerecha();
   // //girarIzquierda();
   
-  // giro90();
+  giro90();
   // detener();
 
-  // delay(100); // Pequeña pausa para estabilidad
+  delay(100); // Pequeña pausa para estabilidad
   //avanzar();
 }
 

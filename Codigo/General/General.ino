@@ -31,31 +31,31 @@ const int rightEcho = 37;
 const int rightTrig = 36;
 
 // Motores
-// Pines motor superior izquierdo
+//  Pines motor superior izquierdo
 const int IN1_SI = 43;
 const int IN2_SI = 42;
 const int ENB_SI = 4;
 const int ENC_A_SI = 29;
 const int ENC_B_SI = 28;
 
-//  Pines motor superior derecho
+// Pines motor inferior izquierdo
+const int IN1_II = 41;
+const int IN2_II = 40;
+const int ENB_II = 3;
+const int ENC_A_II = 27;
+const int ENC_B_II = 26;
+
+// Pines motor superior derecho
 const int IN1_SD = 45;
 const int IN2_SD = 44;
 const int ENA_SD = 5;
 const int ENC_A_SD = 25;
 const int ENC_B_SD = 24;
 
-// Pines motor inferior izquierdo
-const int IN1_II = 41;
-const int IN2_II = 40;
-const int ENA_II = 3;
-const int ENC_A_II = 27;
-const int ENC_B_II = 26;
-
 // Pines motor inferior derecho
 const int IN1_ID = 39;
 const int IN2_ID = 38;
-const int ENB_ID = 2;
+const int ENA_ID = 2;
 const int ENC_A_ID = 31;
 const int ENC_B_ID = 30;
 
@@ -65,8 +65,8 @@ const int pmwDer = 255;
 // Actuadores
 
 // Servomotores
-const int Servo_SI = 22;
-const int Servo_SD = 23;
+const int Servo_SI = 9;
+const int Servo_SD = 22;
 
 // Sensor de color
 const char SCL_COLOR = A5;
@@ -102,16 +102,16 @@ const int servo2 = 23;
 /* OBJECTS (SENSORS) */
 
 // Motor object instantiation.
-Motors myMotors(
-    IN1_SI, IN2_SI, ENA_SI, 
-    IN1_II, IN2_II, ENA_II,
-    IN1_SD, IN2_SI, ENB_SD, 
-    IN1_ID, IN2_ID, ENB_ID);
+// Motors 
+//     IN1_SI, IN2_SI, ENB_SI, 
+//     IN1_II, IN2_II, ENB_II,
+//     IN1_SD, IN2_SI, ENA_SD, 
+//     IN1_ID, IN2_ID, ENA_ID);
 
 // Ultrasonic sensor object instantiation.
-Ultrasonic frontUltrasonic(frontEcho, frontTrig);
-Ultrasonic rightUltrasonic(rightEcho, rightTrig);
-Ultrasonic leftUltrasonic(leftEcho, leftTrig);
+// Ultrasonic frontUltrasonic(frontEcho, frontTrig);
+// Ultrasonic rightUltrasonic(rightEcho, rightTrig);
+// Ultrasonic leftUltrasonic(leftEcho, leftTrig);
 
 // Color sensor.
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_1X);
@@ -123,7 +123,7 @@ Servo Servo2;
 /* LOGIC VARIABLES */
 
 // Keeps track of current track, based on starting color conditions.
-std::string track = "";
+String track = "";
 
 // std::Vector that std::maps the four directions —up, left, down, right— respectively.
 std::vector<std::pair<int, int>> directions = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
@@ -147,6 +147,18 @@ std::map<std::pair<int, int>, std::vector<std::pair<int, int>>> ALA;
 // Control variables.
 bool ballFound = false;
 bool lineFound = false;
+
+long distanciaUltrasonico(int trigPin, int echoPin) {
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+
+    long duracion = pulseIn(echoPin, HIGH);
+    long distancia = duracion * 0.034 / 2;
+    return distancia;
+}
 
 // Fixes the adjacency list according to what we can know.
 // This circumvents the use of directions, yet it's not hardcoding!!
@@ -187,7 +199,7 @@ std::set<std::pair<int, int>> visitedA;
 /// Track C setup.
 
 // Color mapping.
-std::vector<std::vector<std::string>> colorMap(3, std::vector<std::string> (5, ""));
+std::vector<std::vector<String>> colorMap(3, std::vector<String> (5, ""));
 
 // Walls
 std::vector<std::vector<bool>> verticalWalls(3, std::vector<bool> (4, 0));
@@ -200,7 +212,7 @@ std::set<std::pair<int, int>> visitedC;
 std::map<std::pair<int, int>, std::set<std::pair<int, int>>> ALC;
 
 // std::Map containing the ocurrences of each color.
-std::map<std::string, int> detectedColors;
+std::map<String, int> detectedColors;
 
 // Robot always starts at (1, 4).
 std::pair<int, int> currentPosition = {1, 4};
@@ -215,6 +227,126 @@ enum Steps {
 std::vector<std::vector<int>> steps = {{FORWARD}, {RIGHT, FORWARD}, {RIGHT, RIGHT, FORWARD}, {LEFT, FORWARD}};
 
 /* CONTROL FUNCTIONS */
+
+void forward() {
+    // Motor superior derecho
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,210);
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENA_ID,210);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrite(ENB_II,220);
+    
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,220);
+
+    delay(710); // Este delay jalará por cuadrante de 30 cm centrado en medio
+}
+
+void backward(){
+    // Motor superior derecho
+    digitalWrite(IN1_SD,LOW);
+    digitalWrite(IN2_SD,HIGH);
+    analogWrite(ENA_SD,160);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,HIGH);
+    digitalWrite(IN2_II,LOW);
+    analogWrite(ENB_II,200);
+    
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,HIGH);
+    digitalWrite(IN2_ID,LOW);
+    analogWrite(ENA_ID,160);
+
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,HIGH);
+    analogWrite(ENB_SI,200);
+
+    //delay(1000);
+    delay(300);
+}
+
+void stop(){
+    // Motor superior izquierdo
+    digitalWrite(IN1_SD,LOW);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,0);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,LOW);
+    analogWrite(ENB_II,0);
+    
+    // Motor superior derecho
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,0);
+
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,LOW);
+    analogWrite(ENA_ID,0);
+    delay(200);
+}
+
+void turnLeft() {
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,220);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,HIGH);
+    digitalWrite(IN2_II,LOW);
+    analogWrite(ENB_II,255);
+    
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,HIGH);
+    analogWrite(ENB_SI,220);
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENA_ID,255);
+
+    delay(400);
+}
+
+void turnRight() {
+    // Motor superior derecho
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,180);
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENA_ID,80);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,HIGH);
+    digitalWrite(IN2_II,LOW);
+    analogWrite(ENB_II,255);
+    
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,255);
+
+    delay(500);
+}
 
 void openDome(){
     Servo1.write(60);
@@ -260,17 +392,38 @@ void showColor(String color){
         analogWrite(G,143);
         analogWrite(B,23);
     }
+    delay(1500);
 }
 
 void handleMove(int movement) {
     if (movement == FORWARD) {
-        myMotors.forward();
+        forward();
     }
     else if (movement == RIGHT) {
-        myMotors.turnRight();
+        turnRight();
     }
     else if (movement == LEFT) {
-        myMotors.turnLeft();
+        turnLeft();
+    }
+
+    stop();
+}
+
+void changeOrientation(int turning, int& orientation) {
+    if (turning == FORWARD) {
+        orientation = orientation;
+    }
+    else if (turning == LEFT) {
+        orientation++;
+        if (orientation == 4) {
+            orientation = 0;
+        }
+    }
+    else if (turning == RIGHT) {
+        orientation--;
+        if (orientation == -1) {
+            orientation = 3;
+        }
     }
 }
 
@@ -283,21 +436,25 @@ void doMove(std::pair<int, int> currentPosition, std::pair<int, int> nextPositio
     if (nx == cx - 1) {
         for (auto i : steps[orientation]) {
             handleMove(i);
+            changeOrientation(i, orientation);
         }
     }
     else if (ny == cy - 1) {
         for (auto i : steps[(orientation + 1) % 4]) {
             handleMove(i);
+            changeOrientation(i, orientation);
         }
     }
     else if (nx == cx + 1) {
         for (auto i : steps[(orientation + 2) % 4]) {
             handleMove(i);
+            changeOrientation(i, orientation);
         }
     }
     else if (ny == cy + 1) {
         for (auto i : steps[(orientation + 3) % 4]) {
             handleMove(i);
+            changeOrientation(i, orientation);
         }
     }
 }
@@ -330,9 +487,9 @@ void doMove(std::pair<int, int> currentPosition, std::pair<int, int> nextPositio
 // }
 
 // Finds the most frequent color in a std::map of colors.
-std::string findMostFrequentColor(std::map<std::string, int> colorMap) {
+String findMostFrequentColor(std::map<String, int> colorMap) {
     // Iterate through the std::map of detected colors to find the most seen color.
-    std::pair<std::string, int> mostFrequent = {"Red", 0};
+    std::pair<String, int> mostFrequent = {"Red", 0};
     for (auto i : colorMap) {
         if (i.second > mostFrequent.second) {
             mostFrequent = i;
@@ -439,18 +596,19 @@ void moveToNewPositionA(std::pair<int, int> newPosition, std::pair<int, int>& cu
 
 void dfsA(std::pair<int, int> node) {
     if (lineFound && ballFound) return;
+    Serial.println(lineFound);
     visitedA.insert(node);
 
     if (!ballFound){
         if (node == std::make_pair(1, 1)) {
-            if (frontUltrasonic.getDistance() > 10) {
+            if (distanciaUltrasonico(frontTrig, frontEcho) > 10) {
                 ballFound = true;
                 ALA[{1, 2}].push_back(node);
                 ALA[node].push_back({1, 2});
             }
         }
         if (node == std::make_pair(0, 2) || node == std::make_pair(1, 3) || node == std::make_pair(2, 2)) {
-            if (rightUltrasonic.getDistance() > 10) {
+            if (distanciaUltrasonico(rightTrig, rightEcho) > 10) {
                 ballFound = true; 
                 ALA[node].push_back({1, 2});
                 ALA[{1, 2}].push_back(node);
@@ -466,6 +624,11 @@ void dfsA(std::pair<int, int> node) {
 
     for (auto v : ALA[node]) {
         if (visitedA.count(v)) continue;
+        int nx = v.first;
+        int ny = v.second;
+        int cx = node.first;
+        int cy = node.second;
+
 
         // Move according to current position and next position.
         // NORTH
@@ -474,18 +637,18 @@ void dfsA(std::pair<int, int> node) {
         // WEST = right turn
         if (orientation == NORTH) {
             if (nx == cx - 1) {
-                myMotors.forward();
-                myMotors.stop();
+                forward();
+                stop();
             }
             else if (ny == cy - 1) {
-                myMotors.turnLeft();
-                myMotors.forward();
-                myMotors.stop();
+                turnLeft();
+                forward();
+                stop();
             }
             else if (ny == cy + 1) {
-                myMotors.turnRight();
-                myMotors.forward();
-                myMotors.stop();
+                turnRight();
+                forward();
+                stop();
             }
         }
 
@@ -495,18 +658,18 @@ void dfsA(std::pair<int, int> node) {
         // SOUTH = left turn
         if (orientation == EAST) {
             if (nx == cx - 1) {
-                myMotors.turnLeft();
-                myMotors.forward();
-                myMotors.stop();
+                turnLeft();
+                forward();
+                stop();
             }
             else if (ny == cy - 1) {
-                myMotors.forward();
-                myMotors.stop();
+                forward();
+                stop();
             }
             else if (nx == cx + 1) {
-                myMotors.turnLeft();
-                myMotors.forward();
-                myMotors.stop();
+                turnLeft();
+                forward();
+                stop();
             }
         }
 
@@ -516,18 +679,18 @@ void dfsA(std::pair<int, int> node) {
         // WEST = left turn
         if (orientation == SOUTH) {
             if (nx == cx + 1) {
-                myMotors.forward();
-                myMotors.stop();
+                forward();
+                stop();
             }
             else if (ny == cy - 1) {
-                myMotors.turnRight();
-                myMotors.forward();
-                myMotors.stop();
+                turnRight();
+                forward();
+                stop();
             }
             else if (ny == cy + 1) {
-                myMotors.turnLeft();
-                myMotors.forward();
-                myMotors.stop();
+                turnLeft();
+                forward();
+                stop();
             }
         }
 
@@ -537,18 +700,18 @@ void dfsA(std::pair<int, int> node) {
         // SOUTH = right turn
         if (orientation == WEST) {
             if (nx == cx - 1) {
-                myMotors.turnLeft();
-                myMotors.forward();
-                myMotors.stop();
+                turnLeft();
+                forward();
+                stop();
             }
             else if (ny == cy + 1) {
-                myMotors.forward();
-                myMotors.stop();
+                forward();
+                stop();
             }
             else if (nx == cx + 1) {
-                myMotors.turnRight();
-                myMotors.forward();
-                myMotors.stop();
+                turnRight();
+                forward();
+                stop();
             }
         }
 
@@ -574,17 +737,25 @@ void dfsA(std::pair<int, int> node) {
                 lineFound = true;
                 
                 for (auto it = ALA[v].begin(); it != ALA[v].end(); it++) {
-                        if (*it == node) {
-                            ALA[v].erase(it);
-                            ALA[*it].erase(v);
-                            break;
-                        }
+                    if (*it == node) {
+                        ALA[v].erase(it);
+                        break;
                     }
-                    if (lineFound && ballFound) { 
-                        moveToNewPositionA({1, 2}, node);
-                        return;
+                }
+
+                for (auto it = ALA[node].begin(); it != ALA[node].end(); it++) {
+                    if (*it == v) {
+                        ALA[node].erase(it);
+                        break;
                     }
-                    continue;
+                }
+
+                if (lineFound && ballFound) { 
+                    moveToNewPositionA({1, 2}, node);
+                    return;
+                }
+                
+                continue;
             }
         }
 
@@ -608,14 +779,14 @@ void dfsC(std::pair<int, int> node) {
     // Detect color in cell, show, and save, only if it had not been std::set before.
     if (colorMap[node.first][node.second] == ""){
         //Find color based on samples.
-        std::map<std::string, int> detectedColorCount;
+        std::map<String, int> detectedColorCount;
         
         for (int i = 0; i < 10; i++) {
             detectedColorCount[getColor(tcs)]++;
             delay(50);
         }
-        std::string detectedColor = findMostFrequentColor(detectedColorCount);
-        // LEDRBG: std::setColor(detectedColor);
+        String detectedColor = findMostFrequentColor(detectedColorCount);
+        showColor(detectedColor);
 
         colorMap[node.first][node.second] = detectedColor;
         detectedColors[detectedColor]++;
@@ -624,33 +795,66 @@ void dfsC(std::pair<int, int> node) {
     // Keep going only if it's not a black square.
     if (colorMap[node.first][node.second] == "Black") {
         // TODO: girar!
-        myMotors.turnLeft();
-        myMotors.turnLeft();
-        delay(1000);
-        myMotors.forward();
-        delay(800);
-        myMotors.stop();
+        turnLeft();
+        stop();
+        turnLeft();
+        stop();
+        forward();
+        stop();
         return;
     }
     else {
-        myMotors.forward();
-        delay(800);
-        myMotors.stop();
+        forward();
+        stop();
     }
 
     // If all cells are visited, move to checkpoint.
     if (visitedC.size() == 15) {
         moveToNewPositionC({0, 0}, currentPosition);
 
+        // Move to a cell of the most seen color.
+        String mostSeenColor = findMostFrequentColor(detectedColors);
+        // Find such a cell.
+        int x = 0, y = 0;
+        for (x; x < 3; x++) {
+            for (y; y < 5; y++) {
+                if (colorMap[x][y] == mostSeenColor) {
+                    break;
+                }
+            }
+        }
+        // Perform the movement.
+        moveToNewPositionC({x, y}, currentPosition);
+
+        // Flash the RGB LED;
+        for (int i = 0; i < 5; i++){
+            showColor(mostSeenColor);
+            delay(50);
+            showColor("Black");
+            delay(50);
+        }
+        
+        // Move back to (0, 0).
+        moveToNewPositionC({0, 0}, currentPosition);
+
         // Face the checkpoint.
         if (orientation == NORTH) {
-            myMotors.turnLeft();
+            turnLeft();
+            orientation == EAST;
+            stop();
         }
-        myMotors.forward();
-        delay(1000);
 
-        std::string mostSeenColor = findMostFrequentColor(detectedColors);
-        // LEDRBG::std::setColor(mostSeenColor);
+        // Go to the checkpoint.
+        forward();
+        stop();
+
+        // C part two: ramp.
+        forward();
+        forward();
+        forward();
+        forward();
+        forward();
+        stop();
     }
 
     for (int i = 0; i < 4; i++) {
@@ -666,16 +870,16 @@ void dfsC(std::pair<int, int> node) {
         // If there's a wall, skip.
         // Physical:
         if (i == 0){
-            if (frontUltrasonic.getDistance() < 10) continue;
+            if (distanciaUltrasonico(frontTrig, frontEcho) < 10) continue;
         }
         else if (i == 1) {
-            if (leftUltrasonic.getDistance() < 10) continue;
+            if (distanciaUltrasonico(leftTrig, leftEcho) < 10) continue;
         }
         else if (i == 2) {
             continue;
         }
         else {
-            if (rightUltrasonic.getDistance() < 10) continue;
+            if (distanciaUltrasonico(rightTrig, rightEcho) < 10) continue;
         }
 
         // If there's no wall, update adjacency list. 
@@ -686,19 +890,19 @@ void dfsC(std::pair<int, int> node) {
         if (!visitedC.count({nx, ny})) {
             // Move in that direction, then call dfs.
             if (i == 0) {
-                myMotors.forward();
-                delay(1000);
+                forward();
             }
             else if (i == 1) {
-                myMotors.turnLeft();
-                myMotors.forward();
-                delay(1000);
+                turnLeft();
+                changeOrientation(LEFT, orientation);
+                forward();
             }
             else {
-                myMotors.turnRight();
-                myMotors.forward();
+                turnRight();
+                changeOrientation(RIGHT, orientation);
+                forward();
             }
-            myMotors.stop();
+            stop();
 
             dfsC({nx, ny});
         }
@@ -706,7 +910,7 @@ void dfsC(std::pair<int, int> node) {
 }
 
 // Function to get color.
-std::string getColor(Adafruit_TCS34725 tcs) {
+String getColor(Adafruit_TCS34725 tcs) {
     uint16_t clear, red, green, blue;
     tcs.setInterrupt(false);
     delay(60); 
@@ -754,6 +958,7 @@ std::string getColor(Adafruit_TCS34725 tcs) {
     }
 }
 
+<<<<<<< HEAD
 void avanzar() {
     // Motor superior derecho
     digitalWrite(IN1_SD,HIGH);
@@ -804,23 +1009,59 @@ void detener() {
     delay(200);
 }
 
+// Actuadores
+void abrirCupula(){
+  Servo1.write(60);
+  Servo2.write(120);
+  delay(500);
+}
+
+void cerrarCupula(){
+  Servo1.write(150); 
+  Servo2.write(30);
+   delay(500);
+}
+
 /* ARDUINO SETUP */
 
 void setup() {
     Serial.begin(9600);
 
     // Motors and ultrasonic sensors.
-    myMotors.init();
-    frontUltrasonic.init();
-    rightUltrasonic.init();
-    leftUltrasonic.init();
+    // init();
+    pinMode(IN1_SI, OUTPUT);
+    pinMode(IN2_SI, OUTPUT);
+    pinMode(ENB_SI, OUTPUT);
+
+    pinMode(IN1_SD, OUTPUT);
+    pinMode(IN2_SD, OUTPUT);
+    pinMode(ENA_SD, OUTPUT);
+
+    pinMode(IN1_II, OUTPUT);
+    pinMode(IN2_II, OUTPUT);
+    pinMode(ENB_II, OUTPUT);
+
+    pinMode(IN1_ID, OUTPUT);
+    pinMode(IN2_ID, OUTPUT);
+    pinMode(ENA_ID, OUTPUT);
+
+    pinMode(frontEcho, INPUT);
+    pinMode(frontTrig, OUTPUT);
+
+    pinMode(leftEcho, INPUT);
+    pinMode(leftTrig, OUTPUT);
+
+    pinMode(rightEcho, INPUT);
+    pinMode(rightTrig, OUTPUT);
+    // frontUltrasonic.init();
+    // rightUltrasonic.init();
+    // leftUltrasonic.init();
 
     // Ensure color sensor is on.
     while (!tcs.begin()) delay(1000);
     
     // Servos
-    Servo1.attach(Servo_SI);
-    Servo2.attach(Servo_SD);
+    Servo1.attach(Servo_SI);  Servo2.attach(Servo_SD);
 
     // RGB LED
     pinMode(R, OUTPUT);
@@ -858,50 +1099,49 @@ void setup() {
 /* ARDUINO LOOP */
 
 void loop() {
-    float distanciaFrontal = frontUltrasonic.getDistance();
-    float distanciaDerecha = rightUltrasonic.getDistance();
-    float distanciaIzquierda = leftUltrasonic.getDistance();
+    long distanciaFrontal = distanciaUltrasonico(frontTrig, frontEcho);
+    long distanciaDerecha = distanciaUltrasonico(rightTrig, rightEcho);
+    long distanciaIzquierda = distanciaUltrasonico(leftTrig, leftEcho);
 
 
-    Serial.print("Frontal: ");
-    Serial.print(distanciaFrontal);
-    Serial.print(" cm, Derecha: ");
-    Serial.print(distanciaDerecha);
-    Serial.print(" cm, Izquierda: ");
-    Serial.print(distanciaIzquierda);
-    Serial.println(" cm");  
+    // Serial.print("Frontal: ");
+    // Serial.print(distanciaFrontal);
+    // Serial.print(" cm, Derecha: ");
+    // Serial.print(distanciaDerecha);
+    // Serial.print(" cm, Izquierda: ");
+    // Serial.print(distanciaIzquierda);
+    // Serial.println(" cm");  
     
-    // Probar esto que no sé si jalaría, especialmente con lo del PID.
-    if (track == "") {
-        std::string color = getColor(tcs);
+    while(!getcolor("Green") || !getcolor("Black")){
+      if(distanciaFrontal <= 14 ||){
 
-        if (color == "Green") {
-            track = "A";
-        }
-        else if (color == "Blue") {
-            track = "C";
-        }
-        else {
-            track = "B";
-        }
+      }
     }
+    // Probar esto que no sé si jalaría, especialmente con lo del PID.
+    // if (track == "") {
+    //     String color = getColor(tcs);
+    //     Serial.print("Color: ");
+    //     Serial.println(color);
+
+    //     if (color == "Green") {
+    //         track = "A";
+    //     }
+    //     else {
+    //         track = "C";
+    //     }
+    // }
 
     // Start track C logic.
-    if (track == "A") {
+    // if (track == "A") {
         orientation == WEST;
         currentPosition = {1, 0};
         dfsA(currentPosition);
-    }
-    else if (track == "C") {
-        orientation == EAST;
-        currentPosition = {1, 4};
-        dfsC(currentPosition);
-    }
-
-    // adelante();
-    // detener();
-    // giroDerecha();
-    // giroIzquierda();
-    // reversa();
-    // movLateral();
+    // }
+    // else if (track == "C") {
+    // String color = getColor(tcs);
+    // orientation == EAST;
+    // currentPosition = {1, 4};
+    // showColor(color);
+    // dfsC(currentPosition);
+    // }
 }

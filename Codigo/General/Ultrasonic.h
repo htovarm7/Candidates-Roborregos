@@ -6,7 +6,7 @@
 class Ultrasonic {
 public:
     Ultrasonic(int, int);
-    float getDistance();
+    long getDistance();
     void init();
 
 private:
