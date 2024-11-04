@@ -8,6 +8,13 @@ const int ENB_SI = 4;
 const int ENC_A_SI = 29;
 const int ENC_B_SI = 28;
 
+// Pines motor inferior izquierdo
+const int IN1_II = 41;
+const int IN2_II = 40;
+const int ENB_II = 3;
+const int ENC_A_II = 27;
+const int ENC_B_II = 26;
+
 // Pines motor superior derecho
 const int IN1_SD = 45;
 const int IN2_SD = 44;
@@ -15,17 +22,10 @@ const int ENA_SD = 5;
 const int ENC_A_SD = 25;
 const int ENC_B_SD = 24;
 
-// Pines motor inferior izquierdo
-const int IN1_II = 41;
-const int IN2_II = 40;
-const int ENA_II = 3;
-const int ENC_A_II = 27;
-const int ENC_B_II = 26;
-
 // Pines motor inferior derecho
 const int IN1_ID = 39;
 const int IN2_ID = 38;
-const int ENB_ID = 2;
+const int ENA_ID = 2;
 const int ENC_A_ID = 31;
 const int ENC_B_ID = 30;
 
@@ -73,21 +73,21 @@ int sdPWM = 200;
 int idPWM = 200;
 
 // Control de motores
-void adelante(){
+void avanzar(){
     // Motor superior derecho
     digitalWrite(IN1_SD,HIGH);
     digitalWrite(IN2_SD,LOW);
-    analogWrite(ENA_SD,190);
+    analogWrite(ENA_SD,200);
 
     // Motor inferior derecho
     digitalWrite(IN1_ID,LOW);
     digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENB_ID,190);
+    analogWrite(ENA_ID,200);
 
     // Motor inferior izquierdo
     digitalWrite(IN1_II,LOW);
     digitalWrite(IN2_II,HIGH);
-    analogWrite(ENA_II,200);
+    analogWrite(ENB_II,200);
     
     
     // Motor superior izquierdo
@@ -95,7 +95,7 @@ void adelante(){
     digitalWrite(IN2_SI,LOW);
     analogWrite(ENB_SI,200);
 
-    delay(710);
+    delay(1000);
 }
 
 
@@ -108,12 +108,12 @@ void reversa(){
     // Motor inferior izquierdo
     digitalWrite(IN1_II,HIGH);
     digitalWrite(IN2_II,LOW);
-    analogWrite(ENA_II,200);
+    analogWrite(ENB_II,200);
     
     // Motor inferior derecho
     digitalWrite(IN1_ID,HIGH);
     digitalWrite(IN2_ID,LOW);
-    analogWrite(ENB_ID,160);
+    analogWrite(ENA_ID,160);
 
     // Motor superior izquierdo
     digitalWrite(IN1_SI,LOW);
@@ -133,7 +133,7 @@ void detener(){
       // Motor inferior izquierdo
       digitalWrite(IN1_II,LOW);
       digitalWrite(IN2_II,LOW);
-      analogWrite(ENA_II,0);
+      analogWrite(ENB_II,0);
       
       // Motor superior derecho
       digitalWrite(IN1_SI,LOW);
@@ -144,7 +144,7 @@ void detener(){
       // Motor inferior derecho
       digitalWrite(IN1_ID,LOW);
       digitalWrite(IN2_ID,LOW);
-      analogWrite(ENB_ID,0);
+      analogWrite(ENA_ID,0);
       delay(2000);
 }
 
@@ -158,12 +158,12 @@ void giroDerecha(){
     // Motor inferior derecho
     digitalWrite(IN1_ID,LOW);
     digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENB_ID,70);
+    analogWrite(ENA_ID,70);
 
     // Motor inferior izquierdo
     digitalWrite(IN1_II,HIGH);
     digitalWrite(IN2_II,LOW);
-    analogWrite(ENA_II,255);
+    analogWrite(ENB_II,255);
     
     // Motor superior izquierdo
     digitalWrite(IN1_SI,HIGH);
@@ -184,7 +184,7 @@ void giroIzquierda(){
     // Motor inferior izquierdo
     digitalWrite(IN1_II,HIGH);
     digitalWrite(IN2_II,LOW);
-    analogWrite(ENA_II,255);
+    analogWrite(ENB_II,255);
     
     // Motor superior izquierdo
     digitalWrite(IN1_SI,LOW);
@@ -194,7 +194,7 @@ void giroIzquierda(){
     // Motor inferior derecho
     digitalWrite(IN1_ID,LOW);
     digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENB_ID,255);
+    analogWrite(ENA_ID,255);
 
     delay(400);
 }
@@ -349,11 +349,11 @@ void setup() {
 
     pinMode(IN1_II,OUTPUT);
     pinMode(IN2_II,OUTPUT);
-    pinMode(ENA_II,OUTPUT);
+    pinMode(ENB_II,OUTPUT);
 
     pinMode(IN1_ID,OUTPUT);
     pinMode(IN2_ID,OUTPUT);
-    pinMode(ENB_ID,OUTPUT);
+    pinMode(ENA_ID,OUTPUT);
 
     // Encoders
     // Encoder Superior Izquierdo
@@ -382,13 +382,13 @@ void setup() {
 void loop() {
 
     //medirRPM();
-    long distanciaFrontal = distanciaUltrasonico(ultrasonicoFrontalTrig, ultrasonicoFrontalEcho);
+    // long distanciaFrontal = distanciaUltrasonico(ultrasonicoFrontalTrig, ultrasonicoFrontalEcho);
     // long distanciaIzquierda = distanciaUltrasonico(ultrasonicoIzquierdoTrig, ultrasonicoIzquierdoEcho);
 
-    Serial.print("Frontal: ");
-    Serial.print(distanciaFrontal);
-    Serial.println(" cm");
-    delay(50);
+    // Serial.print("Frontal: ");
+    // Serial.print(distanciaFrontal);
+    // Serial.println(" cm");
+    // delay(50);
 
     // //Para que no choque
     // if(distanciaFrontal > 23){

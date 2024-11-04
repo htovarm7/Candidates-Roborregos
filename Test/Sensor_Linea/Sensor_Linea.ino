@@ -45,54 +45,79 @@ void avanzar() {
     // Motor superior derecho
     digitalWrite(IN1_SD,HIGH);
     digitalWrite(IN2_SD,LOW);
-    analogWrite(ENA_SD,190);
+    analogWrite(ENA_SD,210);
 
     // Motor inferior derecho
     digitalWrite(IN1_ID,LOW);
     digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENA_ID,190);
+    analogWrite(ENA_ID,210);
 
     // Motor inferior izquierdo
     digitalWrite(IN1_II,LOW);
     digitalWrite(IN2_II,HIGH);
-    analogWrite(ENB_II,200);
+    analogWrite(ENB_II,130);
     
     // Motor superior izquierdo
     digitalWrite(IN1_SI,HIGH);
     digitalWrite(IN2_SI,LOW);
-    analogWrite(ENB_SI,200);
+    analogWrite(ENB_SI,130);
 
-    delay(500); // Este delay jalara por cuadrante de 30 cm centrado en medio
+    delay(710); // Este delay jalara por cuadrante de 30 cm centrado en medio
 
-    //delay(1300); // Para ver que tan recto avanza
+    delay(3000); // Para la pista del sensor de linea
 }
 
 void girarDerecha() {
     // Motor superior derecho
-    digitalWrite(IN1_SD,HIGH);
-    digitalWrite(IN2_SD,LOW);
-    analogWrite(ENA_SD,180);
+    digitalWrite(IN1_SD,LOW);
+    digitalWrite(IN2_SD,HIGH);
+    analogWrite(ENA_SD,255);
 
     // Motor inferior derecho
-    digitalWrite(IN1_ID,LOW);
-    digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENA_ID,80);
+    digitalWrite(IN1_ID,HIGH);
+    digitalWrite(IN2_ID,LOW);
+    analogWrite(ENA_ID,255);
 
-    // Ya crea el efecto de giro 
-
-    // Motor superior izquierdo
-    digitalWrite(IN1_SI,HIGH);
-    digitalWrite(IN2_SI,LOW);
-    analogWrite(ENB_SI,255);
-    
     // Motor inferior izquierdo
     digitalWrite(IN1_II,LOW);
     digitalWrite(IN2_II,HIGH);
     analogWrite(ENB_II,255);
     
-    delay(3500); // Tiempo para girar
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,255);
+
+    //delay(710); // Este delay jalara por cuadrante de 30 cm centrado en medio
+
+    delay(3000); // Para la pista del sensor de linea
 }
 
+void girarIzquierda() {
+    
+    // Moto superior derecho
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,170);
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENA_ID,170);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,HIGH);
+    digitalWrite(IN2_II,LOW);
+    analogWrite(ENB_II,255);
+    
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,LOW);
+    digitalWrite(IN2_SI,HIGH);
+    analogWrite(ENB_SI,220);
+
+
+    delay(400);
+}
 
 void reversa(){
     // Motor superior derecho
@@ -115,7 +140,8 @@ void reversa(){
     digitalWrite(IN2_SI,HIGH);
     analogWrite(ENB_SI,200);
 
-    delay(710);
+    //delay(1000);
+    delay(300);
 }
 
 void girarIzquierda() {
@@ -158,12 +184,12 @@ void detener() {
   digitalWrite(IN2_SI,LOW);
   analogWrite(ENB_SI,0);
 
-      // Motor inferior derecho
-      digitalWrite(IN1_ID,LOW);
-      digitalWrite(IN2_ID,LOW);
-      analogWrite(ENA_ID,0);
-      delay(200);
-  }
+  // Motor inferior derecho
+  digitalWrite(IN1_ID,LOW);
+  digitalWrite(IN2_ID,LOW);
+  analogWrite(ENA_ID,0);
+  delay(1000);
+}
 
 // void giro90(){
 //   // Motor superior derecho
@@ -267,40 +293,35 @@ void loop() {
   Serial.println(valorD8); 
 
   // Lógica báSDca de seguimiento de línea
-  if (valorD4 == 1 && valorD5 == 1) {  // Línea centrada
-    avanzar();
-  }
-  else if (valorD1 == 1 || valorD2 == 1 || valorD3 == 1) {  // Giro a la izquierda
-    //girarIzquierda();
-    avanzar();
-  }
-  else if (valorD6 == 1 || valorD7 == 1 || valorD8 == 1) {  // Giro a la derecha
-    // girarDerecha();
-    avanzar();
-  }
-  else {  // Ningún sensor detecta la línea
-    
-    detener();
-    reversa();
-  }
+  // if (valorD4 == 1 && valorD5 == 1) {  // Línea centrada
+  //   avanzar();
+  // }
+  // else if (valorD1 == 1 || valorD2 == 1 || valorD3 == 1) {  // Giro a la izquierda
+  //   girarIzquierda();
+  // }
+  // else if (valorD6 == 1 || valorD7 == 1 || valorD8 == 1) {  // Giro a la derecha
+  //   girarDerecha();
+  // }
+  // else {  // Ningún sensor detecta la línea
+  //   detener();
+  // }
 
   // Movimientos que ya jalan
   
-  //avanzar();
+  // avanzar();
+  // detener();
 
-  girarDerecha();
+  // girarDerecha();
+  // detener();
+  
   // girarIzquierda();
+  // detener();
   
   //giro90();
   // movLateral();
 
-  // //girarDerecha();
-  // //girarIzquierda();
-  
-  giro90();
-  // detener();
+  detener();
 
   delay(100); // Pequeña pausa para estabilidad
-  //avanzar();
 }
 

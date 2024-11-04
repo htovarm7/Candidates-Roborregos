@@ -41,25 +41,75 @@ void adelante(){
     // Motor superior derecho
     digitalWrite(IN1_SD,HIGH);
     digitalWrite(IN2_SD,LOW);
-    analogWrite(ENA_SD,210);
+    analogWrite(ENA_SD,130);
 
     // Motor inferior derecho
     digitalWrite(IN1_ID,LOW);
     digitalWrite(IN2_ID,HIGH);
-    analogWrite(ENB_ID,210);
+    analogWrite(ENB_ID,130);
 
     // Motor inferior izquierdo
     digitalWrite(IN1_II,LOW);
     digitalWrite(IN2_II,HIGH);
-    analogWrite(ENA_II,220);
+    analogWrite(ENA_II,210);
     
     
     // Motor superior izquierdo
     digitalWrite(IN1_SI,HIGH);
     digitalWrite(IN2_SI,LOW);
-    analogWrite(ENB_SI,220);
+    analogWrite(ENB_SI,210);
 
     delay(710);
+}
+
+void detener(){
+    // Motor superior derecho
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,0);
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENB_ID,0);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrite(ENA_II,0);
+    
+    
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,0);
+
+    delay(200);
+}
+
+void ramp(){
+    // Motor superior derecho
+    digitalWrite(IN1_SD,HIGH);
+    digitalWrite(IN2_SD,LOW);
+    analogWrite(ENA_SD,255);
+
+    // Motor inferior derecho
+    digitalWrite(IN1_ID,LOW);
+    digitalWrite(IN2_ID,HIGH);
+    analogWrite(ENB_ID,255);
+
+    // Motor inferior izquierdo
+    digitalWrite(IN1_II,LOW);
+    digitalWrite(IN2_II,HIGH);
+    analogWrite(ENA_II,255);
+    
+    
+    // Motor superior izquierdo
+    digitalWrite(IN1_SI,HIGH);
+    digitalWrite(IN2_SI,LOW);
+    analogWrite(ENB_SI,255);
+
+    delay(10000);
 }
 
 String getColor(double hue)
@@ -141,36 +191,48 @@ void setup()
   pinMode(B, OUTPUT);
 }
 
+bool redDetected = false;
 
 void loop()
 {
-  uint16_t clear, red, green, blue;
+  if (!redDetected){
+      uint16_t clear, red, green, blue;
 
-  tcs.setInterrupt(false);
-  delay(60); // Takes 60ms to capture the color
-  tcs.getRawData(&red, &green, &blue, &clear);
-  tcs.setInterrupt(true);
+      tcs.setInterrupt(false);
+      delay(60); // Takes 60ms to capture the color
+      tcs.getRawData(&red, &green, &blue, &clear);
+      tcs.setInterrupt(true);
 
-  // Make rgb measurement relative
-  uint32_t sum = clear;
-  float r, g, b;
-  r = red; r /= sum;
-  g = green; g /= sum;
-  b = blue; b /= sum;
+      // Make rgb measurement relative
+      uint32_t sum = clear;
+      float r, g, b;
+      r = red; r /= sum;
+      g = green; g /= sum;
+      b = blue; b /= sum;
 
-  // Scale rgb to bytes
-  r *= 256; g *= 256; b *= 256;
+      // Scale rgb to bytes
+      r *= 256; g *= 256; b *= 256;
 
-  // Convert to hue, saturation, value
-  double hue, saturation, value;
-  ColorConverter::RgbToHsv(static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b), hue, saturation, value);
+      // Convert to hue, saturation, value
+      double hue, saturation, value;
+      ColorConverter::RgbToHsv(static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b), hue, saturation, value);
 
-  // Show color name
-  String detectedColor = getColor(hue * 360);
-  Serial.println("Hue: " + String(hue * 360) + ", Color detected: " + detectedColor);  // Print hue and detected color
-  showColor(detectedColor);
-  // differentColor();
-  delay(1000);
+      // Show color name
+      String detectedColor = getColor(hue * 360);
+      Serial.println("Hue: " + String(hue * 360) + ", Color detected: " + detectedColor);  // Print hue and detected color
+      showColor(detectedColor);
+      if (detectedColor == "Red") {
+        redDetected = true;
+      }
+      // differentColor();
+      delay(1000);
 
-  avanzar();
+      if (!redDetected) {
+        adelante();
+        detener();
+      }
+  }
+  else {
+      ramp();
+  }
 }
