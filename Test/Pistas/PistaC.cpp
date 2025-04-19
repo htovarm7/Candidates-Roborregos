@@ -167,7 +167,7 @@ void dfs(pair<int, int> node) {
         cout << "Call BFS!" << endl;
         moveToNewPosition(node, currentPosition);
 
-        cout << "BFS done." << endl;
+        cout << "BFS done." <   < endl;
     }
     cout << node.first << " " << node.second << endl;
     currentPosition = node;

@@ -10,14 +10,17 @@ void Ultrasonic::init() {
     pinMode(echoPin_, INPUT);
 }
 
-float Ultrasonic::getDistance() {
+long Ultrasonic::getDistance() {
     digitalWrite(trigPin_, LOW);
     delayMicroseconds(2);
     digitalWrite(trigPin_, HIGH);
     delayMicroseconds(10);
     digitalWrite(trigPin_, LOW);
 
-    float duration = pulseIn(echoPin_, HIGH);
-    float distance = duration * 0.034 / 2;
+    long duration = pulseIn(echoPin_, HIGH);
+    long distance = duration * 0.034 / 2;
+    Serial.print(duration);
+    Serial.print(" ");
+    Serial.println(distance);
     return distance;
 }
